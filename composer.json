@@ -1,0 +1,55 @@
+{
+  "name": "anacreation/cms",
+  "type": "project",
+  "license": "MIT",
+  "authors": [
+	{
+	  "name": "Xavier Au",
+	  "email": "xavier.au@anacreation.com"
+	}
+  ],
+  "autoload": {
+	"psr-4": {
+	  "Anacreation\\Cms\\": "src/"
+	},
+	"classmap": [
+	  "src/factories",
+	  "src/seeds"
+	],
+	"files": [
+	  "src/helpers/frontend_functions.php"
+	]
+  },
+  "autoload-dev": {
+	"psr-4": {
+	  "Anacreation\\Cms\\Tests\\": "tests/"
+	}
+  },
+  "minimum-stability": "dev",
+  "require": {
+	"laravel/framework": "5.5.*",
+	"xavierau/multi-auth": "2.*",
+	"laravelcollective/html": "^5.5",
+	"lavary/laravel-menu": "^1.7"
+  },
+  "require-dev": {
+	"barryvdh/laravel-debugbar": "^3.1",
+	"filp/whoops": "~2.0",
+	"fzaninotto/faker": "~1.4",
+	"mockery/mockery": "~1.0",
+	"phpunit/phpunit": "~6.0",
+	"symfony/thanks": "^1.0"
+  },
+  "extra": {
+	"laravel": {
+	  "providers": [
+		"Anacreation\\Cms\\CmsServiceProvider",
+		"Anacreation\\Cms\\CmsAuthServiceProvider",
+		"Anacreation\\Cms\\CmsEventServiceProvider"
+	  ],
+	  "aliases": {
+		"Debugbar": "Barryvdh\\Debugbar\\Facade"
+	  }
+	}
+  }
+}

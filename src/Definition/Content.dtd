@@ -1,0 +1,15 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE layout [
+        <!ELEMENT layout (content+, editable) >
+        <!ATTLIST layout editable ("true"|"false") "true">
+        <!ELEMENT content (identifier, type, value?)>
+        <!ELEMENT identifier (#PCDATA)>
+        <!ELEMENT value (#PCDATA)>
+        <!ELEMENT type (#PCDATA)>
+        <!ELEMENT editable (#PCDATA)>
+        <!ENTITY STRING_CONTENT "string">
+        <!ENTITY NUMBER_CONTENT "number">
+        <!ENTITY TEXT_CONTENT "text">
+        <!ENTITY DATE_CONTENT "date">
+        <!ENTITY BOOLEAN_CONTENT "boolean">
+        ]>
