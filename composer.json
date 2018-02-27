@@ -27,6 +27,7 @@
   },
   "minimum-stability": "dev",
   "require": {
+	"php": ">=7.1.0",
 	"laravel/framework": "5.5.*",
 	"xavierau/multi-auth": "2.*",
 	"laravelcollective/html": "^5.5",
