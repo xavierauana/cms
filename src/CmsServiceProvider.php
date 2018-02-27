@@ -59,9 +59,9 @@ class CmsServiceProvider extends ServiceProvider
 
     private function defaultAsset() {
         $this->publishes([
-            __DIR__ . '/src/public/css/cms' => public_path('css/cms'),
-            __DIR__ . '/src/public/js/cms'  => public_path('js/cms'),
-            __DIR__ . '/fonts'              => public_path('fonts'),
+            __DIR__ . '/public/css/cms' => public_path('css/cms'),
+            __DIR__ . '/public/js/cms'  => public_path('js/cms'),
+            __DIR__ . '/../fonts'       => public_path('fonts'),
         ]);
     }
 }
