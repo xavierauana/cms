@@ -2,6 +2,7 @@
 
 namespace Anacreation\Cms;
 
+use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
 
 class CmsServiceProvider extends ServiceProvider
@@ -13,10 +14,13 @@ class CmsServiceProvider extends ServiceProvider
      */
     public function boot() {
 
+        Blade::doubleEncode();
+
         $this->loadRoutesFrom(__DIR__ . '/routes.php');
         $this->loadMigrationsFrom(__DIR__ . '/migrations');
 
         $this->views();
+        $this->config();
     }
 
     /**
@@ -33,6 +37,15 @@ class CmsServiceProvider extends ServiceProvider
 
         $this->publishes([
             __DIR__ . '/views' => resource_path('views/vendor/cms'),
+        ]);
+
+    }
+
+    private function config() {
+        $this->publishes([
+            __DIR__ . '/config/theme.php' => config_path('theme.php'),
+            __DIR__ . '/config/cms.php'   => config_path('cms.php'),
+            __DIR__ . '/config/lfm.php'   => config_path('lfm.php'),
         ]);
     }
 }
