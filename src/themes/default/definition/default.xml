@@ -1,0 +1,33 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE layout [
+        <!ELEMENT layout (content+) >
+        <!ATTLIST layout editable (true|false) "true">
+        <!ELEMENT content (identifier, type, value?)>
+        <!ELEMENT identifier (#PCDATA)>
+        <!ELEMENT value (#PCDATA)>
+        <!ELEMENT type (#PCDATA)>
+        <!ELEMENT editable (#PCDATA)>
+        <!ENTITY STRING_CONTENT "string">
+        <!ENTITY NUMBER_CONTENT "number">
+        <!ENTITY TEXT_CONTENT "text">
+        <!ENTITY DATE_CONTENT "date">
+        <!ENTITY BOOLEAN_CONTENT "boolean">
+        ]>
+<layout>
+    <content>
+        <identifier>meta_title</identifier>
+        <type>&STRING_CONTENT;</type>
+    </content>
+    <content>
+        <identifier>meta_keywords</identifier>
+        <type>&STRING_CONTENT;</type>
+    </content>
+    <content>
+        <identifier>meta_description</identifier>
+        <type>&STRING_CONTENT;</type>
+    </content>
+    <content>
+        <identifier>content</identifier>
+        <type>&TEXT_CONTENT;</type>
+    </content>
+</layout>

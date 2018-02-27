@@ -1,0 +1,70 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE layout [
+        <!ELEMENT layout (model*,content+)>
+        <!ATTLIST layout editable (true|false) "true">
+        <!ELEMENT content (identifier, type, value?)>
+        <!ELEMENT identifier (#PCDATA)>
+        <!ELEMENT value (#PCDATA)>
+        <!ELEMENT type (#PCDATA)>
+        <!ELEMENT editable (#PCDATA)>
+        <!ELEMENT model (class, name)>
+        <!ELEMENT class (#PCDATA)>
+        <!ELEMENT name (#PCDATA)>
+        <!ENTITY STRING_CONTENT "string">
+        <!ENTITY NUMBER_CONTENT "number">
+        <!ENTITY TEXT_CONTENT "text">
+        <!ENTITY DATE_CONTENT "date">
+        <!ENTITY FILE_CONTENT "file">
+        <!ENTITY BOOLEAN_CONTENT "boolean">
+        ]>
+
+<layout editable="false">
+    <model>
+        <class>App\User</class>
+        <name>user</name>
+    </model>
+    <model>
+        <class>App\Template</class>
+        <name>template</name>
+    </model>
+    <content>
+        <identifier>meta_title</identifier>
+        <type>&STRING_CONTENT;</type>
+    </content>
+    <content>
+        <identifier>meta_keywords</identifier>
+        <type>&STRING_CONTENT;</type>
+    </content>
+    <content>
+        <identifier>meta_description</identifier>
+        <type>&STRING_CONTENT;</type>
+    </content>
+    <content>
+        <identifier>poster</identifier>
+        <type>&FILE_CONTENT;</type>
+    </content>
+    <content>
+        <identifier>video</identifier>
+        <type>&STRING_CONTENT;</type>
+    </content>
+    <content>
+        <identifier>date</identifier>
+        <type>&STRING_CONTENT;</type>
+    </content>
+    <content>
+        <identifier>title</identifier>
+        <type>&STRING_CONTENT;</type>
+    </content>
+    <content>
+        <identifier>summary</identifier>
+        <type>&TEXT_CONTENT;</type>
+    </content>
+    <content>
+        <identifier>content</identifier>
+        <type>&TEXT_CONTENT;</type>
+    </content>
+    <content>
+        <identifier>file</identifier>
+        <type>&FILE_CONTENT;</type>
+    </content>
+</layout>

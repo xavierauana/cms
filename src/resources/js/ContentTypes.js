@@ -1,0 +1,11 @@
+/**
+ * Created by Xavier on 3/2/2018.
+ */
+export const types = {
+  file    : 'FileContent',
+  text    : 'TextContent',
+  number  : 'NumberContent',
+  string  : 'StringContent',
+  datetime: 'DatetimeContent',
+  boolean : 'BooleanContent',
+}

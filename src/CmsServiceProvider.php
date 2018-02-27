@@ -21,6 +21,8 @@ class CmsServiceProvider extends ServiceProvider
 
         $this->views();
         $this->config();
+        $this->defaultTheme();
+        $this->defaultAsset();
     }
 
     /**
@@ -46,6 +48,20 @@ class CmsServiceProvider extends ServiceProvider
             __DIR__ . '/config/theme.php' => config_path('theme.php'),
             __DIR__ . '/config/cms.php'   => config_path('cms.php'),
             __DIR__ . '/config/lfm.php'   => config_path('lfm.php'),
+        ]);
+    }
+
+    private function defaultTheme() {
+        $this->publishes([
+            __DIR__ . '/themes' => resource_path('views/themes'),
+        ]);
+    }
+
+    private function defaultAsset() {
+        $this->publishes([
+            __DIR__ . '/src/public/css/cms' => public_path('css/cms'),
+            __DIR__ . '/src/public/js/cms'  => public_path('js/cms'),
+            __DIR__ . '/fonts'              => public_path('fonts'),
         ]);
     }
 }
