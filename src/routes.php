@@ -14,9 +14,6 @@ if (!config('cms.use_spark')) {
     });
 }
 
-@include "../../vendor/xavierau/multi-auth/src/Routes/routes.php";
-
-
 Route::group([
     "namespace"  => "Anacreation\\Cms\\Controllers",
     'middleware' => [
@@ -25,42 +22,54 @@ Route::group([
 ],
     function () {
 
-        Route::group(['prefix' => 'admin', 'middleware' => 'auth:admin'],
+        Route::group(['prefix' => config('admin.route_prefix')],
             function () {
+                Route::group(['middleware' => 'auth:admin'], function () {
 
-                Route::get('profile', "HomeController@getProfile")
-                     ->name('profile');
-                Route::put('profile/{admin}', "HomeController@putProfile")
-                     ->name('update.profile');
+                    Route::get('profile', "HomeController@getProfile")
+                         ->name('profile');
 
-                Route::get('designs', "DesignsController@index");
-                Route::get('designs/edit/{type}', "DesignsController@edit");
-                Route::put('designs/edit/{type}',
-                    "DesignsController@update");
-                Route::delete('pages/{page}/contents/child/{childId}',
-                    'ContentsController@destroyChild');
-                Route::put('menus/{menu}/order',
-                    'MenusController@updateOrder');
-                Route::resource('menus', 'MenusController');
-                Route::post('pages/order', 'PagesController@postOrder');
-                Route::resource('pages', 'PagesController');
-                Route::get('pages/{page}/contents',
-                    'ContentsController@index');
-                Route::post('pages/{page}/contents/update',
-                    'ContentsController@update');
-                Route::post('pages/{page}/contents',
-                    'ContentsController@store');
-                Route::delete('pages/{page}/contents/{identifier}',
-                    'ContentsController@destroy');
+                    Route::put('profile/{admin}', "HomeController@putProfile")
+                         ->name('profile.update');
 
-                Route::get('pages/{page}/contents/create',
-                    'ContentsController@create');
+                    Route::get('designs', "DesignsController@index")
+                         ->name('designs.index');
 
-                Route::resource('menus.links', 'LinksController');
+                    Route::get('designs/edit/{type}', "DesignsController@edit")
+                         ->name('designs.edit');
 
-                Route::resource('roles', 'RolesController');
-                Route::resource('permissions', 'PermissionsController');
-                Route::resource('languages', 'LanguagesController');
+                    Route::put('designs/edit/{type}',
+                        "DesignsController@update")->name('update.design');
+                    Route::put('menus/{menu}/order',
+                        'MenusController@updateOrder')
+                         ->name('menus.order.update');
+                    Route::resource('menus', 'MenusController');
+
+                    Route::delete('pages/{page}/contents/child/{childId}',
+                        'ContentsController@destroyChild')
+                         ->name('content.delete');
+                    Route::get('pages/{page}/contents',
+                        'ContentsController@index')->name('contents.index');
+                    Route::post('pages/{page}/contents/update',
+                        'ContentsController@update')->name('contents.update');
+                    Route::post('pages/{page}/contents',
+                        'ContentsController@store')->name('contents.store');
+                    Route::delete('pages/{page}/contents/{identifier}',
+                        'ContentsController@destroy')->name('contents.delete');
+
+                    Route::get('pages/{page}/contents/create',
+                        'ContentsController@create')->name('contents.create');
+
+                    Route::post('pages/order', 'PagesController@postOrder')
+                         ->name('pages.update.order');
+                    Route::resource('pages', 'PagesController');
+
+
+                    Route::resource('menus.links', 'LinksController');
+                    Route::resource('roles', 'RolesController');
+                    Route::resource('permissions', 'PermissionsController');
+                    Route::resource('languages', 'LanguagesController');
+                });
             });
 
 
@@ -68,7 +77,7 @@ Route::group([
             session()->put('locale', $locale);
 
             return redirect()->back();
-        });
+        })->name('set.locale');
 
 
         Route::get("{segment1?}/{segment2?}/{segment3?}/{segment4?}/{segment5?}",

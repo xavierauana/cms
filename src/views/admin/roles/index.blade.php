@@ -3,7 +3,7 @@
 @section("content")
 	
 	@component('cms::components.container')
-		@slot('title')All Roles <a href="/admin/roles/create"
+		@slot('title')All Roles <a href="{{route('roles.create')}}"
 		                           class="btn btn-sm btn-success pull-right">Create Role</a> @endslot
 		
 		<div class="table-responsive">
@@ -24,9 +24,8 @@
 							<td>{{$role->code}}</td>
 							<td>
 								<div class="btn-group btn-group-sm">
-									<a href='/admin/roles/{{$role->id}}/contents'
-									   class="btn btn-primary">Content</a>
-									<a href="/admin/roles/{{$role->id}}/edit"
+									
+									<a href="{{route('roles.edit', $role->id)}}"
 									   class="btn btn-info">Edit</a>
 									<button class="btn btn-danger"
 									        @click.prevent="deleteItem({{$role->id}})">Delete</button>

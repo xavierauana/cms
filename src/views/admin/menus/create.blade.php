@@ -5,14 +5,14 @@
 	@component('cms::components.container')
 		@slot('title')Create New Menu @endslot
 		
-		{{Form::open(['url'=>"/admin/menus", 'method'=>'POST'])}}
+		{{Form::open(['url'=>route('menus.store'), 'method'=>'POST'])}}
 		
 		<div class="form-group">
 			{{Form::label('name', 'Name')}}
 			{{Form::text('name', '', ['class'=>'form-control', 'placeholder'=>'Menu Name'])}}
 		</div>
 		<div class="form-group">
-			{{Form::label('code', 'Name')}}
+			{{Form::label('code', 'Code')}}
 			{{Form::text('code', '', ['class'=>'form-control', 'placeholder'=>'Menu Code'])}}
 		</div>
 		

@@ -6,7 +6,7 @@
 	@component('cms::components.container')
 		@slot('title'){{$child->uri}}
 		@if(auth('admin')->user()->hasPermission('edit_design'))
-			<a href="/admin/designs/edit/layouts?file={{$child->template}}"
+			<a href="{{route('designs.edit', 'layouts')."?file={$child->template}"}}"
 			   class="btn btn-primary btn-sm pull-right">Edit Template: {{$child->template}}</a>
 		@endif
 		@endslot

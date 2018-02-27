@@ -38,7 +38,7 @@
 									        <td>
 										        @if(isset($pages[$layout]))
 											        @foreach($pages[$layout] as $page)
-												        <a href="/admin/pages/{{$page->id}}/contents"
+												        <a href="{{route('contents.index', $page->id)}}"
 												           class="btn btn-xs btn-primary">{{$page->uri}}</a>
 											        @endforeach
 										        @endif
@@ -46,9 +46,8 @@
 								        @endif
 								        <td>
 								            <div class="btn btn-group btn-group-sm">
-									            <a href="/admin/designs/edit/layouts?file={{$layout}}"
+									            <a href="{{route('designs.edit', 'layouts').'?file='.$layout}}"
 									               class="btn btn-info">Edit</a>
-									            <button class="btn btn-danger">Delete</button>
 								            </div>
 							            </td>
 						            </tr>
@@ -88,9 +87,8 @@
 							            <td>{{$partial}}</td>
 							            <td>
 								            <div class="btn btn-group btn-group-sm">
-									            <a href="/admin/designs/edit/partials?file={{$partial}}"
+									            <a href="{{route('designs.edit', 'partials').'?file='.$partial}}"
 									               class="btn btn-info">Edit</a>
-									            <button class="btn btn-danger">Delete</button>
 								            </div>
 							            </td>
 						            </tr>

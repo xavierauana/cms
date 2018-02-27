@@ -38,7 +38,7 @@ class Page extends Model
     }
 
     public function parent(): Relation {
-        return $this->belongsTo()(Page::class, 'parent_id');
+        return $this->belongsTo(Page::class, 'parent_id');
     }
 
     public function permission(): Relation {
@@ -144,6 +144,7 @@ class Page extends Model
         }
 
         $contentIdentifiers = $this->loadAdHocContents($contentIdentifiers);
+
         return $this->loadPageContentWithIdentifiers($contentIdentifiers);
 
     }

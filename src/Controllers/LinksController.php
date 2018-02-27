@@ -49,6 +49,12 @@ class LinksController extends Controller
     public function store(
         Menu $menu, Request $request, Page $page
     ) {
+        $request = $this->sanitizeInputs($request);
+
+        $standard = $page->pluck('id')->toArray();
+
+        $ids = implode(",", $standard);
+
         $validatedData = $this->validate($request, [
             'name.*.lang_id' => 'required:in:' . implode(",",
                     Language::pluck('id')->toArray()),
@@ -56,9 +62,8 @@ class LinksController extends Controller
             'is_active'      => 'required|boolean',
             'parent_id'      => 'required|in:0,' . implode(",",
                     $menu->links()->pluck('id')->toArray()),
-            'page_id'        => 'in:0,' . implode(",",
-                    $page->pluck('id')->toArray()),
-            'external_uri'   => 'sometimes',
+            'page_id'        => 'required_without:external_uri|in:' . $ids,
+            'external_uri'   => 'required_without:page_id',
         ]);
 
         $this->createLink($menu, $validatedData);
@@ -87,7 +92,7 @@ class LinksController extends Controller
         $languages = Language::all();
 
         return view('cms::admin.links.edit',
-            compact("menu", "links", "link", "pages","languages"));
+            compact("menu", "links", "link", "pages", "languages"));
     }
 
     /**
@@ -99,6 +104,14 @@ class LinksController extends Controller
      */
     public function update(Request $request, Menu $menu, Link $link, Page $page
     ) {
+
+        $request = $this->sanitizeInputs($request);
+
+        $standard = $page->pluck('id')->toArray();
+
+        $ids = implode(",", $standard);
+
+
         $validatedData = $this->validate($request, [
             'name.*.lang_id' => 'required:in:' . implode(",",
                     Language::pluck('id')->toArray()),
@@ -106,10 +119,10 @@ class LinksController extends Controller
             'is_active'      => 'required|boolean',
             'parent_id'      => 'required|in:0,' . implode(",",
                     $menu->links()->pluck('id')->toArray()),
-            'page_id'        => 'in:0,' . implode(",",
-                    $page->pluck('id')->toArray()),
-            'external_uri'   => 'sometimes',
+            'page_id'        => 'required_without:external_uri|in:' . $ids,
+            'external_uri'   => 'required_without:page_id'
         ]);
+
 
         $this->updateLink($link, $validatedData);
 
@@ -134,7 +147,7 @@ class LinksController extends Controller
      * @return array
      */
     private function loadResources(Menu $menu, Page $page): array {
-        $pages['0'] = "Not Link to page";
+        $pages[] = "Not Link to page";
         $pages = $pages + $page->pluck('uri', 'id')->toArray();
         $links['0'] = "Top Level";
         $nameAndId = $menu->links->reduce(function ($previous, Link $link) {
@@ -179,5 +192,22 @@ class LinksController extends Controller
                 $data['content'], 'string');
             $service->updateOrCreateContentIndex($link, $contentObject);
         }
+    }
+
+    /**
+     * @param \Illuminate\Http\Request $request
+     */
+    private function sanitizeInputs(Request $request): Request {
+        $inputs = $request->all();
+        if (isset($inputs['external_uri']) and !$inputs['external_uri']) {
+            unset($inputs['external_uri']);
+        }
+        if (isset($inputs['page_id']) and !$inputs['page_id']) {
+            unset($inputs['page_id']);
+        }
+
+        $request->replace($inputs);
+
+        return $request;
     }
 }

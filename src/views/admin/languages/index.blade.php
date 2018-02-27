@@ -3,7 +3,7 @@
 @section("content")
 	
 	@component('cms::components.container')
-		@slot('title')All Languages <a href="/admin/languages/create"
+		@slot('title')All Languages <a href="{{route('languages.create')}}"
 		                               class="btn btn-sm btn-success pull-right">Create Language</a> @endslot
 		
 		<div class="table-responsive">
@@ -28,7 +28,7 @@
 						<td>{{$language->is_default?"Yes":"No"}}</td>
 						<td>
 							<div class="btn-group btn-group-sm">
-								<a href="/admin/languages/{{$language->id}}/edit"
+								<a href="{{route('languages.edit', $language->id)}}"
 								   class="btn btn-info">Edit</a>
 								<button class="btn btn-danger"
 								        @click.prevent="deleteItem({{$language->id}})">Delete</button>

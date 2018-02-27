@@ -23,7 +23,11 @@
   "autoload-dev": {
 	"psr-4": {
 	  "Anacreation\\Cms\\Tests\\": "tests/"
-	}
+	},
+	"files": [
+	  "src/helpers/frontend_functions.php",
+	  "src/helpers/functions.php"
+	]
   },
   "minimum-stability": "dev",
   "require": {

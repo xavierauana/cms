@@ -83,7 +83,7 @@ class ContentsController extends Controller
 
         $page->children()->create($validatedInputs);
 
-        return redirect('/admin/pages/' . $page->id . '/contents');
+        return redirect()->route('contents.index', $page->id);
     }
 
     /**

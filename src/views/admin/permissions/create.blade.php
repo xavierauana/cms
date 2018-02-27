@@ -5,7 +5,7 @@
 	@component('cms::components.container')
 		@slot('title')Create New Permission @endslot
 		
-		{{Form::open(['url'=>"/admin/permissions", 'method'=>'POST'])}}
+		{{Form::open(['url'=>route('permissions.store'), 'method'=>'POST'])}}
 		
 		<div class="form-group">
 			{{Form::label('label', 'Label')}}
@@ -19,7 +19,7 @@
 		
 		<div class="form-group">
 			{{Form::submit('Create', ['class'=>'btn btn-success'])}}
-			<a href='{{route('pages.index')}}' class="btn btn-info">Back</a>
+			<a href='{{route('permissions.index')}}' class="btn btn-info">Back</a>
 		</div>
 		
 		

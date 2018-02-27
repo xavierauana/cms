@@ -1,7 +1,7 @@
 @component('cms::elements.accordion_item',['active'=>$index===0])
 	@slot('parentId')menus_accrodion @endslot
 	@slot('panelActions')
-		<a href="/admin/menus/{{$menu->id}}/links/create"
+		<a href="{{route('menus.links.create', $menu->id)}}"
 		   class="btn btn-success pull-right"
 		   style="color:white;margin-top: -15px">Create Link in {{$menu->name}}</a>
 	@endslot
@@ -13,14 +13,14 @@
 	</div>
 	<br>
 	<div class="panel-footer">
-		<button onclick="updateOrder(event, {{$menu->id}})"
+		<button onclick="updateOrder(event,'{{$menu->id}}', '{{route('menus.order.update', $menu->id)}}')"
 		        class="btn btn-block btn-primary">Update Order for {{$menu->name}}</button>
 	</div>
 @endcomponent
 
 @section('scripts')
 	<script>
-		function updateOrder(e, menuId) {
+		function updateOrder(e, menuId, url) {
           e.preventDefault()
           var lists = document.getElementById("menu_" + menuId + "_container").getElementsByTagName('li')
 
@@ -32,7 +32,7 @@
             }
           })
 
-          axios.put('/admin/menus/' + menuId + '/order', data)
+          axios.put(url, data)
                .then(response => alert('Order updated!'))
         }
 

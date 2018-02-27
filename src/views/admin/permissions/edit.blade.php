@@ -29,7 +29,7 @@
 		
 		<div class="form-group">
 			{{Form::submit('Update', ['class'=>'btn btn-success'])}}
-			<a href='{{route('pages.index')}}' class="btn btn-info">Back</a>
+			<a href='{{route('permissions.index')}}' class="btn btn-info">Back</a>
 		</div>
 		
 		{{Form::close()}}

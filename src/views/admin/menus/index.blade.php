@@ -5,7 +5,8 @@
 	@component('cms::components.container')
 		@slot('title')
 			All Menus
-			<a href="/admin/menus/create" class="btn btn-success pull-right">Create Menu Group</a>
+			<a href="{{route('menus.create')}}"
+			   class="btn btn-success pull-right">Create Menu Group</a>
 		@endslot
 		
 		@component('cms::elements.accordion_container',['id'=>'menus_accrodion'])

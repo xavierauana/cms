@@ -3,7 +3,7 @@
 @section("content")
 	
 	@component('cms::components.container')
-		@slot('title')All Pages <a href="/admin/permissions/create"
+		@slot('title')All Pages <a href="{{route('permissions.index')}}"
 		                           class="btn btn-sm btn-success pull-right">Create Page</a> @endslot
 		
 		<div class="table-responsive">
@@ -22,12 +22,10 @@
 						<td>{{$permission->code}}</td>
 						<td>
 							<div class="btn-group btn-group-sm">
-								<a href='/admin/permissions/{{$permission->id}}/contents'
-								   class="btn btn-primary">Content</a>
-								<a href="/admin/permissions/{{$permission->id}}/edit"
+								<a href="{{route('permissions.edit', $permission->id)}}"
 								   class="btn btn-info">Edit</a>
 								<delete-item
-										url="/admin/permissions/{{$permission->id}}"
+										url="{{route('permissions.destroy', $permission->id)}}"
 										inline-template>
 								<button class="btn btn-danger"
 								        @click.prevent="deleteItem">Delete</button>

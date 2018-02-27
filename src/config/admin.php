@@ -6,6 +6,7 @@
  */
 
 return [
+    'route_prefix'   => 'admin',
     'model_fillable' => [
         'name',
         'email',

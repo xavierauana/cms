@@ -6,7 +6,7 @@
 	@component('cms::components.container')
 		@slot('title'){{$page->uri}}
 		@if(auth('admin')->user()->hasPermission('edit_design'))
-			<a href="/admin/designs/edit/layouts?file={{$page->template}}"
+			<a href="{{route('designs.edit', 'layouts')."?file={$page->template}"}}"
 			   class="btn btn-primary btn-sm pull-right">Edit Template: {{$page->template}}</a>
 		@endif
 		@endslot
@@ -21,6 +21,7 @@
 		
 		
 		<page-children v-if="{{$page->has_children}} === 1"
+		               base-url="{{route('pages.index')}}"
 		               :page="{{$page}}"
 		               :children="{{$page->children()->with('permission')->sorted()->get()}}"></page-children>
 	

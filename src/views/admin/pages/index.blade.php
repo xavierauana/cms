@@ -3,7 +3,7 @@
 @section("content")
 	
 	@component('cms::components.container')
-		@slot('title')All Pages <a href="/admin/pages/create"
+		@slot('title')All Pages <a href="{{route('pages.create')}}"
 		                           class="btn btn-sm btn-success pull-right">Create Page</a> @endslot
 		
 		<div class="table-responsive">
@@ -26,12 +26,12 @@
 						<td>{{$page->is_restricted?$page->showPermission():"No"}}</td>
 						<td>
 							<div class="btn-group btn-group-sm">
-								<a href='/admin/pages/{{$page->id}}/contents'
+								<a href='{{route('contents.index', $page->id)}}'
 								   class="btn btn-primary">Content</a>
-								<a href="/admin/pages/{{$page->id}}/edit"
+								<a href="{{route('pages.edit', $page->id)}}"
 								   class="btn btn-info">Edit</a>
 								<delete-item
-										url="/admin/pages/{{$page->id}}"
+										url="{{route('pages.destroy', $page->id)}}"
 										inline-template>
 								<button class="btn btn-danger"
 								        @click.prevent="deleteItem">Delete</button>

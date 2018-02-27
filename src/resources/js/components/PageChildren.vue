@@ -2,7 +2,7 @@
 
     <div class="page-children">
         <h3 class="header">Children <a
-                :href="'/admin/pages/'+page.id+'/contents/create'"
+                :href="createUrl"
                 class="pull-right btn btn-success btn-sm">Create Child</a></h3>
         <hr>
 
@@ -51,28 +51,32 @@
 
 <script>
     export default {
-      name   : 'page-children',
-      props  : ['page', 'children'],
+      name    : 'page-children',
+      props   : ['page', 'children', 'baseUrl'],
       data() {
         return {
           internalChildren: [],
           childrenList    : null
         }
       },
+      computed: {
+        createUrl() {
+          return this.baseUrl + "/" + this.page.id + "/contents/create"
+        }
+      },
       created() {
         this.internalChildren = JSON.parse(JSON.stringify(this.children))
       },
       mounted() {
-
         $("#children-list").sortable()
         $("#children-list").disableSelection()
       },
-      methods: {
+      methods : {
         goToContentPage(child) {
-          window.location.href = "/admin/pages/" + child.id + "/contents/"
+          window.location.href = this.baseUrl + "/" + child.id + "/contents"
         },
         goToEditPage(child) {
-          window.location.href = "/admin/pages/" + child.id + "/edit/"
+          window.location.href = this.baseUrl + "/" + child.id + "/edit/"
         },
         deleteChild(child) {
           if (confirm("delete page cannot be undo! Are you sure?")) {

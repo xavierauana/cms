@@ -13,7 +13,7 @@
 			@else
 				<span class="label label-warning">Inactive</span>
 			@endif
-			<form action="/admin/menus/{{$menu->id}}/links/{{$link->id}}"
+			<form action="{{route('menus.links.destroy', [$menu->id, $link->id])}}"
 			      method="POST" style="display: inline"
 			      @submit="confirmDelete($event,'Delete this link?')">
 				{{method_field('delete')}}
@@ -24,7 +24,7 @@
 			</form>
 			
 			<a class="btn btn-info btn-xs pull-right"
-			   href="/admin/menus/{{$menu->id}}/links/{{$link->id}}/edit"
+			   href="{{route('menus.links.edit', [$menu->id, $link->id])}}"
 			>Edit</a>
 			
 			@include('cms::components.links',['links'=>$link->children()->orderBy('order')->get(), 'parentId'=>$link->id])

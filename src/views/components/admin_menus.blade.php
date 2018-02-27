@@ -1,10 +1,10 @@
 <ul class="nav navbar-nav">
     @if(Auth::guard('admin')->user()->hasPermission('index_design'))
-		<li><a href="/admin/designs">Design</a></li> @endif
+		<li><a href="{{route('designs.index')}}">Design</a></li> @endif
 	@if(Auth::guard('admin')->user()->hasPermission('index_menu'))
-		<li><a href="/admin/menus">Menus</a></li> @endif
+		<li><a href="{{route('menus.index')}}">Menus</a></li> @endif
 	@if(Auth::guard('admin')->user()->hasPermission('index_page'))
-		<li><a href="/admin/pages">Pages</a></li> @endif
+		<li><a href="{{route('pages.index')}}">Pages</a></li> @endif
 	
 	<li class="dropdown">
         <a href="#" class="dropdown-toggle"
@@ -16,16 +16,17 @@
 
         <ul class="dropdown-menu">
            @if(Auth::guard('admin')->user()->hasPermission('index_user'))
-		        <li><a href="/admin/users">Users</a></li> @endif
+		        <li><a href="{{'/'.config('admin.route_prefix')."/users"}}">Users</a></li> @endif
 	        @if(Auth::guard('admin')->user()->hasPermission('index_role'))
-		        <li><a href="/admin/roles">Roles</a></li> @endif
+		        <li><a href="{{'/'.config('admin.route_prefix')."/roles"}}">Roles</a></li> @endif
 	        @if(Auth::guard('admin')->user()->hasPermission('index_permission'))
-		        <li><a href="/admin/permissions">Permissions</a></li> @endif
+		        <li><a href="{{'/'.config('admin.route_prefix')."/permissions"}}">Permissions</a></li> @endif
             </li>
 		        <li role="separator" class="divider"></li>
 		        @if(Auth::guard('admin')->user()->hasPermission('index_administrator'))
 			        <li><a>Administrators</a></li>@endif
-		        <li><a>Admin Roles</a></li>
+		
+		        <li><a href="{{config('admin.route_prefix')."/roles"}}">Admin Roles</a></li>
 		        <li><a>Admin Permissions</a></li>
         </ul>
     </li>
@@ -39,7 +40,7 @@
 
         <ul class="dropdown-menu">
             @if(Auth::guard('admin')->user()->hasPermission('index_language'))
-		        <li><a href="/admin/languages">Languages</a>
+		        <li><a href="{{route('languages.index')}}">Languages</a>
 			        @endif
             </li>
         </ul>

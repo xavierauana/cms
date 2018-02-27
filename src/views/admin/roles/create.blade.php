@@ -5,7 +5,7 @@
 	@component('cms::components.container')
 		@slot('title')Create New Role @endslot
 		
-		{{Form::open(['url'=>"/admin/roles", 'method'=>'POST'])}}
+		{{Form::open(['url'=>route('roles.store'), 'method'=>'POST'])}}
 		
 		<div class="form-group">
 			{{Form::label('label', 'Label')}}
@@ -51,7 +51,7 @@
 		
 		<div class="form-group">
 			{{Form::submit('Create', ['class'=>'btn btn-success'])}}
-			<a href='{{route('pages.index')}}' class="btn btn-info">Back</a>
+			<a href='{{route('roles.index')}}' class="btn btn-info">Back</a>
 		</div>
 		
 		

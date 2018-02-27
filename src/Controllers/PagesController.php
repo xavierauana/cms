@@ -67,7 +67,7 @@ class PagesController extends Controller
 
         $page->create($validatedInputs);
 
-        return redirect('/admin/pages');
+        return redirect()->route('pages.index');
 
     }
 
@@ -113,6 +113,7 @@ class PagesController extends Controller
 
         $this->authorize('store', $page);
 
+
         $layouts = getLayoutFiles()['layouts'];
 
         $validatedInputs = $this->validate($request, [
@@ -124,10 +125,10 @@ class PagesController extends Controller
             'permission_id' => 'required|in:0,' . implode(',',
                     Permission::pluck('id')->toArray()),
         ]);
-
         $page->update($validatedInputs);
 
-        return redirect('/admin/pages');
+        return ($parent = $page->parent) ? redirect()->route('contents.index',
+            $parent->id) : redirect()->route('pages.index');
     }
 
     /**

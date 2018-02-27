@@ -5,7 +5,7 @@
 	@component('cms::components.container')
 		@slot('title')Create New Page @endslot
 		
-		{{Form::open(['url'=>"/admin/pages", 'method'=>'POST'])}}
+		{{Form::open(['url'=>route('pages.store'), 'method'=>'POST'])}}
 		
 		<div class="form-group">
 			{{Form::label('uri', 'Uri')}}

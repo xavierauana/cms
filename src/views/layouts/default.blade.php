@@ -92,7 +92,7 @@
     <script src="{{ asset('js/src-noconflict/ace.js') }}"></script>
     <script src="{{ asset('js/cms/manifest.js') }}"></script>
     <script src="{{ asset('js/cms/vendor.js') }}"></script>
-    <script src="{{ mix('js/cms/app.js') }}"></script>
+    <script src="{{ asset('js/cms/app.js') }}"></script>
     @yield('scripts')
 </body>
 </html>

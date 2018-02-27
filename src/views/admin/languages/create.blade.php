@@ -5,7 +5,7 @@
 	@component('cms::components.container')
 		@slot('title')Create New Language @endslot
 		
-		{{Form::open(['url'=>"/admin/languages", 'method'=>'POST'])}}
+		{{Form::open(['url'=>route('languages.store'), 'method'=>'POST'])}}
 		
 		<div class="form-group">
 			{{Form::label('label', 'Label')}}
@@ -57,7 +57,6 @@
 			{{Form::submit('Create', ['class'=>'btn btn-success'])}}
 			<a href='{{route('languages.index')}}' class="btn btn-info">Back</a>
 		</div>
-		
 		
 		{{Form::close()}}
 	@endcomponent
