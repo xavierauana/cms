@@ -19,7 +19,6 @@ use Anacreation\Cms\Entities\ContentObject;
 use Anacreation\Cms\Exceptions\IncorrectContentTypeException;
 use Anacreation\Cms\Models\ContentIndex;
 use Anacreation\Cms\Models\Language;
-use Barryvdh\Debugbar\LaravelDebugbar as Debugbar;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Cache;
 
@@ -169,7 +168,7 @@ class ContentService
         $key = $contentOwner->getContentCacheKey($language->code,
             $contentObject->identifier);
 
-        Debugbar::info("Invalidate Cache:" . $key);
+        \Debugbar::info("Invalidate Cache:" . $key);
 
         if (Cache::has($key)) {
             Cache::forget($key);

@@ -47,7 +47,10 @@
 		"Anacreation\\Cms\\CmsServiceProvider",
 		"Anacreation\\Cms\\CmsAuthServiceProvider",
 		"Anacreation\\Cms\\CmsEventServiceProvider"
-	  ]
+	  ],
+	  "aliases": {
+		"Debugbar": "Barryvdh\\Debugbar\\Facade"
+	  }
 	}
   }
 }
