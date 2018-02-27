@@ -9,6 +9,7 @@ namespace Anacreation\Cms\traits;
 
 
 use Anacreation\Cms\Models\ContentIndex;
+use Barryvdh\Debugbar\LaravelDebugbar as Debugbar;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Facades\Cache;
 
@@ -26,14 +27,14 @@ trait ContentGroup
     protected function loadFromCache($key, callable $callable) {
         $duration = config("cms.content_cache_duration");
         if (Cache::has($key)) {
-            \Debugbar::info("Load content cache:" . $key);
+            Debugbar::info("Load content cache:" . $key);
 
             return Cache::get($key);
         } else {
 
             $value = $callable();
 
-            \Debugbar::info("Create content cache:" . $key . " for " . $duration . " mins and value is:" . $value);
+            Debugbar::info("Create content cache:" . $key . " for " . $duration . " mins and value is:" . $value);
             Cache::put($key, $value ?? "", $duration);
 
             return $value;
