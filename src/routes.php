@@ -14,6 +14,8 @@ if (!config('cms.use_spark')) {
     });
 }
 
+@include "../../vendor/xavierau/multi-auth/src/Routes/routes.php";
+
 
 Route::group([
     "namespace"  => "Anacreation\\Cms\\Controllers",
@@ -33,14 +35,17 @@ Route::group([
 
                 Route::get('designs', "DesignsController@index");
                 Route::get('designs/edit/{type}', "DesignsController@edit");
-                Route::put('designs/edit/{type}', "DesignsController@update");
+                Route::put('designs/edit/{type}',
+                    "DesignsController@update");
                 Route::delete('pages/{page}/contents/child/{childId}',
                     'ContentsController@destroyChild');
-                Route::put('menus/{menu}/order', 'MenusController@updateOrder');
+                Route::put('menus/{menu}/order',
+                    'MenusController@updateOrder');
                 Route::resource('menus', 'MenusController');
                 Route::post('pages/order', 'PagesController@postOrder');
                 Route::resource('pages', 'PagesController');
-                Route::get('pages/{page}/contents', 'ContentsController@index');
+                Route::get('pages/{page}/contents',
+                    'ContentsController@index');
                 Route::post('pages/{page}/contents/update',
                     'ContentsController@update');
                 Route::post('pages/{page}/contents',
