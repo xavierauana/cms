@@ -47,7 +47,11 @@
   },
   "extra": {
 	"laravel": {
+	  "dont-discover": [
+		"xavierau/multi-auth"
+	  ],
 	  "providers": [
+		"Anacreation\\MultiAuth\\MultiAuthServiceProvider",
 		"Anacreation\\Cms\\CmsServiceProvider",
 		"Anacreation\\Cms\\CmsAuthServiceProvider",
 		"Anacreation\\Cms\\CmsEventServiceProvider"
