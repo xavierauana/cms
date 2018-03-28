@@ -22,8 +22,15 @@ use Anacreation\Cms\Models\Language;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Cache;
 
+/**
+ * Class ContentService
+ * @package Anacreation\Cms\Services
+ */
 class ContentService
 {
+    /**
+     *
+     */
     protected const ContentTypes = [
         'text'     => TextContent::class,
         'string'   => StringContent::class,
@@ -33,6 +40,12 @@ class ContentService
         'datetime' => DatetimeContent::class,
     ];
 
+    /**
+     * @param \Anacreation\Cms\Contracts\ContentGroupInterface $contentOwner
+     * @param string                                           $identifier
+     * @param string|null                                      $locale
+     * @return \Anacreation\Cms\Models\ContentIndex|null
+     */
     public static function getContentIndex(
         ContentGroupInterface $contentOwner,
         string $identifier, string $locale = null
@@ -48,17 +61,23 @@ class ContentService
     }
 
 
+    /**
+     * @param string $jsText
+     * @return null|string
+     */
     public function convertToContentTypeClass(string $jsText): ?string {
         return $this->getContentType($this->getContentTypes(), $jsText);
     }
 
+    /**
+     * @param ContentTypeInterface|string $content
+     * @return null|string
+     */
     public function convertToJsString($content): ?string {
+        $content = $content instanceof ContentTypeInterface ? get_class($content) : $content;
 
-        return ($content instanceof ContentTypeInterface) ?
-            $this->getContentType(array_flip($this->getContentTypes()),
-                get_class($content)) :
-            $this->getContentType(array_flip($this->getContentTypes()),
-                $content);
+        return $this->getContentType(array_flip($this->getContentTypes()),
+            $content);
     }
 
 
@@ -92,6 +111,11 @@ class ContentService
 
     }
 
+    /**
+     * @param array                              $data
+     * @param \Illuminate\Http\UploadedFile|null $file
+     * @return \Anacreation\Cms\Entities\ContentObject
+     */
     public function createContentObject(array $data, UploadedFile $file = null
     ): ContentObject {
         return new ContentObject($data['identifier'], $data['lang_id'],
@@ -100,6 +124,12 @@ class ContentService
 
     # region Private Methods
 
+    /**
+     * @param \Anacreation\Cms\Contracts\ContentGroupInterface $contentOwner
+     * @param \Anacreation\Cms\Models\Language                 $language
+     * @param string                                           $identifier
+     * @return \Anacreation\Cms\Models\ContentIndex|null
+     */
     private static function fetchContentIndexWith(
         ContentGroupInterface $contentOwner, Language $language,
         string $identifier
@@ -112,13 +142,22 @@ class ContentService
                             ->first();
     }
 
-    private function getContentType(array $types, string $needle): ?string {
+    /**
+     * @param array  $types
+     * @param string $needle
+     * @return string
+     */
+    private function getContentType(array $types, string $needle): string {
+        if ($this->isAValidContentType($types, $needle)) {
+            return $types[$needle];
+        };
+        throw new \InvalidArgumentException("jsText Content type is invalid! Or it haven't register yet!");
 
-        $keys = array_keys($types);
-
-        return in_array($needle, $keys) ? $types[$needle] : null;
     }
 
+    /**
+     * @return array
+     */
     private function getContentTypes(): array {
         return ContentService::ContentTypes + config("cms.content_type");
     }
@@ -140,7 +179,6 @@ class ContentService
         $content = app()->make($contentType);
 
         $content->saveContent($contentInput);
-
         $contentOwner->contentIndices()->create([
             'content_type' => get_class($content),
             'content_id'   => $content->id,
@@ -159,6 +197,10 @@ class ContentService
         return $index and $index->content_type === $contentType;
     }
 
+    /**
+     * @param \Anacreation\Cms\Contracts\ContentGroupInterface $contentOwner
+     * @param \Anacreation\Cms\Entities\ContentObject          $contentObject
+     */
     private function invalidateContentCache(
         ContentGroupInterface $contentOwner, ContentObject $contentObject
     ) {
@@ -173,6 +215,15 @@ class ContentService
         if (Cache::has($key)) {
             Cache::forget($key);
         }
+    }
+
+    /**
+     * @param array  $types
+     * @param string $needle
+     * @return bool
+     */
+    private function isAValidContentType(array $types, string $needle): bool {
+        return in_array($needle, array_keys($types));
     }
 
     # endregion

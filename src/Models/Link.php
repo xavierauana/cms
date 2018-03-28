@@ -31,6 +31,12 @@ class Link extends Model
         'external_uri'
     ];
 
+    protected $appends = [
+        'name',
+        'uri',
+        'absoluteUri'
+    ];
+
     // Relation
     public function menu(): Relation {
         return $this->belongsTo(Menu::class);
@@ -52,6 +58,10 @@ class Link extends Model
 
     public function getUriAttribute(): string {
         return $this->page ? $this->page->uri : $this->external_uri;
+    }
+
+    public function getAbsoluteUriAttribute(): string {
+        return $this->page ? url($this->page->uri) : $this->external_uri;
     }
 
     public function getNameAttribute(string $langCode = null): string {

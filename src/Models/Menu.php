@@ -7,6 +7,7 @@ use Anacreation\Cms\Events\MenuDeleted;
 use Anacreation\Cms\Events\MenuSaved;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
 use PhpParser\Builder;
 
@@ -68,4 +69,15 @@ class Menu extends Model implements CacheManageableInterface
     public function getCacheKey(): string {
         return "menu_{$this->code}";
     }
+
+    // Helpers
+
+    public static function getLinksInMenu(string $menuCode): Collection {
+        if ($menu = static::whereCode($menuCode)->first()) {
+            return $menu->links()->whereIsActive(true)->orderBy('order')->get();
+        }
+
+        return new Collection();
+    }
+
 }

@@ -52,7 +52,7 @@ export default {
     constructInputsData(inputs) {
       let tempDataContainer = []
       _.chain(inputs)
-       .map(input => this.parseDataFromInputEl(input))
+       .map(input => this.parseDataFromInputs(input))
        .forEach(input => {
          const result = _.find(tempDataContainer, {lang_id: input.lang_id})
          if (!result) {
@@ -82,7 +82,7 @@ export default {
       alert('Update Completed')
       NotificationCenter.$emit(Events.CONTENT_GET_CLEAN, identifier)
     },
-    parseDataFromInputEl(input) {
+    parseDataFromInputs(input) {
 
       let inputTagName = input.tagName;
       let data = {}
@@ -105,32 +105,37 @@ export default {
           }
           break;
         default:
-          const inputType = input.getAttribute('type').toLocaleLowerCase()
-          switch (inputType) {
-            case "file":
-              let formData = new FormData()
-              formData.append('content', input.files[0])
-              formData.append('identifier', this.inputIdentifier)
-              formData.append('content_type', this.type)
-              formData.append('lang_id', input.dataset.lang_id)
-              data = formData
-              break
-            case "checkbox":
-              data = {
-                identifier  : this.inputIdentifier,
-                content_type: this.type,
-                lang_id     : input.dataset.lang_id,
-                content     : input.checked ? input.value : "",
-              }
-              break
-            default:
-              data = {
-                identifier  : this.inputIdentifier,
-                content_type: this.type,
-                lang_id     : input.dataset.lang_id,
-                content     : input.value
-              }
+          data = this.parseDataFromInputEl()
+      }
+      return data
+    },
+    parseDataFromInputEl() {
+      let data = {}
+      switch (input.getAttribute('type').toLocaleLowerCase()) {
+        case "file":
+          let formData = new FormData()
+          formData.append('content', input.files[0])
+          formData.append('identifier', this.inputIdentifier)
+          formData.append('content_type', this.type)
+          formData.append('lang_id', input.dataset.lang_id)
+          data = formData
+          break
+        case "checkbox":
+          data = {
+            identifier  : this.inputIdentifier,
+            content_type: this.type,
+            lang_id     : input.dataset.lang_id,
+            content     : input.checked ? input.value : "",
           }
+          break
+        default:
+          data = {
+            identifier  : this.inputIdentifier,
+            content_type: this.type,
+            lang_id     : input.dataset.lang_id,
+            content     : input.value
+          }
+
       }
       return data
     },
