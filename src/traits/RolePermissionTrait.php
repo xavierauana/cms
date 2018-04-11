@@ -5,7 +5,7 @@
  * Time: 3:36 PM
  */
 
-namespace Anacreation\CMS\traits;
+namespace Anacreation\Cms\traits;
 
 
 use Illuminate\Database\Eloquent\Relations\Relation;
@@ -14,12 +14,12 @@ use Illuminate\Support\Collection;
 trait RolePermissionTrait
 {
     public function roles(): Relation {
-        return $this->belongsToMany(\Anacreation\CMS\Models\Role::class);
+        return $this->belongsToMany(\Anacreation\Cms\Models\Role::class);
     }
 
     public function permissions(): Collection {
         $roles = $this->roles()->with('permissions')->get();
-        $permissions = $roles->map(function (\Anacreation\CMS\Models\Role $role
+        $permissions = $roles->map(function (\Anacreation\Cms\Models\Role $role
         ) {
             return $role->permissions;
         })->flatten()->unique('id')->values();

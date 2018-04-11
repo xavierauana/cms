@@ -105,11 +105,11 @@ export default {
           }
           break;
         default:
-          data = this.parseDataFromInputEl()
+          data = this.parseDataFromInputEl(input)
       }
       return data
     },
-    parseDataFromInputEl() {
+    parseDataFromInputEl(input) {
       let data = {}
       switch (input.getAttribute('type').toLocaleLowerCase()) {
         case "file":

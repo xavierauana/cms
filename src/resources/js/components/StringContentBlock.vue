@@ -1,7 +1,7 @@
 <template>
-    <wrapper :identifier="content.identifier" :editable="editable"
-             :deleteable="deleteable" :type="type"
-             :changed="content.changed" :languages="languages">
+    <base-content-block :identifier="content.identifier" :editable="editable"
+                        :deleteable="deleteable" :type="type"
+                        :changed="content.changed" :languages="languages">
         <tabs :tabs="getTabIds(languages)">
             <input v-for="language in languages"
                    :slot="getTabId(language)"
@@ -14,23 +14,19 @@
                    :disabled="!editable"
                    content />
             </tabs>
-    </wrapper>
+    </base-content-block>
 </template>
 
 <script>
-     import Wrapper from "./BaseContentBlock"
-     import ContentMixin from "../mixins/ContentBlock"
+    import Extension from "anacreation-cms-content-extension"
 
-     export default {
-       name      : "string-content-block",
-       components: {
-         Wrapper
-       },
-       mixins    : [ContentMixin],
-       data() {
-         return {
-           type: 'string'
-         }
-       }
-     }
+    export default {
+      extends   : Extension,
+      name      : "string-content-block",
+      data() {
+        return {
+          type: 'string'
+        }
+      }
+    }
 </script>

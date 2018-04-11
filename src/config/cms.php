@@ -12,4 +12,7 @@ return [
     'content_type'           => [],
     'use_spark'              => false,
     'content_cache_duration' => 10,
+    'bindings'               => [
+        \Anacreation\Cms\Contracts\CmsPageInterface::class => \Anacreation\Cms\Models\Page::class
+    ],
 ];

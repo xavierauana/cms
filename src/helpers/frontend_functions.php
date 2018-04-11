@@ -11,30 +11,6 @@ use Anacreation\Cms\Models\Page;
  * @param string $slug
  */
 
-function getContent(
-    Page $page = null,
-    string $identifier, string $slug = null, string $default = null
-): ?string {
-    if (!$page) {
-        return $default;
-    }
-    $locale = app()->getLocale();
-    $language = Anacreation\Cms\Models\Language::whereCode($locale)
-                                               ->first() ??
-                Anacreation\Cms\Models\Language::whereIsDefault(true)
-                                               ->first();
-
-    $contentIndex = $page->contentIndices()
-                         ->fetchIndex($identifier, $language->id)->first() ??
-                    $page->contentIndices()->fetchIndex($identifier,
-                        \Anacreation\Cms\Models\Language::whereIsDefault(true)
-                                                        ->first()->id)
-                         ->first();
-
-    return $contentIndex ? optional($contentIndex->content)->content : $default;
-
-}
-
 
 /**
  * @param array      $segments

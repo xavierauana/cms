@@ -1,0 +1,13 @@
+{
+  "name": "anacreation-cms-content-blocks",
+  "version": "0.0.4",
+  "main": "main.js",
+  "dependencies": {
+	"jquery": "^3.2",
+	"lodash": "^4.17.4",
+	"summernote": "^0.8.9",
+	"vue": "^2.5.7",
+	"jquery-ui-dist": "^1.12.1",
+	"axios": "^0.17"
+  }
+}

@@ -12,12 +12,45 @@ use Anacreation\Cms\Exceptions\NoAuthenticationException;
 use Anacreation\Cms\Exceptions\PageNotFoundHttpException;
 use Anacreation\Cms\Exceptions\UnAuthorizedException;
 use Anacreation\Cms\Models\Language;
+use Anacreation\Cms\Models\Page;
+use Anacreation\Cms\Services\RequestParser;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\View\View;
 
 class RoutesController extends Controller
 {
-    public function resolve(Request $request) {
+    public function resolve(Request $request, RequestParser $parser) {
+
+        $this->setLocale();
+
+        if ($vars = $parser->parse($request)) {
+
+            $page = $vars['page'];
+
+            if (!$page->is_restricted) {
+                return $this->constructView($page, $vars);
+            }
+
+            if (Auth::guest()) {
+                throw new NoAuthenticationException("You are not allowed to visit the page!");
+            }
+
+            if ($this->pageHasPermissionControl($page)) {
+                if ($this->userHasPagePermission($request, $page)) {
+                    return $this->constructView($page, $vars);
+                }
+                throw new UnAuthorizedException("You are not allowed to visit the page!");
+            }
+
+            return $this->constructView($page, $vars);
+        }
+
+        throw new PageNotFoundHttpException();
+    }
+
+    private function setLocale(): void {
         if (session()->has('locale')) {
             $sessionLocale = session()->get('locale');
 
@@ -28,31 +61,29 @@ class RoutesController extends Controller
 
             app()->setLocale($locale);
         }
+    }
 
-        if ($vars = getPage($request->segments())) {
+    private function constructView(Page $page, $vars): View {
+        return view("themes." . config('theme.active') . "/layouts/" . ".{$page->template}",
+            $vars);
+    }
 
-            if ($vars['page']->is_restricted) {
-                if ($user = $request->user()) {
-                    if ($permission = $vars['page']->permission) {
-                        if ($user->hasPermission($permission->code)) {
-                            return view("themes." . config('theme.active') . "/layouts/" . ".{$vars['page']->template}",
-                                $vars);
-                        }
-                        throw new UnAuthorizedException("You are not allowed to visit the page!");
-                    } else {
-                        return view("themes." . config('theme.active') . "/layouts/" . ".{$vars['page']->template}",
-                            $vars);
-                    }
-                } else {
-                    throw new NoAuthenticationException("You are not allowed to visit the page!");
-                }
-            }
+    /**
+     * @param \Anacreation\Cms\Models\Page $page
+     * @return mixed
+     */
+    private function pageHasPermissionControl(Page $page): bool {
+        return !!$page->permission;
+    }
 
-
-            return view("themes." . config('theme.active') . "/layouts/" . ".{$vars['page']->template}",
-                $vars);
-        }
-
-        throw new PageNotFoundHttpException();
+    /**
+     * @param \Illuminate\Http\Request     $request
+     * @param \Anacreation\Cms\Models\Page $page
+     * @return mixed
+     */
+    private function userHasPagePermission(Request $request, Page $page
+    ): bool {
+        return $request->user()
+                       ->hasPermission($page->permission->code);
     }
 }

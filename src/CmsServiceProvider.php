@@ -19,10 +19,12 @@ class CmsServiceProvider extends ServiceProvider
         $this->loadRoutesFrom(__DIR__ . '/routes.php');
         $this->loadMigrationsFrom(__DIR__ . '/migrations');
 
+        $this->registerBindings();
         $this->views();
         $this->config();
         $this->defaultTheme();
         $this->defaultAsset();
+
     }
 
     /**
@@ -31,7 +33,15 @@ class CmsServiceProvider extends ServiceProvider
      * @return void
      */
     public function register() {
-        //
+        $this->mergeConfigFrom(
+            __DIR__ . '/config/cms.php', 'cms'
+        );
+        $this->mergeConfigFrom(
+            __DIR__ . '/config/admin.php', 'admin'
+        );
+        $this->mergeConfigFrom(
+            __DIR__ . '/config/theme.php', 'theme'
+        );
     }
 
     private function views() {
@@ -63,5 +73,11 @@ class CmsServiceProvider extends ServiceProvider
             __DIR__ . '/public/js/cms'  => public_path('js/cms'),
             __DIR__ . '/../fonts'       => public_path('fonts'),
         ]);
+    }
+
+    private function registerBindings() {
+        foreach (config("cms.bindings") as $abstract => $implementation) {
+            app()->bind($abstract, $implementation);
+        }
     }
 }

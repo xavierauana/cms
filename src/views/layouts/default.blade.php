@@ -11,9 +11,10 @@
     <title>A & A CMS</title>
 	
 	<!-- Styles -->
-    <link href="{{ asset('css/cms/app.css') }}" rel="stylesheet">
     <link rel="stylesheet"
           href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link href="{{ asset('css/cms/app.css') }}" rel="stylesheet">
+    <link href="../../../../node_modules/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css" rel="stylesheet">
 	@yield("stylesheets")
 </head>
 <body>
@@ -43,16 +44,16 @@
 		            <div class="collapse navbar-collapse"
 		                 id="app-navbar-collapse">
                     <!-- Left Side Of Navbar -->
-                    @include('cms::components.admin_menus')
-
-                    <!-- Right Side Of Navbar -->
-                    <ul class="nav navbar-nav navbar-right">
+		            @include('cms::components.admin_menus')
+		
+		            <!-- Right Side Of Navbar -->
+			            <ul class="nav navbar-nav navbar-right">
                         <!-- Authentication Links -->
-	                    @guest('admin')
-		                    <li><a href="{{ route('login') }}">Login</a></li>
-		                    <li><a href="{{ route('register') }}">Register</a></li>
-	                    @else
-		                    <li class="dropdown">
+				            @guest('admin')
+					            <li><a href="{{ route('login') }}">Login</a></li>
+					            <li><a href="{{ route('register') }}">Register</a></li>
+				            @else
+					            <li class="dropdown">
                                 <a href="#" class="dropdown-toggle"
                                    data-toggle="dropdown" role="button"
                                    aria-expanded="false" aria-haspopup="true">
@@ -79,7 +80,7 @@
                                     </li>
                                 </ul>
                             </li>
-	                    @endguest
+				            @endguest
                     </ul>
                 </div>
 	            @endauth

@@ -31,14 +31,43 @@ class ContentService
     /**
      *
      */
-    protected const ContentTypes = [
-        'text'     => TextContent::class,
-        'string'   => StringContent::class,
-        'number'   => NumberContent::class,
-        'file'     => FileContent::class,
-        'boolean'  => BooleanContent::class,
-        'datetime' => DatetimeContent::class,
+    private const ContentTypes = [
+        'text'     => [
+            "class"     => TextContent::class,
+            "component" => "TextContent"
+        ],
+        'string'   => [
+            "class"     => StringContent::class,
+            "component" => "StringContent"
+        ],
+        'number'   => [
+            "class"     => NumberContent::class,
+            "component" => "NumberContent"
+        ],
+        'file'     => [
+            "class"     => FileContent::class,
+            "component" => "FileContent"
+        ],
+        'boolean'  => [
+            "class"     => BooleanContent::class,
+            "component" => "BooleanContent"
+        ],
+        'datetime' => [
+            "class"     => DatetimeContent::class,
+            "component" => "DatetimeContent"
+        ],
     ];
+
+    private $types = [];
+
+    /**
+     * ContentService constructor.
+     */
+    public function __construct() {
+        foreach ($this->getContentTypes() as $type => $data) {
+            $this->types[] = new ContentTypeStruct($type, $data);
+        }
+    }
 
     /**
      * @param \Anacreation\Cms\Contracts\ContentGroupInterface $contentOwner
@@ -66,7 +95,7 @@ class ContentService
      * @return null|string
      */
     public function convertToContentTypeClass(string $jsText): ?string {
-        return $this->getContentType($this->getContentTypes(), $jsText);
+        return $this->getContentType($jsText);
     }
 
     /**
@@ -76,8 +105,7 @@ class ContentService
     public function convertToJsString($content): ?string {
         $content = $content instanceof ContentTypeInterface ? get_class($content) : $content;
 
-        return $this->getContentType(array_flip($this->getContentTypes()),
-            $content);
+        return $this->getContentType($content, 'class');
     }
 
 
@@ -147,9 +175,10 @@ class ContentService
      * @param string $needle
      * @return string
      */
-    private function getContentType(array $types, string $needle): string {
-        if ($this->isAValidContentType($types, $needle)) {
-            return $types[$needle];
+    private function getContentType(string $needle, string $searchFor = 'type'
+    ): string {
+        if ($struct = $this->isAValidContentType($needle, $searchFor)) {
+            return $searchFor === 'type' ? $struct->getClass() : $struct->getType();
         };
         throw new \InvalidArgumentException("jsText Content type is invalid! Or it haven't register yet!");
 
@@ -222,11 +251,74 @@ class ContentService
      * @param string $needle
      * @return bool
      */
-    private function isAValidContentType(array $types, string $needle): bool {
-        return in_array($needle, array_keys($types));
+    private function isAValidContentType(
+        string $needle, string $searchFor = 'type'
+    ): ?ContentTypeStruct {
+        $struct = array_first($this->types,
+            function (ContentTypeStruct $type) use ($searchFor, $needle) {
+                $name = ucwords($searchFor);
+
+                return $type->{"get{$name}"}() === $needle;
+            });
+
+        return $struct;
+    }
+
+    /**
+     * @return array
+     */
+    public function getTypes(): array {
+        return $this->types;
+    }
+
+    public function getTypesForJs(): array {
+        return array_reduce($this->types,
+            function ($previous, ContentTypeStruct $struct) {
+                $previous[$struct->getType()] = $struct->getComponent();
+
+                return $previous;
+            }, []);
     }
 
     # endregion
 
 
+}
+
+class ContentTypeStruct
+{
+    private $type;
+    private $class;
+    private $component;
+
+    /**
+     * ContentTypeStruct constructor.
+     */
+    public function __construct(string $type, array $data) {
+
+        $this->type = $type;
+        $this->class = $data['class'];
+        $this->component = $data['component'];
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getType() {
+        return $this->type;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getClass() {
+        return $this->class;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getComponent() {
+        return $this->component;
+    }
 }

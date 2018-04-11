@@ -8,6 +8,22 @@
 	  "email": "xavier.au@anacreation.com"
 	}
   ],
+  "require": {
+	"php": ">=7.1.0",
+	"laravel/framework": "5.5.*",
+	"xavierau/multi-auth": "2.*",
+	"laravelcollective/html": "^5.5",
+	"lavary/laravel-menu": "^1.7",
+	"barryvdh/laravel-debugbar": "^3.1"
+  },
+  "require-dev": {
+	"filp/whoops": "~2.0",
+	"fzaninotto/faker": "~1.4",
+	"mockery/mockery": "~1.0",
+	"phpunit/phpunit": "~6.0",
+	"symfony/thanks": "^1.0"
+  },
+  "minimum-stability": "dev",
   "autoload": {
 	"psr-4": {
 	  "Anacreation\\Cms\\": "src/"
@@ -28,22 +44,6 @@
 	  "src/helpers/frontend_functions.php",
 	  "src/helpers/functions.php"
 	]
-  },
-  "minimum-stability": "dev",
-  "require": {
-	"php": ">=7.1.0",
-	"laravel/framework": "5.5.*",
-	"xavierau/multi-auth": "2.*",
-	"laravelcollective/html": "^5.5",
-	"lavary/laravel-menu": "^1.7",
-	"barryvdh/laravel-debugbar": "^3.1"
-  },
-  "require-dev": {
-	"filp/whoops": "~2.0",
-	"fzaninotto/faker": "~1.4",
-	"mockery/mockery": "~1.0",
-	"phpunit/phpunit": "~6.0",
-	"symfony/thanks": "^1.0"
   },
   "extra": {
 	"laravel": {

@@ -32,10 +32,10 @@
 
      export default {
        extends: Extension,
-       name   : "file-content-block",
+       name   : "encoded-video-contnt-block",
        data() {
          return {
-           type : 'file',
+           type : 'encodedVideo',
            files: [],
          }
        },

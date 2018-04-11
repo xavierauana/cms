@@ -1,5 +1,5 @@
 <template>
-    <base-content-block :identifier="content.identifier" :editable="editable"
+        <base-content-block :identifier="content.identifier" :editable="editable"
                         :deleteable="deleteable" :type="type"
                         :languages="languages"
                         :changed="content.changed">
@@ -21,26 +21,22 @@
 
 <script>
     require('summernote')
-    import BaseContentBlock from "./BaseContentBlock"
-    import ContentMixin from "../mixins/ContentBlock"
     import * as Events from "../EventNames"
+    import Extension from "anacreation-cms-content-extension"
 
     require('summernote')
     require('summernote/dist/summernote.css');
 
     export default {
-      name      : "text-content-block",
-      components: {
-        BaseContentBlock
-      },
-      mixins    : [ContentMixin],
+      extends: Extension,
+      name   : "text-content-block",
       data() {
         return {
           editorClass: 'summernote-editor',
           type       : 'text'
         }
       },
-      methods   : {
+      methods: {
         setupFileManager() {
           const fileManagerPrefix = '/filemanager';
           const lfm = (options, cb) => {

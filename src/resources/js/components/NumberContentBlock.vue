@@ -16,16 +16,13 @@
 </template>
 
 <script>
-     import ContentMixin from "../mixins/ContentBlock"
-     import BaseContentBlock from "./BaseContentBlock"
+     import Extension from "anacreation-cms-content-extension"
 
      export default {
-       name      : "number-content-block",
-       props     : ['identifier', 'editable', 'deleteable'],
-       components: {
-         BaseContentBlock
-       },
-       mixins    : [ContentMixin],
+       extends: Extension,
+       name   : "number-content-block",
+       props  : ['identifier', 'editable', 'deleteable'],
+       mixins : [ContentMixin],
        created() {
          if (this.identifier) {
            this.loadContent()

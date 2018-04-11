@@ -2,7 +2,7 @@
  * Created by Xavier on 11/1/2018.
  */
 
-import * as Events from "../EventNames"
+import * as Events from "./EventNames"
 
 export default {
   props  : ['languages', 'editable', 'deleteable', 'content'],

@@ -3,6 +3,7 @@
 namespace Anacreation\Cms\Models;
 
 use Anacreation\Cms\Contracts\CacheManageableInterface;
+use Anacreation\Cms\Contracts\CmsPageInterface;
 use Anacreation\Cms\Contracts\ContentGroupInterface;
 use Anacreation\Cms\Contracts\ContentTypeInterface;
 use Anacreation\Cms\Services\ContentService;
@@ -11,12 +12,13 @@ use Anacreation\Cms\traits\ContentGroup;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
 
 class Page extends Model
-    implements ContentGroupInterface, CacheManageableInterface
+    implements ContentGroupInterface, CacheManageableInterface, CmsPageInterface
 {
     use ContentGroup;
 
@@ -105,6 +107,18 @@ class Page extends Model
 
 
         return $this->getContent($identifier, $default, $fallbacklang->code);
+
+    }
+
+    // Get Page content
+    public function getContentWithTemplate(
+        string $identifier, string $template, string $default = "",
+        string $langCode = null
+    ): ?string {
+
+        $value = $this->getContent($identifier, $default, $langCode);
+
+        return $value ? sprintf($template, $value) : null;
 
     }
 
@@ -306,5 +320,24 @@ class Page extends Model
         string $langCode, string $contentIdentifier
     ): string {
         return $this->getCacheKey() . "_" . $langCode . "_" . $contentIdentifier;
+    }
+
+    public function getActivePages(): Collection {
+
+        $query = $this->id ? $this->children() : $this->with('children')
+                                                      ->topLevel();
+
+        return $query->active()->get();
+    }
+
+    public function removeUrlStartSlash(string $uri = null): string {
+        $new_uri = $uri ?? $this->uri;
+        if (substr($new_uri, 0, 1) == "/") {
+            $new_uri = substr($this->uri, 1);
+
+            return $this->removeUrlStartSlash($new_uri);
+        }
+
+        return $new_uri;
     }
 }

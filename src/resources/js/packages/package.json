@@ -1,0 +1,5 @@
+{
+  "name": "anacreation-cms-content-extension",
+  "version": "0.0.2",
+  "main": "ContentBlockExtension.vue"
+}

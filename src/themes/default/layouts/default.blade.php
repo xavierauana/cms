@@ -1,6 +1,6 @@
 @extends("themes.default.partials.default")
 
-@section("meta_title") A & A Creation - {{getContent($page, 'meta_title')}} @endsection
+@section("meta_title") A & A Creation - {{$page->getContent('meta_title')}} @endsection
 
 @section("content")
 	

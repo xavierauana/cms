@@ -24,15 +24,13 @@
 
 <script>
     import {filters} from "../filters/string"
-    import {types} from "../ContentTypes"
     import * as Events from "../EventNames"
 
     export default {
       name    : "content-blocks",
-      props   : ['contents', 'languages', 'editable', 'deleteable', 'canAdd'],
+      props   : ['contents', 'languages', 'editable', 'deleteable', 'canAdd', 'types'],
       data() {
         return {
-          types        : types,
           contentBlocks: [],
         }
       },
@@ -59,6 +57,8 @@
       },
       methods : {
         parseContentType(type) {
+          console.log('all types, ', this.types)
+          console.log('parse content type, ', type)
           return this.types[type] ? this.types[type] : null
         },
         addContentBlock(type) {

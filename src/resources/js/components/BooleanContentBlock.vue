@@ -1,5 +1,5 @@
 <template>
-    <wrapper :identifier="content.identifier" :editable="editable"
+    <base-content-block :identifier="content.identifier" :editable="editable"
              :deleteable="deleteable" :type="type"
              :changed="content.changed" :languages="languages">
         <tabs :tabs="getTabIds(languages)">
@@ -15,19 +15,14 @@
                 <option value="0">No</option>
             </select>
         </tabs>
-    </wrapper>
+    </base-content-block>
 </template>
 
 <script>
-     import Wrapper from "./BaseContentBlock"
-     import ContentMixin from "../mixins/ContentBlock"
+     import Extension from "anacreation-cms-content-extension"
 
      export default {
        name      : "boolean-content-block",
-       components: {
-         Wrapper
-       },
-       mixins    : [ContentMixin],
        data() {
          return {
            type: 'boolean'
