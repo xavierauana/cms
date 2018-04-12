@@ -28,10 +28,6 @@
 	"psr-4": {
 	  "Anacreation\\Cms\\": "src/"
 	},
-	"classmap": [
-	  "src/factories",
-	  "src/seeds"
-	],
 	"files": [
 	  "src/helpers/frontend_functions.php"
 	]
