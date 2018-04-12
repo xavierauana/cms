@@ -29,7 +29,8 @@
 	  "Anacreation\\Cms\\": "src/"
 	},
 	"files": [
-	  "src/helpers/frontend_functions.php"
+	  "src/helpers/frontend_functions.php",
+	  "src/helpers/functions.php"
 	]
   },
   "autoload-dev": {
