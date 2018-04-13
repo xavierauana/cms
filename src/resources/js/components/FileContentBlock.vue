@@ -7,8 +7,7 @@
                  :slot="getTabId(language)">
                 <div class="img-container" style="position:relative"
                      v-if="getFile(language.id)">
-                    <img class="img-responsive"
-                         :src="getFile(language.id).link" />
+                    <p class="fileName">{{getFileName(language.id)}}</p>
                     <button class="btn btn-sm btn-danger"
                             v-if="getFile(language.id).link.length > 0"
                             @click.prevent="removeCurrentFile(language.id)"
@@ -46,12 +45,10 @@
          getFile(languageId) {
            return _.find(this.files, {lang_id: languageId})
          },
-         setValue(data) {
-           let images = []
-           _.forEach(data, item => {
-             images.push({lang_id: item.lang_id, link: item.content.link})
+         setValue() {
+           _.forEach(this.content.content, item => {
+             this.files.push({lang_id: item.lang_id, src: item.content})
            })
-           this.files = images
          },
        }
      }

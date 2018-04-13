@@ -1,7 +1,7 @@
 <template>
     <base-content-block :identifier="content.identifier" :editable="editable"
-             :deleteable="deleteable" :type="type"
-             :changed="content.changed" :languages="languages">
+                        :deleteable="deleteable" :type="type"
+                        :changed="content.changed" :languages="languages">
         <tabs :tabs="getTabIds(languages)">
             <select v-for="language in languages"
                     @change.once="getDirty"
@@ -22,13 +22,14 @@
      import Extension from "anacreation-cms-content-extension"
 
      export default {
-       name      : "boolean-content-block",
+       extends: Extension,
+       name   : "boolean-content-block",
        data() {
          return {
            type: 'boolean'
          }
        },
-       methods   : {
+       methods: {
          setValue(data) {
            _.forEach(data, item => {
              const el = this.$refs[this.getInputRef({id: item.lang_id})][0]

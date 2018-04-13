@@ -1,8 +1,9 @@
 <template>
-        <base-content-block :identifier="content.identifier" :editable="editable"
-                        :deleteable="deleteable" :type="type"
-                        :languages="languages"
-                        :changed="content.changed">
+        <base-content-block :identifier="content.identifier"
+                            :editable="editable"
+                            :deleteable="deleteable" :type="type"
+                            :languages="languages"
+                            :changed="content.changed">
         <tabs :tabs="getTabIds(languages)">
             <textarea v-for="language in languages"
                       :key="language.id"
@@ -20,7 +21,6 @@
 </template>
 
 <script>
-    require('summernote')
     import * as Events from "../EventNames"
     import Extension from "anacreation-cms-content-extension"
 

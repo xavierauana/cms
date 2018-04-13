@@ -22,7 +22,6 @@
        extends: Extension,
        name   : "number-content-block",
        props  : ['identifier', 'editable', 'deleteable'],
-       mixins : [ContentMixin],
        created() {
          if (this.identifier) {
            this.loadContent()

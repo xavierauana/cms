@@ -33,7 +33,6 @@ trait ContentGroup
 
             $value = $callable();
 
-            \Debugbar::info("Create content cache:" . $key . " for " . $duration . " mins and value is:" . $value);
             Cache::put($key, $value ?? "", $duration);
 
             return $value;

@@ -1,13 +1,12 @@
 {
-		"name": "anacreation-cms-content-blocks",
-		"version": "0.0.5",
-		"main": "main.js",
-		"dependencies": {
-				"jquery": "^3.2",
-				"lodash": "^4.17.4",
-				"summernote": "^0.8.9",
-				"vue": "^2.5.7",
-				"jquery-ui-dist": "^1.12.1",
-				"axios": "^0.17"
-		}
+  "name": "anacreation-cms-content-blocks",
+  "version": "0.0.11",
+  "description": "anacreation cms content block",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "Xavier Au",
+  "license": "ISC"
 }

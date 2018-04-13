@@ -77,7 +77,7 @@ class Page extends Model
     // Get Page content
     public function getContent(
         string $identifier, string $default = "", string $langCode = null
-    ): ?string {
+    ) {
 
         $langCode = $langCode ?? app()->getLocale();
 

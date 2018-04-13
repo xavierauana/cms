@@ -1,31 +1,52 @@
-window.Vue = require('vue');
-window.ContentMixin = require("./mixins/ContentBlock.js")
+//import Vue from "vue";
+//window.ContentMixin = require("./mixins/ContentBlock.js")
 require('jquery-ui');
 
-const MyPlugin = {
-          install(Vue, options) {
+import CodeEditor from "./components/CodeEditor"
+import SortableList from "./components/SortableList"
+import ContentBlocks from "./components/ContentBlocks"
+import PageChildren from "./components/PageChildren"
+import Tabs from "./components/Tabs"
+import AccordionContainer from "./components/AccordionContainer"
+import AccordionItem from "./components/AccordionItem"
+import Menu from "./components/Menu"
+import DeleteItem from "./components/DeleteItem"
+//content blocks
+import BaseContentBlock from "./components/BaseContentBlock"
+import StringContentBlock from "./components/StringContentBlock"
+import TextContentBlock from "./components/TextContentBlock"
+import FileContentBlock from "./components/FileContentBlock"
+import NumberContentBlock from "./components/NumberContentBlock"
+import BooleanContentBlock from "./components/BooleanContentBlock"
+import DatetimeContentBlock from "./components/DatetimeContentBlock"
 
-            if (!window.NotificationCenter) window.NotificationCenter = new Vue()
+export default {
+  install(Vue, options) {
 
-            Vue.component('code-editor', require('./components/CodeEditor.vue'));
-            Vue.component('sortable-list', require('./components/SortableList.vue'));
-            Vue.component('content-blocks', require('./components/ContentBlocks.vue'));
-            Vue.component('tabs', require('./components/Tabs.vue'));
-            Vue.component('accordion-container', require('./components/AccordionContainer.vue'));
-            Vue.component('accordion-item', require('./components/AccordionItem.vue'));
-            Vue.component('page-children', require('./components/PageChildren.vue'));
-            Vue.component('menu-block', require('./components/Menu.vue'));
-            Vue.component('delete-item', require('./components/DeleteItem.vue'));
+    Vue.mixin({
+                created() {
+                  console.log("plugin created in mixin")
+                }
+              })
+    if (!window.NotificationCenter) window.NotificationCenter = new Vue()
 
-            //content blocks
-            Vue.component('StringContent', require('./components/StringContentBlock'))
-            Vue.component('TextContent', require('./components/TextContentBlock'))
-            Vue.component('FileContent', require('./components/FileContentBlock'))
-            Vue.component('NumberContent', require('./components/NumberContentBlock'))
-            Vue.component('BooleanContent', require('./components/BooleanContentBlock.vue'))
-            Vue.component('DatetimeContent', require('./components/DatetimeContentBlock.vue'))
-            Vue.component('BaseContentBlock', require('./components/BaseContentBlock.vue'))
-          }
-        }
+    Vue.component('code-editor', CodeEditor);
+    Vue.component('sortable-list', SortableList);
+    Vue.component('content-blocks', ContentBlocks);
+    Vue.component('tabs', Tabs);
+    Vue.component('accordion-container', AccordionContainer);
+    Vue.component('accordion-item', AccordionItem);
+    Vue.component('page-children', PageChildren);
+    Vue.component('menu-block', Menu);
+    Vue.component('delete-item', DeleteItem);
 
-export default MyPlugin
+    //content blocks
+    Vue.component('StringContent', StringContentBlock)
+    Vue.component('TextContent', TextContentBlock)
+    Vue.component('FileContent', FileContentBlock)
+    Vue.component('NumberContent', NumberContentBlock)
+    Vue.component('BooleanContent', BooleanContentBlock)
+    Vue.component('DatetimeContent', DatetimeContentBlock)
+    Vue.component('BaseContentBlock', BaseContentBlock)
+  }
+}

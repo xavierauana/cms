@@ -1,6 +1,3 @@
 {
-    "/src/public/js/cms/app.js": "/src/public/js/cms/app.js",
-    "/src/public/css/cms/app.css": "/src/public/css/cms/app.css",
-    "/src/public/js/cms/vendor.js": "/src/public/js/cms/vendor.js",
-    "/src/public/js/cms/manifest.js": "/src/public/js/cms/manifest.js"
+    "/src/resources/js/dist/main.js": "/src/resources/js/dist/main.js"
 }
