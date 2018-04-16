@@ -15,8 +15,8 @@ window.Vue = require('vue');
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 
-import ContentBlocks from "anacreation-cms-content-blocks"
-//import ContentBlocks from "./main"
+//import ContentBlocks from "anacreation-cms-content-blocks"
+import ContentBlocks from "./main"
 
 Vue.use(ContentBlocks)
 

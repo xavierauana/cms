@@ -23,10 +23,12 @@ export default {
       NotificationCenter.$emit(Events.CONTENT_GET_DIRTY, this.identifier)
     },
     remove(identifier) {
+      console.log(this.identifier, identifier)
       if (confirm("Deleted item cannot be retrieved. Are you sure to go ahead?")) {
         const href = window.location.href,
               last = href.split("")[href.split("").length - 1],
-              uri  = last !== "/" ? href + "/" + identifier : href + identifier
+              uri  = last !== "/" ? `${href}/${this.identifier}` : href + this.identifier
+        console.log('uri is, ', this.uri)
         axios.delete(uri)
              .then(({data}) => NotificationCenter.$emit(Events.CONTENT_DELETED, data.identifier))
       }
@@ -44,8 +46,17 @@ export default {
 
       const inputsData = this.constructInputsData(inputs)
 
-      let requests = _.map(inputsData, data => axios.post(url, data))
+      let requests = _.map(inputsData, data => axios.post(url, data, {
+        onUploadProgress: progressEvent => {
+          NotificationCenter.$emit(Events.UPLOAD_PROGRESS, {
+            identifier   : this.identifier,
+            progressEvent: progressEvent
+          })
+        },
 
+      }))
+
+      NotificationCenter.$emit(Events.UPLOAD_START)
       axios.all(requests).then((...responses) => this.successfullyUpdated(responses, this.identifier))
 
     },

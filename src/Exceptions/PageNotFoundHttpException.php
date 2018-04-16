@@ -16,6 +16,10 @@ class PageNotFoundHttpException extends \Exception
 
     public function render() {
 
+        if (request()->ajax()) {
+            return response("Page Not Found!", 404);
+        }
+
         $page = app()->make(Page::class);
         $notFoundPage = $page->whereUri("404")->first() ?? $page;
 

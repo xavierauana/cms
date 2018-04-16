@@ -41,14 +41,9 @@ export default {
         const pathname  = window.location.pathname,
               firstPart = "/" + pathname.split("/").filter(segment => segment.length > 0).join('/'),
               query     = "remove_content=1&lang_id=" + lang_id,
-              uri       = firstPart + "/" + this.identifier + "?" + query
+              uri       = firstPart + "/" + this.content.identifier + "?" + query
         axios.delete(uri)
-             .then(({data}) => {
-               console.log('completed')
-               console.log(data)
-               const index = _.findIndex(this.files, {lang_id: lang_id})
-               this.files.splice(index, 1)
-             })
+             .then(({data}) => this.files.splice(_.findIndex(this.files, {lang_id: lang_id}), 1))
       }
     }
   }

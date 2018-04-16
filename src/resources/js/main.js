@@ -10,6 +10,7 @@ import Tabs from "./components/Tabs"
 import AccordionContainer from "./components/AccordionContainer"
 import AccordionItem from "./components/AccordionItem"
 import Menu from "./components/Menu"
+import ProgressBar from "./components/ProgressBar"
 import DeleteItem from "./components/DeleteItem"
 //content blocks
 import BaseContentBlock from "./components/BaseContentBlock"
@@ -39,6 +40,7 @@ export default {
     Vue.component('page-children', PageChildren);
     Vue.component('menu-block', Menu);
     Vue.component('delete-item', DeleteItem);
+    Vue.component('progress-bar', ProgressBar);
 
     //content blocks
     Vue.component('StringContent', StringContentBlock)

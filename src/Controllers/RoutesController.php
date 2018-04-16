@@ -5,7 +5,7 @@
  * Time: 3:03 PM
  */
 
-namespace Anacreation\CMS\Controllers;
+namespace Anacreation\Cms\Controllers;
 
 
 use Anacreation\Cms\Exceptions\NoAuthenticationException;
@@ -25,29 +25,12 @@ class RoutesController extends Controller
 
         $this->setLocale();
 
-        if ($vars = $parser->parse($request)) {
-
-            $page = $vars['page'];
-
-            if (!$page->is_restricted) {
-                return $this->constructView($page, $vars);
-            }
-
-            if (Auth::guest()) {
-                throw new NoAuthenticationException("You are not allowed to visit the page!");
-            }
-
-            if ($this->pageHasPermissionControl($page)) {
-                if ($this->userHasPagePermission($request, $page)) {
-                    return $this->constructView($page, $vars);
-                }
-                throw new UnAuthorizedException("You are not allowed to visit the page!");
-            }
-
-            return $this->constructView($page, $vars);
+        if ($request->ajax()) {
+            return $this->parseAjax();
         }
 
-        throw new PageNotFoundHttpException();
+        return $this->parseView($request, $parser);
+
     }
 
     private function setLocale(): void {
@@ -85,5 +68,46 @@ class RoutesController extends Controller
     ): bool {
         return $request->user()
                        ->hasPermission($page->permission->code);
+    }
+
+    /**
+     * @param \Illuminate\Http\Request                $request
+     * @param \Anacreation\Cms\Services\RequestParser $parser
+     * @return \Illuminate\View\View
+     * @throws \Anacreation\Cms\Exceptions\NoAuthenticationException
+     * @throws \Anacreation\Cms\Exceptions\PageNotFoundHttpException
+     * @throws \Anacreation\Cms\Exceptions\UnAuthorizedException
+     */
+    private function parseView(Request $request, RequestParser $parser) {
+        if ($vars = $parser->parse($request)) {
+
+            $page = $vars['page'];
+
+            if (!$page->is_restricted) {
+                return $this->constructView($page, $vars);
+            }
+
+            if (Auth::guest()) {
+                throw new NoAuthenticationException("You are not allowed to visit the page!");
+            }
+
+            if ($this->pageHasPermissionControl($page)) {
+                if ($this->userHasPagePermission($request, $page)) {
+                    return $this->constructView($page, $vars);
+                }
+                throw new UnAuthorizedException("You are not allowed to visit the page!");
+            }
+
+            return $this->constructView($page, $vars);
+        }
+
+        throw new PageNotFoundHttpException();
+    }
+
+    /**
+     * @throws \Anacreation\Cms\Exceptions\PageNotFoundHttpException
+     */
+    private function parseAjax() {
+        throw new PageNotFoundHttpException();
     }
 }

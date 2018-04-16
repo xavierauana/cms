@@ -2,6 +2,9 @@
 
 namespace Anacreation\Cms;
 
+use Anacreation\Cms\Console\Commands\UpdateDefaultAppConfig;
+use Anacreation\Cms\Handler\Handler;
+use Illuminate\Contracts\Debug\ExceptionHandler;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
 
@@ -17,13 +20,24 @@ class CmsServiceProvider extends ServiceProvider
         Blade::doubleEncode();
 
         $this->loadRoutesFrom(__DIR__ . '/routes.php');
+
         $this->loadMigrationsFrom(__DIR__ . '/migrations');
 
         $this->registerBindings();
+
         $this->views();
+
         $this->config();
+
         $this->defaultTheme();
+
         $this->defaultAsset();
+
+//        $this->commands([
+//            UpdateDefaultAppConfig::class,
+//        ]);
+
+        app()->bind(ExceptionHandler::class, Handler::class);
 
     }
 
