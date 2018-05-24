@@ -340,4 +340,10 @@ class Page extends Model
 
         return $new_uri;
     }
+
+    public function getRootParent(): Page {
+        $parent = $this->parent;
+
+        return $parent === null ? $this : $parent->getRootParent();
+    }
 }

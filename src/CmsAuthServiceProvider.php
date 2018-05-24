@@ -52,6 +52,5 @@ class CmsAuthServiceProvider extends AuthServiceProvider
     public function boot() {
         $this->registerPolicies();
 
-        //
     }
 }

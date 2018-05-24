@@ -19,8 +19,6 @@ class CmsServiceProvider extends ServiceProvider
 
         Blade::doubleEncode();
 
-        $this->loadRoutesFrom(__DIR__ . '/routes.php');
-
         $this->loadMigrationsFrom(__DIR__ . '/migrations');
 
         $this->registerBindings();
@@ -32,10 +30,6 @@ class CmsServiceProvider extends ServiceProvider
         $this->defaultTheme();
 
         $this->defaultAsset();
-
-//        $this->commands([
-//            UpdateDefaultAppConfig::class,
-//        ]);
 
         app()->bind(ExceptionHandler::class, Handler::class);
 
