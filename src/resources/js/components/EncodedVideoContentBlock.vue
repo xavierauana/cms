@@ -32,7 +32,7 @@
 
      export default {
        extends: Extension,
-       name   : "encoded-video-contnt-block",
+       name   : "encoded-video-content-block",
        data() {
          return {
            type : 'encodedVideo',

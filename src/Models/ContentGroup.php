@@ -9,4 +9,10 @@ use Illuminate\Database\Eloquent\Model;
 class ContentGroup extends Model implements ContentGroupInterface
 {
     use Group;
+
+    public function getContentCacheKey(
+        string $langCode, string $contentIdentifier
+    ): string {
+        // TODO: Implement getContentCacheKey() method.
+    }
 }

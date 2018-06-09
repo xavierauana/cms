@@ -42,10 +42,11 @@ class Menu extends Model implements CacheManageableInterface
                             ->orderBy('order')
                             ->whereParentId(0)
                             ->get(),
-            'level' => 0
+            'level' => 0,
+            'menu'  => $this
         ];
 
-        $params = $params + $args;
+        $params = $params + ['args' => $args];
 
         return view($template, $params)->render();
     }

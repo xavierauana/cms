@@ -100,11 +100,13 @@ export default {
 
       switch (inputTagName) {
         case "TEXTAREA":
+          let instance = _.find(this.$parent.$data.editors, {id: parseInt(input.dataset.lang_id)})
+          let content = instance ? instance.editor.getData() : ""
           data = {
             identifier  : this.inputIdentifier,
             content_type: this.type,
             lang_id     : input.dataset.lang_id,
-            content     : $(input).summernote('code'),
+            content     : content,
           }
           break;
         case "SELECT":

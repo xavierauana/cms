@@ -23,8 +23,6 @@ class CreateContentIndicesTable extends Migration
             $table->unsignedInteger('content_id');
 
             $table->timestamps();
-
-            $table->unique(['group_type', 'group_id', 'identifier', 'lang_id']);
         });
     }
 

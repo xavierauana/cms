@@ -24,8 +24,6 @@
     import * as Events from "../EventNames"
     import Extension from "anacreation-cms-content-extension"
 
-    require('summernote')
-    require('summernote/dist/summernote.css');
 
     export default {
       extends: Extension,
@@ -33,7 +31,8 @@
       data() {
         return {
           editorClass: 'summernote-editor',
-          type       : 'text'
+          type       : 'text',
+          editors    : []
         }
       },
       methods: {
@@ -89,11 +88,31 @@
               }
             },
           }
-          this.languages.forEach(language => $(this.getInputEl(language)).summernote(options))
         },
         setValue() {
-          this.setupFileManager()
-          _.forEach(this.content.content, item => $(this.getInputEl({id: item.lang_id})).summernote('code', item.content))
+          let token = document.head.querySelector('meta[name="csrf-token"]').content;
+          let editorOptions = {
+            toolbar : ['heading', 'bold', 'italic', 'bulletedList', 'numberedList', 'blockQuote', 'link', 'imageUpload', '|', 'undo', 'redo'],
+            ckfinder: {
+              uploadUrl     : '/filemanager/upload?command=QuickUpload&type=Files&responseType=json&_token=' + token,
+              imageUploadUrl: '/filemanager/upload?command=QuickUpload&type=Images&responseType=json&_token=' + token,
+              imageBrowseUrl: '/filemanager/?type=Images'
+            }
+          }
+
+          ClassicEditor.build.plugins.map(plugin => console.log(plugin.pluginName));
+
+
+          _.forEach(this.content.content, item => {
+            ClassicEditor
+              .create(this.getInputEl({id: item.lang_id}), editorOptions)
+              .then(editor => {
+                Array.from(editor.ui.componentFactory.names()).forEach(name => console.log(name))
+                this.editors.push({id: item.lang_id, editor: editor})
+                editor.setData(item.content)
+              })
+              .catch(error => console.error(error));
+          })
         }
       }
     }
