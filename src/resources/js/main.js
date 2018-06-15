@@ -20,6 +20,7 @@ import FileContentBlock from "./components/FileContentBlock"
 import NumberContentBlock from "./components/NumberContentBlock"
 import BooleanContentBlock from "./components/BooleanContentBlock"
 import DatetimeContentBlock from "./components/DatetimeContentBlock"
+import EncodedVideoContentBlock from "./components/EncodedVideoContentBlock"
 
 export default {
   install(Vue, options) {
@@ -50,5 +51,6 @@ export default {
     Vue.component('BooleanContent', BooleanContentBlock)
     Vue.component('DatetimeContent', DatetimeContentBlock)
     Vue.component('BaseContentBlock', BaseContentBlock)
+    Vue.component('EncodedVideo', EncodedVideoContentBlock)
   }
 }

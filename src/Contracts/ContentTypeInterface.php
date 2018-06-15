@@ -45,7 +45,7 @@ interface ContentTypeInterface
      * Default show for frontend
      * @return mixed
      */
-    public function show();
+    public function show(array $params = []);
 
     /**
      * How to delete the content

@@ -32,7 +32,7 @@ class DatetimeContent extends Model implements ContentTypeInterface
         return $this;
     }
 
-    public function show() {
+    public function show(array $params = []) {
         Carbon::setLocale(app()->getLocale());
 
         return $this->content->toDayDateTimeString();

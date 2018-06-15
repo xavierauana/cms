@@ -76,18 +76,18 @@ class Page extends Model
 
     // Get Page content
     public function getContent(
-        string $identifier, string $default = "", string $langCode = null
+        string $identifier, string $default = "", string $langCode = null,
+        array $params = []
     ) {
-
         $langCode = $langCode ?? app()->getLocale();
 
         $key = $this->getContentCacheKey($langCode, $identifier);
 
-        $loadContent = function () use ($identifier, $langCode) {
+        $loadContent = function () use ($identifier, $langCode, $params) {
             $content = optional($this->getContentIndex($identifier,
                 $langCode))->content;
 
-            return optional($content)->show();
+            return optional($content)->show($params);
         };
 
         $value = Cache::has($key) ? Cache::get($key) : $this->loadFromCache($key,
@@ -106,7 +106,8 @@ class Page extends Model
         }
 
 
-        return $this->getContent($identifier, $default, $fallbacklang->code);
+        return $this->getContent($identifier, $default, $fallbacklang->code,
+            $params);
 
     }
 

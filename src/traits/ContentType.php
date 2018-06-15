@@ -21,7 +21,7 @@ trait ContentType
         return $this->show();
     }
 
-    public function show() {
+    public function show(array $params = []) {
         return $this->content;
     }
 }
