@@ -36,7 +36,7 @@ class FileContent extends Model implements ContentTypeInterface
         return $this;
     }
 
-    public function show() {
+    public function show(array $params = []) {
         return $this->link;
     }
 

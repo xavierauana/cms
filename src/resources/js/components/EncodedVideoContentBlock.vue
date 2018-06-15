@@ -35,7 +35,7 @@
        name   : "encoded-video-content-block",
        data() {
          return {
-           type : 'encodedVideo',
+           type : 'encoded_video',
            files: [],
          }
        },

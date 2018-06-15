@@ -51,6 +51,6 @@ export default {
     Vue.component('BooleanContent', BooleanContentBlock)
     Vue.component('DatetimeContent', DatetimeContentBlock)
     Vue.component('BaseContentBlock', BaseContentBlock)
-    Vue.component('EncodedVideo', EncodedVideoContentBlock)
+    Vue.component('EncodedVideoContentBlock', EncodedVideoContentBlock)
   }
 }
