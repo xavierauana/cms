@@ -43,6 +43,7 @@ interface ContentTypeInterface
 
     /**
      * Default show for frontend
+     * @param array $params
      * @return mixed
      */
     public function show(array $params = []);

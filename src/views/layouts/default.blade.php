@@ -91,7 +91,7 @@
     </div>
 
     <!-- Scripts -->
-    <script src="https://cdn.ckeditor.com/ckeditor5/10.0.1/classic/ckeditor.js"></script>
+    <script src="{{asset("vendor/cms/ckeditor/ckeditor.js")}}"></script>
     <script src="{{ asset('js/src-noconflict/ace.js') }}"></script>
     <script src="{{ asset('js/cms/manifest.js') }}"></script>
     <script src="{{ asset('js/cms/vendor.js') }}"></script>

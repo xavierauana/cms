@@ -7,6 +7,7 @@
         <tabs :tabs="getTabIds(languages)">
             <textarea v-for="language in languages"
                       :key="language.id"
+                      :id="getEditorId(language.id)"
                       :ref="getInputRef(language)"
                       :data-lang_id="language.id"
                       :slot="getTabId(language)" class="form-control"
@@ -30,12 +31,15 @@
       name   : "text-content-block",
       data() {
         return {
-          editorClass: 'summernote-editor',
-          type       : 'text',
-          editors    : []
+          editorClass   : 'summernote-editor',
+          type          : 'text',
+          editors       : [],
         }
       },
       methods: {
+        getEditorId(languageId) {
+          return `editor_${this._uid}_${languageId}`
+        },
         setupFileManager() {
           const fileManagerPrefix = '/filemanager';
           const lfm = (options, cb) => {
@@ -91,27 +95,10 @@
         },
         setValue() {
           let token = document.head.querySelector('meta[name="csrf-token"]').content;
-          let editorOptions = {
-            toolbar : ['heading', 'bold', 'italic', 'bulletedList', 'numberedList', 'blockQuote', 'link', 'imageUpload', '|', 'undo', 'redo'],
-            ckfinder: {
-              uploadUrl     : '/filemanager/upload?command=QuickUpload&type=Files&responseType=json&_token=' + token,
-              imageUploadUrl: '/filemanager/upload?command=QuickUpload&type=Images&responseType=json&_token=' + token,
-              imageBrowseUrl: '/filemanager/?type=Images'
-            }
-          }
-
-          ClassicEditor.build.plugins.map(plugin => console.log(plugin.pluginName));
-
 
           _.forEach(this.content.content, item => {
-            ClassicEditor
-              .create(this.getInputEl({id: item.lang_id}), editorOptions)
-              .then(editor => {
-                Array.from(editor.ui.componentFactory.names()).forEach(name => console.log(name))
-                this.editors.push({id: item.lang_id, editor: editor})
-                editor.setData(item.content)
-              })
-              .catch(error => console.error(error));
+            const editor = CKEDITOR.replace(this.getEditorId(item.lang_id))
+            editor.setData(item.content)
           })
         }
       }

@@ -2,7 +2,6 @@
 
 namespace Anacreation\Cms;
 
-use Anacreation\Cms\Console\Commands\UpdateDefaultAppConfig;
 use Anacreation\Cms\Handler\Handler;
 use Illuminate\Contracts\Debug\ExceptionHandler;
 use Illuminate\Support\Facades\Blade;
@@ -77,9 +76,10 @@ class CmsServiceProvider extends ServiceProvider
 
     private function defaultAsset() {
         $this->publishes([
-            __DIR__ . '/public/css/cms' => public_path('css/cms'),
-            __DIR__ . '/public/js/cms'  => public_path('js/cms'),
-            __DIR__ . '/../fonts'       => public_path('fonts'),
+            __DIR__ . '/public/css/cms'  => public_path('css/cms'),
+            __DIR__ . '/public/js/cms'   => public_path('js/cms'),
+            __DIR__ . '/public/ckeditor' => public_path('ckeditor'),
+            __DIR__ . '/../fonts'        => public_path('fonts'),
         ]);
     }
 
