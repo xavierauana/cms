@@ -3,10 +3,14 @@
 namespace Anacreation\Cms\Controllers;
 
 use Anacreation\Cms\Entities\ContentObject;
+use Anacreation\Cms\Events\LinkDeleted;
+use Anacreation\Cms\Events\LinkSaved;
+use Anacreation\Cms\Events\MenuSaved;
 use Anacreation\Cms\Models\Language;
 use Anacreation\Cms\Models\Link;
 use Anacreation\Cms\Models\Menu;
 use Anacreation\Cms\Models\Page;
+use Anacreation\Cms\Requests\Links\UpdateRequest;
 use Anacreation\Cms\Services\ContentService;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -18,8 +22,8 @@ class LinksController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index() {
-        $this->authorize('index', new Link());
+    public function index(Link $model) {
+        $this->authorize('index', $model);
 
         $links = Link::all();
 
@@ -31,8 +35,11 @@ class LinksController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create(Menu $menu, Page $page) {
+    public function create(Menu $menu, Page $page, Link $model) {
+        $this->authorize('create', $model);
+
         list($pages, $links) = $this->loadResources($menu, $page);
+
         $languages = Language::all();
 
         return view('cms::admin.links.create',
@@ -47,8 +54,11 @@ class LinksController extends Controller
      * @return void
      */
     public function store(
-        Menu $menu, Request $request, Page $page
+        Menu $menu, Request $request, Page $page, Link $model
     ) {
+
+        $this->authorize('store', $model);
+
         $request = $this->sanitizeInputs($request);
 
         $standard = $page->pluck('id')->toArray();
@@ -66,7 +76,10 @@ class LinksController extends Controller
             'external_uri'   => 'required_without:page_id',
         ]);
 
-        $this->createLink($menu, $validatedData);
+        $newLink = $this->createLink($menu, $validatedData);
+
+        event(new MenuSaved($newLink->menu));
+        event(new LinkSaved($newLink));
 
         return redirect("/admin/menus");
     }
@@ -98,33 +111,19 @@ class LinksController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request $request
-     * @param  \App\Link                $link
+     * @param \Anacreation\Cms\Requests\Links\UpdateRequest $request
+     * @param \Anacreation\Cms\Models\Menu                  $menu
+     * @param \Anacreation\Cms\Models\Link                  $link
+     * @param \Anacreation\Cms\Models\Page                  $page
      * @return \Illuminate\Http\Response
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
-    public function update(Request $request, Menu $menu, Link $link, Page $page
-    ) {
+    public function update(UpdateRequest $request, Menu $menu, Link $link) {
 
-        $request = $this->sanitizeInputs($request);
+        $this->updateLink($link, $request->validated());
 
-        $standard = $page->pluck('id')->toArray();
-
-        $ids = implode(",", $standard);
-
-
-        $validatedData = $this->validate($request, [
-            'name.*.lang_id' => 'required:in:' . implode(",",
-                    Language::pluck('id')->toArray()),
-            'name.*.content' => 'required',
-            'is_active'      => 'required|boolean',
-            'parent_id'      => 'required|in:0,' . implode(",",
-                    $menu->links()->pluck('id')->toArray()),
-            'page_id'        => 'required_without:external_uri|in:' . $ids,
-            'external_uri'   => 'required_without:page_id'
-        ]);
-
-
-        $this->updateLink($link, $validatedData);
+        event(new MenuSaved($link->menu));
+        event(new LinkSaved($link));
 
         return redirect('/admin/menus');
     }
@@ -136,7 +135,13 @@ class LinksController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function destroy(Menu $menu, Link $link) {
+
+        $this->authorize('update', $link);
+
         $menu->links()->find($link->id)->delete();
+
+        event(new MenuSaved($menu));
+        event(new LinkDeleted($link));
 
         return redirect('admin/menus');
     }
@@ -168,7 +173,7 @@ class LinksController extends Controller
      */
     private function createLink(
         Menu $menu, $validatedData
-    ): void {
+    ): Link {
         $service = new ContentService();
 
         /** @var \Anacreation\Cms\Models\Link $newLink */
@@ -179,11 +184,17 @@ class LinksController extends Controller
                 $data['content'], 'string');
             $service->updateOrCreateContentIndex($newLink, $contentObject);
         }
+
+        return $newLink;
     }
 
     private function updateLink($link, $validatedData) {
 
         $service = new ContentService();
+
+        if (!isset($validatedData['page_id'])) {
+            $validatedData['page_id'] = 0;
+        }
 
         $link->update($validatedData);
 

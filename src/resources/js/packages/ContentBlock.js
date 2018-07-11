@@ -5,7 +5,24 @@
 import * as Events from "./EventNames"
 
 export default {
-  props  : ['languages', 'editable', 'deleteable', 'content'],
+  props  : {
+    languages : {
+      type    : Array,
+      required: true
+    },
+    editable  : {
+      type    : Boolean,
+      required: true
+    },
+    deleteable: {
+      type    : Boolean,
+      required: true
+    },
+    content   : {
+      type    : Object,
+      required: true
+    },
+  },
   mounted() {
     this.setValue()
   },
@@ -29,6 +46,9 @@ export default {
           id   : this.getTabId(language)
         }
       })
+    },
+    setInputId(lang_id) {
+      return `input.${lang_id}.${this.content.identifier}`
     },
     setValue() {
       _.forEach(this.content.content, item => {

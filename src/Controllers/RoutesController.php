@@ -34,6 +34,11 @@ class RoutesController extends Controller
     }
 
     private function setLocale(): void {
+
+        if (!session()->has("id")) {
+            session()->put("id", str_random(64));
+        }
+
         if (session()->has('locale')) {
             $sessionLocale = session()->get('locale');
 

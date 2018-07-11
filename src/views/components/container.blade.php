@@ -1,11 +1,11 @@
 <div class="container">
-	<div class="panel panel-default">
-		<!-- Default panel contents -->
-		<div class="panel-heading">
-			<h2>{{$title}}</h2>
+	<div class="my-3 card">
+		<div class="card-header">
+	    {{$title}}
+	  </div>
+		<div class="card-body">
+			{{$slot}}
 		</div>
-	    <div class="panel-body">
-	        {{$slot}}
-	    </div>
+		
 	</div>
 </div>

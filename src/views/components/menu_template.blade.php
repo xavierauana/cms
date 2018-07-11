@@ -9,7 +9,7 @@ $hasChildForTheMenu = !!$links->first(function (
 ?>
 
 
-<ul class="list-unstyled menu {{$class}} @if($hasChildForTheMenu) dropdown @endif @if($hasSubMenu) dropdown-menu sub_menu @endif">
+<ul class="list-unstyled menu {{$menu->code}}  {{$class}} @if($hasChildForTheMenu) dropdown @endif @if($hasSubMenu) dropdown-menu sub_menu @endif">
 	@foreach($links as $link)
 		<li role="presentation"
 		    class="level-{{$level}} @if($hasChild = $link->hasChild()) dropdown @endif">

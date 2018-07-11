@@ -8,6 +8,9 @@
 namespace Anacreation\Cms\Models;
 
 
+use Anacreation\Cms\Services\ApiAuthentication;
+use Anacreation\Cms\Services\ApiAuthStatus;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -103,10 +106,6 @@ class Cms
 
                     return redirect()->back();
                 })->name('set.locale');
-
-
-                //        Route::get("{segment1?}/{segment2?}/{segment3?}/{segment4?}/{segment5?}",
-                //            "RoutesController@resolve");
 
             });
 
@@ -213,13 +212,30 @@ class Cms
             "namespace"  => "\\Anacreation\\Cms\\Controllers\\Api",
             'prefix'     => 'api',
             'middleware' => [
-                'api'
+                'web'
             ]
         ],
             function () {
 
                 Route::get("page/{page?}",
                     "RoutesController@resolve");
+
+                Route::post('authenticate', "AuthController@authenticate");
+
+                Route::get('user', function (Request $request) {
+                    switch (ApiAuthentication::isAuthenticated()) {
+                        case ApiAuthStatus::AUTHENTICATED:
+                            return response()->json(['user'       => $request->user(),
+                                                     'session_id' => session()->get('id')
+                            ]);
+                        default:
+                            return response()->json('not login', 401);
+                    }
+                });
+
+                Route::get("{segment1?}/{segment2?}/{segment3?}/{segment4?}/{segment5?}",
+                    "Api\\RoutesController@resolve");
+
 
             });
     }

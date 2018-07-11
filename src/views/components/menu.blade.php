@@ -2,12 +2,11 @@
 	@slot('parentId')menus_accrodion @endslot
 	@slot('panelActions')
 		<a href="{{route('menus.links.create', $menu->id)}}"
-		   class="btn btn-success pull-right"
-		   style="color:white;margin-top: -15px">Create Link in {{$menu->name}}</a>
+		   class="btn btn-sm btn-success float-right mt-1"
+		   style="color:white">Create Link in {{$menu->name}}</a>
 	@endslot
 	@slot('id'){{$menu->id}} @endslot
-	@slot('title'){{$menu->name}} <br>
-	<small> (Code: {{$menu->code}})</small> @endslot
+	@slot('title'){{$menu->name}} <small> (Code: {{$menu->code}})</small> @endslot
 	<div class="sortable-list-container" id="menu_{{$menu->id}}_container">
 			@include('cms::components.links',['links'=>$menu->links, 'parentId'=>0])
 	</div>

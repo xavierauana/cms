@@ -2,27 +2,30 @@
     <base-content-block :identifier="content.identifier" :editable="editable"
                         :deleteable="deleteable" :type="type"
                         :changed="content.changed" :languages="languages">
-        <tabs :tabs="getTabIds(languages)">
-            <input v-for="language in languages"
-                   :slot="getTabId(language)"
-                   @keydown.once="getDirty"
-                   type="text"
-                   class="form-control"
-                   :ref="getInputRef(language)"
-                   :data-lang_id="language.id"
-                   :placeholder="language.label + ' Content'"
-                   :disabled="!editable"
-                   content />
-            </tabs>
+        <b-tabs>
+            <b-tab v-for="language in languages"
+                   :key="language.id"
+                   :title="language.label">
+                 <input @keydown.once="getDirty"
+                        :id="setInputId(language)"
+                        type="text"
+                        class="form-control"
+                        :ref="getInputRef(language)"
+                        :data-lang_id="language.id"
+                        :placeholder="language.label + ' Content'"
+                        :disabled="!editable"
+                        content />
+            </b-tab>
+        </b-tabs>
     </base-content-block>
 </template>
 
 <script>
-    import Extension from "anacreation-cms-content-extension"
+    import Extension from "../packages/ContentBlockExtension"
 
     export default {
-      extends   : Extension,
-      name      : "string-content-block",
+      extends: Extension,
+      name   : "StringContentBlock",
       data() {
         return {
           type: 'string'

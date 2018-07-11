@@ -14,14 +14,15 @@
 	"xavierau/multi-auth": "2.*",
 	"laravelcollective/html": "^5.5",
 	"lavary/laravel-menu": "^1.7",
-	"barryvdh/laravel-debugbar": "^3.1"
+	"tymon/jwt-auth": "^0.5.12"
   },
   "require-dev": {
 	"filp/whoops": "~2.0",
 	"fzaninotto/faker": "~1.4",
 	"mockery/mockery": "~1.0",
 	"phpunit/phpunit": "~6.0",
-	"symfony/thanks": "^1.0"
+	"symfony/thanks": "^1.0",
+	"barryvdh/laravel-debugbar": "^3.1"
   },
   "minimum-stability": "dev",
   "autoload": {
@@ -51,10 +52,13 @@
 		"Anacreation\\MultiAuth\\MultiAuthServiceProvider",
 		"Anacreation\\Cms\\CmsServiceProvider",
 		"Anacreation\\Cms\\CmsAuthServiceProvider",
-		"Anacreation\\Cms\\CmsEventServiceProvider"
+		"Anacreation\\Cms\\CmsEventServiceProvider",
+		"Tymon\\JWTAuth\\Providers\\JWTAuthServiceProvider"
 	  ],
 	  "aliases": {
-		"Debugbar": "Barryvdh\\Debugbar\\Facade"
+		"Debugbar": "Barryvdh\\Debugbar\\Facade",
+		"JWTAuth": "Tymon\\JWTAuth\\Facades\\JWTAuth",
+		"JWTFactory": "Tymon\\JWTAuth\\Facades\\JWTFactory"
 	  }
 	}
   }

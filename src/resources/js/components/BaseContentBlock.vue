@@ -1,47 +1,49 @@
 <template>
-    <accordion-container>
-        <accordion-item
-                :item-class="{'panel-info':changed===false, 'panel-warning':changed===true}"
-                :ref="contentBlockId">
-            <div slot="title" class="col-xs-10">
-                <div class="row">
-                    <div class="col-xs-1 text-center" style="padding:0">
-                        <i class="fa fa-arrows" aria-hidden="true"
-                           style="position:relative; top:7px"></i>
-                    </div>
+     <b-card no-body class="mb-1" :bg-variant="changed?'warning':'default'">
+         <form @submit.prevent="update">
+            <b-card-header header-tag="header" class="p-1" role="tab">
+            <div class="row">
+                <div class="col-12">
+                         <b-input-group>
+                             <input class="form-control input-sm"
+                                    placeholder="Content Identifier"
+                                    name="identifier"
+                                    @keydown.once="getDirty"
+                                    v-model="inputIdentifier"
+                                    :disabled="!editable" />
 
-                    <div class="col-xs-11">
-                        <input class="form-control input-sm"
-                               placeholder="Content Identifier"
-                               @keydown.once="getDirty"
-                               v-model="inputIdentifier"
-                               :disabled="!editable" />
-                    </div>
-                </div>
-            </div>
-            <span slot="link" class="pull-right"
-                  style="top:7px; position:relative" @click="open = !open"
-                  v-text="open?'Hide':'Show'"></span>
+                             <b-input-group-append>
+                                  <b-btn :class="{'btn-primary':!open,'btn-success':open}"
+                                         @click.prevent="open = !open"
+                                         v-text="open?'Hide':'Show'"
+                                  ></b-btn>
+                             </b-input-group-append>
 
-            <div class="panel-body">
-                <slot></slot>
+                         </b-input-group>
+                    </div>
             </div>
-            <div class="panel-footer clearfix">
-                <button @click.prevent="update"
-                        class="btn btn-success"
-                        v-if="editable">Update</button>
+        </b-card-header>
+            <b-collapse :id="`collapse_${_uid}`" :visible="open"
+                    role="tabpanel">
+            <b-card-body>
+              <slot></slot>
+            </b-card-body>
+            <b-card-footer>
+                 <button type="submit"
+                         class="btn btn-success"
+                         v-if="editable">Update</button>
                 <button @click.prevent="remove(identifier)" v-if="deleteable"
                         class="btn btn-danger pull-right">Delete</button>
-            </div>
-        </accordion-item>
-    </accordion-container>
+            </b-card-footer>
+        </b-collapse>
+         </form>
+     </b-card>
 </template>
 <script>
     import BaseMixin from "../mixins/BaseContentBlock"
 
     export default {
-      name  : "base-content-block",
-      props : ['identifier', 'editable', 'type', 'deleteable', 'changed'],
+      name  : "BaseContentController",
       mixins: [BaseMixin]
     }
 </script>

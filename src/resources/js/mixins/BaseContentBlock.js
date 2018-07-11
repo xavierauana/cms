@@ -4,7 +4,32 @@
 import * as Events from "../EventNames"
 
 export default {
-  props  : ['identifier', 'languages', 'editable', 'deleteable'],
+  props  : {
+    identifier: {
+      type    : String,
+      required: true
+    },
+    languages : {
+      type    : Array,
+      required: true
+    },
+    editable  : {
+      type    : Boolean,
+      required: true
+    },
+    deleteable: {
+      type    : Boolean,
+      required: true
+    },
+    type      : {
+      type    : String,
+      required: true
+    },
+    changed   : {
+      type    : Boolean,
+      required: true
+    },
+  },
   data() {
     return {
       open           : false,
@@ -20,33 +45,31 @@ export default {
   },
   methods: {
     getDirty() {
+      console.log('fired dirty event')
       NotificationCenter.$emit(Events.CONTENT_GET_DIRTY, this.identifier)
     },
     remove(identifier) {
-      console.log(this.identifier, identifier)
       if (confirm("Deleted item cannot be retrieved. Are you sure to go ahead?")) {
         const href = window.location.href,
               last = href.split("")[href.split("").length - 1],
               uri  = last !== "/" ? `${href}/${this.identifier}` : href + this.identifier
-        console.log('uri is, ', this.uri)
         axios.delete(uri)
              .then(({data}) => NotificationCenter.$emit(Events.CONTENT_DELETED, data.identifier))
       }
     },
-    update() {
+    update(e) {
       const url = "/" + window.location.pathname.split("/").filter(segment => segment.length > 0).join('/') + "/update",
-            key = 'content_block_' + this._uid,
-            el  = this.$refs[key].$el
+            el  = e.target
 
       let inputs = [
-        ...this.constructSummernoteEditorData(el),
+        ...el.querySelectorAll("textarea[content]"),
         ...el.querySelectorAll("select[content]"),
         ...el.querySelectorAll("input[content]")
       ]
 
       const inputsData = this.constructInputsData(inputs)
 
-      let requests = _.map(inputsData, data => axios.post(url, data, {
+      const requests = _.map(inputsData, data => axios.post(url, data, {
         onUploadProgress: progressEvent => {
           NotificationCenter.$emit(Events.UPLOAD_PROGRESS, {
             identifier   : this.identifier,
@@ -58,7 +81,6 @@ export default {
 
       NotificationCenter.$emit(Events.UPLOAD_START)
       axios.all(requests).then((...responses) => this.successfullyUpdated(responses, this.identifier))
-
     },
     constructInputsData(inputs) {
       let tempDataContainer = []
@@ -90,7 +112,6 @@ export default {
       return tempDataContainer
     },
     successfullyUpdated(responseData, identifier) {
-      alert('Update Completed')
       NotificationCenter.$emit(Events.CONTENT_GET_CLEAN, identifier)
     },
     parseDataFromInputs(input) {
@@ -150,17 +171,8 @@ export default {
             lang_id     : input.dataset.lang_id,
             content     : input.value
           }
-
       }
       return data
-    },
-    constructSummernoteEditorData(el) {
-      const textareas = el.querySelectorAll("textarea[content]")
-      // Construct Summernote editor content e.g. <textarea class='summernote-editor'></textarea>
-      return _.chain(textareas)
-              .map(editor => editor.className.indexOf('summernote-editor') > -1 ? editor : null)
-              .filter(editor => !!editor)
-              .value()
-    },
+    }
   }
 }

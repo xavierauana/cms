@@ -2,6 +2,8 @@
 
 namespace Anacreation\Cms\Controllers;
 
+use Anacreation\Cms\Events\MenuDeleted;
+use Anacreation\Cms\Events\MenuSaved;
 use Anacreation\Cms\Models\Menu;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -50,7 +52,9 @@ class MenusController extends Controller
             'code' => 'required|unique:menus',
         ]);
 
-        $menuRepo->create($validatedData);
+        $newMenu = $menuRepo->create($validatedData);
+
+        event(new MenuSaved($newMenu));
 
         return redirect("admin/menus");
     }
@@ -83,7 +87,19 @@ class MenusController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, Menu $menu) {
-        //
+
+        $this->authorize('update', $menu);
+        $validatedData = $this->validate($request, [
+            'name' => 'required',
+            'code' => 'required|unique:menus,code,' . $menu->id,
+        ]);
+
+        $menu->update($validatedData);
+
+        event(new MenuSaved($menu));
+
+        return redirect()->route('menus.index')
+                         ->withStatus("{$menu->label} has been updated!");
     }
 
     /**
@@ -93,7 +109,16 @@ class MenusController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function destroy(Menu $menu) {
-        //
+
+        $this->authorize('delete', $menu);
+
+        $menu->delete();
+
+        event(new MenuDeleted($menu));
+
+        return redirect()->route('menus.index')
+                         ->withStatus("{$menu->label} has been deleted!");
+
     }
 
     public function updateOrder(Request $request, Menu $menu) {

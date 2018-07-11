@@ -10,26 +10,37 @@ namespace Anacreation\Cms\Controllers\Api;
 
 use Anacreation\Cms\Models\Page;
 use App\Http\Controllers\Controller;
+use App\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Session;
 
 class RoutesController extends Controller
 {
     /**
      * @param \Illuminate\Http\Request $request
-     * @param string|null              $page
+     * @param string|null              $uri
+     * @return \Illuminate\Http\JsonResponse
      */
     public function resolve(Request $request, string $uri = null) {
+
+        dd(Session::getId());
 
         $queries = $request->query();
 
         if ($page = $this->fetchPage($uri, $queries)) {
 
-            $returnContents = $this->fetchContent($page, $queries);
+            if (!$page->is_restricted or $this->userHasPermissionFor($request->user(),
+                    $page)) {
 
-            return response()->json($returnContents);
+                return response()->json($this->fetchContent($page, $queries));
+
+            }
+
+            return response()->json('Cannot Access', 401);
+
         }
 
-        return response("Page not found", 404);
+        return response()->json("Page not found", 404);
 
     }
 
@@ -164,6 +175,22 @@ class RoutesController extends Controller
         }
 
         return null;
+
+    }
+
+    private function userHasPermissionFor(
+        User $user, Page $page
+    ): bool {
+
+        if ($user === null) {
+            return false;
+        }
+
+        if ($permission = $page->permission) {
+            return $user->hasPermission($permission->code);
+        }
+
+        return false;
 
     }
 }

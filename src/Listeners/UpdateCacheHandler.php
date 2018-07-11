@@ -39,13 +39,17 @@ class UpdateCacheHandler
         }
     }
 
-    private function invalidateCache($param) {
+    /**
+     * @param string|CacheManageableInterface $param
+     * @throws \PHPMailer\PHPMailer\Exception
+     */
+    private function invalidateCache($param): void {
         if (is_string($param)) {
             $key = $param;
         } elseif ($param instanceof CacheManageableInterface) {
             $key = $param->getCacheKey();
         } else {
-            throw new Exception("Invalidad cache model!");
+            throw new Exception("Invalided cache model!");
         }
 
         if (Cache::has($key)) {
@@ -74,9 +78,7 @@ class UpdateCacheHandler
             CacheKey::ALL_LANGUAGES
         ];
         foreach ($keys as $key) {
-            if (Cache::has($key)) {
-                Cache::forget($key);
-            }
+            $this->invalidateCache($key);
         }
     }
 }

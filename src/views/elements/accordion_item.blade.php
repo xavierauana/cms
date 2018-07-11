@@ -1,18 +1,17 @@
-<div class="panel panel-default">
-  <div class="panel-heading" role="tab" id="heading_{{$id}}">
-    <h4 class="panel-title clearfix">
-      <a role="button" data-toggle="collapse" data-parent="#{{$parentId}}"
-         href="#{{$id}}" aria-expanded="true" aria-controls="{{$id}}">
-        {{$title}}
-      </a>
-	    {{isset($panelActions)?$panelActions:""}}
-    </h4>
+<div class="card my-3">
+    <div class="card-header align-middle" style="display: inline-block" id="heading_{{$id}}">
+      <h5 class="mb-0" >
+        <button class="btn btn-link" data-toggle="collapse" data-target="#{{$id}}" aria-expanded="true" aria-controls="{{$id}}">
+          {{$title}}
+        </button>
+        {{isset($panelActions)?$panelActions:""}}
+      </h5>
+      
+    </div>
+
+    <div id="{{$id}}" class="collapse show" aria-labelledby="heading_{{$id}}" data-parent="#{{$parentId}}">
+      <div class="card-body">
+        {{$slot}}
+      </div>
+    </div>
   </div>
-  <div id="{{$id}}" class="panel-collapse collapse {{$active? 'in':''}}"
-       role="tabpanel"
-       aria-labelledby="heading_{{$id}}">
-  <div class="panel-body">
-    {{$slot}}
-  </div>
-</div>
-</div>

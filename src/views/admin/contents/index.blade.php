@@ -13,15 +13,15 @@
 		
 		
 		<content-blocks :contents="{{ json_encode($contents) }}"
-		                :editable="{{auth()->user()->hasPermission('edit_content')?1:0}}"
-		                :deleteable="{{auth()->user()->hasPermission('delete_content')?1:0}}"
+		                :editable="{{auth()->user()->hasPermission('edit_content')}}=='1'"
+		                :deleteable="{{auth()->user()->hasPermission('delete_content')}}=='1'"
 		                :languages="{{$languages}}"
-		                :can-add="{{$page->editable?1:0}}"
+		                :can-add="{{$page->editable}}=='1'"
 		                :types="{{json_encode((new \Anacreation\Cms\Services\ContentService())->getTypesForJs())}}"
 		></content-blocks>
 		
 		
-		<page-children v-if="{{$page->has_children}} === 1"
+		<page-children v-if="{{$page->has_children}} == '1'"
 		               base-url="{{route('pages.index')}}"
 		               :page="{{$page}}"
 		               :children="{{$page->children()->with('permission')->sorted()->get()}}"></page-children>

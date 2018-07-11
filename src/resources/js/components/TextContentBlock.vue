@@ -4,26 +4,28 @@
                             :deleteable="deleteable" :type="type"
                             :languages="languages"
                             :changed="content.changed">
-        <tabs :tabs="getTabIds(languages)">
-            <textarea v-for="language in languages"
-                      :key="language.id"
-                      :id="getEditorId(language.id)"
-                      :ref="getInputRef(language)"
-                      :data-lang_id="language.id"
-                      :slot="getTabId(language)" class="form-control"
-                      :class="editorClass"
-                      :placeholder="language.label + ' Content'"
-                      rows="10"
-                      :disabled="!editable"
-                      content
-            ></textarea>
-        </tabs>
+            <b-tabs>
+                 <b-tab v-for="language in languages"
+                        :key="language.id"
+                        :title="language.label">
+                     <textarea :id="setInputId(language.id)"
+                               :ref="getInputRef(language)"
+                               :data-lang_id="language.id"
+                               class="form-control"
+                               :class="editorClass"
+                               :placeholder="language.label + ' Content'"
+                               rows="10"
+                               :disabled="!editable"
+                               content
+                     ></textarea>
+                 </b-tab>
+            </b-tabs>
     </base-content-block>
 </template>
 
 <script>
     import * as Events from "../EventNames"
-    import Extension from "anacreation-cms-content-extension"
+    import Extension from "../packages/ContentBlockExtension"
 
 
     export default {
@@ -31,15 +33,12 @@
       name   : "text-content-block",
       data() {
         return {
-          editorClass   : 'summernote-editor',
-          type          : 'text',
-          editors       : [],
+          editorClass: 'summernote-editor',
+          type       : 'text',
+          editors    : [],
         }
       },
       methods: {
-        getEditorId(languageId) {
-          return `editor_${this._uid}_${languageId}`
-        },
         setupFileManager() {
           const fileManagerPrefix = '/filemanager';
           const lfm = (options, cb) => {
@@ -94,12 +93,17 @@
           }
         },
         setValue() {
-          let token = document.head.querySelector('meta[name="csrf-token"]').content;
-
           _.forEach(this.content.content, item => {
-            const editor = CKEDITOR.replace(this.getEditorId(item.lang_id))
-            editor.setData(item.content)
+            const el = document.getElementById(this.setInputId(item.lang_id))
+            if (el) {
+              el.value = item.content
+            }
           })
+
+          _.chain(this.languages)
+           .map(language => CKEDITOR.replace(this.setInputId(language.id)))
+           .forEach(editor => editor.on('change', e => NotificationCenter.$emit(e.editor.checkDirty() ? Events.CONTENT_GET_DIRTY : Events.CONTENT_GET_CLEAN, this.content.identifier)))
+           .value()
         }
       }
     }
