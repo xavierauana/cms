@@ -52,9 +52,7 @@ class MenusController extends Controller
             'code' => 'required|unique:menus',
         ]);
 
-        $newMenu = $menuRepo->create($validatedData);
-
-        event(new MenuSaved($newMenu));
+        $menuRepo->create($validatedData);
 
         return redirect("admin/menus");
     }
@@ -96,8 +94,6 @@ class MenusController extends Controller
 
         $menu->update($validatedData);
 
-        event(new MenuSaved($menu));
-
         return redirect()->route('menus.index')
                          ->withStatus("{$menu->label} has been updated!");
     }
@@ -113,8 +109,6 @@ class MenusController extends Controller
         $this->authorize('delete', $menu);
 
         $menu->delete();
-
-        event(new MenuDeleted($menu));
 
         return redirect()->route('menus.index')
                          ->withStatus("{$menu->label} has been deleted!");

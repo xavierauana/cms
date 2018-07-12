@@ -15,12 +15,18 @@ use Anacreation\Cms\Services\ContentService;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
+/**
+ * Class LinksController
+ * @package Anacreation\Cms\Controllers
+ */
 class LinksController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
+     * @param Link $model
      * @return \Illuminate\Http\Response
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function index(Link $model) {
         $this->authorize('index', $model);
@@ -33,7 +39,11 @@ class LinksController extends Controller
     /**
      * Show the form for creating a new resource.
      *
+     * @param \Anacreation\Cms\Models\Menu $menu
+     * @param \Anacreation\Cms\Models\Page $page
+     * @param \Anacreation\Cms\Models\Link $model
      * @return \Illuminate\Http\Response
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function create(Menu $menu, Page $page, Link $model) {
         $this->authorize('create', $model);
@@ -51,7 +61,10 @@ class LinksController extends Controller
      *
      * @param \Anacreation\Cms\Models\Menu $menu
      * @param  \Illuminate\Http\Request    $request
+     * @param \Anacreation\Cms\Models\Page $page
+     * @param \Anacreation\Cms\Models\Link $model
      * @return void
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function store(
         Menu $menu, Request $request, Page $page, Link $model
@@ -97,7 +110,9 @@ class LinksController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Link $link
+     * @param \Anacreation\Cms\Models\Menu $menu
+     * @param \Anacreation\Cms\Models\Link $link
+     * @param \Anacreation\Cms\Models\Page $page
      * @return \Illuminate\Http\Response
      */
     public function edit(Menu $menu, Link $link, Page $page) {
@@ -113,10 +128,8 @@ class LinksController extends Controller
      *
      * @param \Anacreation\Cms\Requests\Links\UpdateRequest $request
      * @param \Anacreation\Cms\Models\Menu                  $menu
-     * @param \Anacreation\Cms\Models\Link                  $link
-     * @param \Anacreation\Cms\Models\Page                  $page
+     * @param Link                                          $link
      * @return \Illuminate\Http\Response
-     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function update(UpdateRequest $request, Menu $menu, Link $link) {
 
@@ -131,8 +144,10 @@ class LinksController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Link $link
+     * @param \Anacreation\Cms\Models\Menu $menu
+     * @param \Anacreation\Cms\Models\Link $link
      * @return \Illuminate\Http\Response
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function destroy(Menu $menu, Link $link) {
 
@@ -167,16 +182,15 @@ class LinksController extends Controller
 
     /**
      * @param \Anacreation\Cms\Models\Menu             $menu
-     * @param \Anacreation\Cms\Services\ContentService $service
      * @param                                          $validatedData
-     * @throws \Anacreation\Cms\Exceptions\IncorrectContentTypeException
+     * @return \Anacreation\Cms\Models\Link
      */
     private function createLink(
         Menu $menu, $validatedData
     ): Link {
         $service = new ContentService();
 
-        /** @var \Anacreation\Cms\Models\Link $newLink */
+        /** @var Link $newLink */
         $newLink = $menu->links()->create($validatedData);
 
         foreach ($validatedData['name'] as $data) {
@@ -188,6 +202,10 @@ class LinksController extends Controller
         return $newLink;
     }
 
+    /**
+     * @param $link
+     * @param $validatedData
+     */
     private function updateLink($link, $validatedData) {
 
         $service = new ContentService();
@@ -207,6 +225,7 @@ class LinksController extends Controller
 
     /**
      * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\Request
      */
     private function sanitizeInputs(Request $request): Request {
         $inputs = $request->all();

@@ -11,11 +11,7 @@
     <title>A & A CMS</title>
 	
 	<!-- Styles -->
-    <link rel="stylesheet"
-          href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
     <link href="{{ asset('css/cms/app.css') }}" rel="stylesheet">
-    <link href="../../../../node_modules/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css"
-          rel="stylesheet">
 	@yield("stylesheets")
 </head>
 <body>
@@ -97,7 +93,7 @@
     </div>
 
     <!-- Scripts -->
-    <script src="{{asset("vendor/cms/ckeditor/ckeditor.js")}}"></script>
+    <script src="{{asset("vendor/ckeditor/ckeditor.js")}}"></script>
     <script src="{{ asset('js/src-noconflict/ace.js') }}"></script>
     <script src="{{ asset('js/cms/manifest.js') }}"></script>
     <script src="{{ asset('js/cms/vendor.js') }}"></script>

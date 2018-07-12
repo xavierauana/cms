@@ -119,8 +119,12 @@ class LanguagesController extends Controller
                     Language::pluck('id')->toArray()),
         ]);
 
-        if ($validateData['is_default']) {
-            Language::all()->each(function (Language $language) {
+
+
+        if ($validateData['is_default'] == "1") {
+            Language::where('id', '<>', $language->id)->get()->each(function (
+                Language $language
+            ) {
                 $language->is_default = false;
                 $language->save();
             });

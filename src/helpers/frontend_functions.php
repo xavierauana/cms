@@ -132,7 +132,6 @@ function getPageChildren(Page $page) {
 }
 
 function getLayoutFiles() {
-
     $layouts = scandir(getActiveThemePath() . "/layouts");
 
     return sanitizeFileNames(compact("layouts"));

@@ -1,0 +1,22 @@
+<?php
+/**
+ * Author: Xavier Au
+ * Date: 12/7/2018
+ * Time: 1:23 PM
+ */
+
+
+use Anacreation\Cms\Models\Cms;
+use App\Http\Controllers\Controller;
+
+Route::group(['namespace' => Controller::class],
+    function () {
+
+    });
+
+
+Cms::routes();
+
+Cms::apiRoutes();
+
+Cms::dynamicRoutes();

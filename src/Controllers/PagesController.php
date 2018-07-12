@@ -26,7 +26,9 @@ class PagesController extends Controller
     /**
      * Show the form for creating a new resource.
      *
+     * @param \Anacreation\Cms\Models\Page $page
      * @return \Illuminate\Http\Response
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function create(Page $page) {
         $this->authorize('create', $page);

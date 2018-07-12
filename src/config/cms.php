@@ -6,13 +6,13 @@
  */
 
 return [
-    'theme_directory'        => function (string $theme) {
-        return resource_path("views/themes/" . $theme);
-    },
+    'active_theme'           => 'default',
+    'theme_directory'        => 'views/themes', // in resources directory
     'content_type'           => [],
     'use_spark'              => false,
     'content_cache_duration' => 10,
     'bindings'               => [
         \Anacreation\Cms\Contracts\CmsPageInterface::class => \Anacreation\Cms\Models\Page::class
     ],
+    'single_login_session'   => false
 ];
