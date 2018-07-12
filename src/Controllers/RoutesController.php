@@ -52,7 +52,7 @@ class RoutesController extends Controller
     }
 
     private function constructView(Page $page, $vars): View {
-        return view("themes." . config('theme.active') . "/layouts/" . ".{$page->template}",
+        return view("themes." . config('cms.active_theme') . ".layouts." . ".{$page->template}",
             $vars);
     }
 
