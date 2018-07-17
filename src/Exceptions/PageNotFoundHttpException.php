@@ -23,7 +23,7 @@ class PageNotFoundHttpException extends \Exception
         $page = app()->make(Page::class);
         $notFoundPage = $page->whereUri("404")->first() ?? $page;
 
-        return view('themes.' . config('theme.active') . '.layouts.not_found',
+        return view('themes.' . config('cms.active_theme') . '.layouts.not_found',
             ['page' => $notFoundPage, 'language' => (new Language)]);
     }
 }
