@@ -120,8 +120,8 @@ class DesignsController extends Controller
      * @return string
      */
     private function getFilePath(Request $request, string $type): string {
-        $themeDirectoryPath = (config('cms.theme_directory'))(config('theme.active'));
-        $path = $themeDirectoryPath . "/" . $type . "/" . $request->get('file') . ".blade.php";
+
+        $path = getActiveThemePath() . "/" . $type . "/" . $request->get('file') . ".blade.php";
 
         return $path;
     }
