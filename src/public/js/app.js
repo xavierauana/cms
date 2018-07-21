@@ -14361,6 +14361,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'page-children',
@@ -14432,8 +14434,8 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", { staticClass: "page-children" }, [
-    _c("h3", { staticClass: "header" }, [
+  return _c("div", { staticClass: "card page-children" }, [
+    _c("h3", { staticClass: "card-header" }, [
       _vm._v("Children "),
       _c(
         "a",
@@ -14445,130 +14447,130 @@ var render = function() {
       )
     ]),
     _vm._v(" "),
-    _c("hr"),
-    _vm._v(" "),
-    _vm.internalChildren.length > 0
-      ? _c("ul", { staticClass: "list-unstyled row" }, [
-          _vm._m(0),
-          _vm._v(" "),
-          _vm._m(1),
-          _vm._v(" "),
-          _c("li", [
-            _c(
-              "ol",
-              {
-                staticClass: "list-unstyled children",
-                attrs: { id: "children-list" }
-              },
-              [
-                _vm._l(_vm.internalChildren, function(child, index) {
-                  return _c(
-                    "li",
-                    {
-                      staticClass: "child-item row",
-                      attrs: { "data-id": child.id }
-                    },
-                    [
-                      _c("div", {
-                        staticClass: "col-xs-1",
-                        domProps: { textContent: _vm._s(index + 1) }
-                      }),
-                      _vm._v(" "),
-                      _c("div", {
-                        staticClass: "col-xs-2",
-                        domProps: { textContent: _vm._s(child.uri) }
-                      }),
-                      _vm._v(" "),
-                      _c("div", {
-                        staticClass: "col-xs-2",
-                        domProps: {
-                          textContent: _vm._s(child.is_active ? "Yes" : "No")
-                        }
-                      }),
-                      _vm._v(" "),
-                      _c("div", {
-                        staticClass: "col-xs-2",
-                        domProps: {
-                          textContent: _vm._s(
-                            !child.is_restricted
-                              ? "No"
-                              : child.permission
-                                ? child.permission.label
-                                : "Not Specified"
-                          )
-                        }
-                      }),
-                      _vm._v(" "),
-                      _c("div", { staticClass: "col-xs-4 clearfix" }, [
-                        _c("div", { staticClass: "btn-group btn-group-sm" }, [
-                          _c(
-                            "button",
-                            {
-                              staticClass: "btn btn-primary",
-                              on: {
-                                click: function($event) {
-                                  $event.preventDefault()
-                                  _vm.goToContentPage(child)
+    _c("div", { staticClass: "card-body" }, [
+      _vm.internalChildren.length > 0
+        ? _c("ul", { staticClass: "list-unstyled" }, [
+            _vm._m(0),
+            _vm._v(" "),
+            _vm._m(1),
+            _vm._v(" "),
+            _c("li", [
+              _c(
+                "ol",
+                {
+                  staticClass: "list-unstyled children px-1",
+                  attrs: { id: "children-list" }
+                },
+                [
+                  _vm._l(_vm.internalChildren, function(child, index) {
+                    return _c(
+                      "li",
+                      {
+                        staticClass: "child-item row",
+                        attrs: { "data-id": child.id }
+                      },
+                      [
+                        _c("div", {
+                          staticClass: "col-1",
+                          domProps: { textContent: _vm._s(index + 1) }
+                        }),
+                        _vm._v(" "),
+                        _c("div", {
+                          staticClass: "col-2",
+                          domProps: { textContent: _vm._s(child.uri) }
+                        }),
+                        _vm._v(" "),
+                        _c("div", {
+                          staticClass: "col-2",
+                          domProps: {
+                            textContent: _vm._s(child.is_active ? "Yes" : "No")
+                          }
+                        }),
+                        _vm._v(" "),
+                        _c("div", {
+                          staticClass: "col-2",
+                          domProps: {
+                            textContent: _vm._s(
+                              !child.is_restricted
+                                ? "No"
+                                : child.permission
+                                  ? child.permission.label
+                                  : "Not Specified"
+                            )
+                          }
+                        }),
+                        _vm._v(" "),
+                        _c("div", { staticClass: "col-4 clearfix" }, [
+                          _c("div", { staticClass: "btn-group btn-group-sm" }, [
+                            _c(
+                              "button",
+                              {
+                                staticClass: "btn btn-primary",
+                                on: {
+                                  click: function($event) {
+                                    $event.preventDefault()
+                                    _vm.goToContentPage(child)
+                                  }
                                 }
-                              }
-                            },
-                            [_vm._v("Content")]
-                          ),
-                          _vm._v(" "),
-                          _c(
-                            "button",
-                            {
-                              staticClass: "btn btn-info",
-                              on: {
-                                click: function($event) {
-                                  $event.preventDefault()
-                                  _vm.goToEditPage(child)
+                              },
+                              [_vm._v("Content")]
+                            ),
+                            _vm._v(" "),
+                            _c(
+                              "button",
+                              {
+                                staticClass: "btn btn-info",
+                                on: {
+                                  click: function($event) {
+                                    $event.preventDefault()
+                                    _vm.goToEditPage(child)
+                                  }
                                 }
-                              }
-                            },
-                            [_vm._v("Edit")]
-                          ),
-                          _vm._v(" "),
-                          _c(
-                            "button",
-                            {
-                              staticClass: "btn btn-danger",
-                              on: {
-                                click: function($event) {
-                                  $event.preventDefault()
-                                  _vm.deleteChild(child)
+                              },
+                              [_vm._v("Edit")]
+                            ),
+                            _vm._v(" "),
+                            _c(
+                              "button",
+                              {
+                                staticClass: "btn btn-danger",
+                                on: {
+                                  click: function($event) {
+                                    $event.preventDefault()
+                                    _vm.deleteChild(child)
+                                  }
                                 }
-                              }
-                            },
-                            [_vm._v("Delete")]
-                          )
+                              },
+                              [_vm._v("Delete")]
+                            )
+                          ])
                         ])
-                      ])
-                    ]
-                  )
-                }),
-                _vm._v(" "),
-                _c("li", [
-                  _c(
-                    "button",
-                    {
-                      staticClass: "btn btn-info btn-block",
-                      on: {
-                        click: function($event) {
-                          $event.preventDefault()
-                          _vm.updateOrder($event)
+                      ]
+                    )
+                  }),
+                  _vm._v(" "),
+                  _c("li", {}, [
+                    _c(
+                      "button",
+                      {
+                        staticClass: "btn btn-info btn-block py-1",
+                        on: {
+                          click: function($event) {
+                            $event.preventDefault()
+                            _vm.updateOrder($event)
+                          }
                         }
-                      }
-                    },
-                    [_vm._v("Update Order")]
-                  )
-                ])
-              ],
-              2
-            )
+                      },
+                      [_vm._v("Update Order")]
+                    )
+                  ])
+                ],
+                2
+              )
+            ])
           ])
-        ])
-      : _vm._e()
+        : _vm._e()
+    ])
   ])
 }
 var staticRenderFns = [
@@ -14576,20 +14578,24 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("li", { staticClass: "clearfix" }, [
-      _c("div", { staticClass: "col-xs-1" }, [_c("strong", [_vm._v("Order")])]),
+    return _c("li", { staticClass: "clearfix row" }, [
+      _c("span", { staticClass: "col-1 inline" }, [
+        _c("strong", [_vm._v("Order")])
+      ]),
       _vm._v(" "),
-      _c("div", { staticClass: "col-xs-2" }, [_c("strong", [_vm._v("Uri")])]),
+      _c("span", { staticClass: "col-2 inline" }, [
+        _c("strong", [_vm._v("Uri")])
+      ]),
       _vm._v(" "),
-      _c("div", { staticClass: "col-xs-2" }, [
+      _c("span", { staticClass: "col-2 inline" }, [
         _c("strong", [_vm._v("Is Active")])
       ]),
       _vm._v(" "),
-      _c("div", { staticClass: "col-xs-2" }, [
+      _c("span", { staticClass: "col-2 inline" }, [
         _c("strong", [_vm._v("Is Restricted")])
       ]),
       _vm._v(" "),
-      _c("div", { staticClass: "col-xs-4" }, [
+      _c("span", { staticClass: "col-4 inline" }, [
         _c("strong", [_vm._v("Actions")])
       ])
     ])
@@ -16545,6 +16551,40 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 //import Extension from "anacreation-cms-content-extension"
 
@@ -16618,15 +16658,11 @@ var render = function() {
     },
     [
       _c(
-        "tabs",
-        { attrs: { tabs: _vm.getTabIds(_vm.languages) } },
+        "b-tabs",
         _vm._l(_vm.languages, function(language) {
           return _c(
-            "div",
-            {
-              attrs: { slot: _vm.getTabId(language) },
-              slot: _vm.getTabId(language)
-            },
+            "b-tab",
+            { key: language.id, attrs: { title: language.label } },
             [
               _vm.hasFile(language.id)
                 ? _c(

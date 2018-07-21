@@ -1,49 +1,51 @@
 <template>
 
-    <div class="page-children">
-        <h3 class="header">Children <a
+    <div class="card page-children">
+        <h3 class="card-header">Children <a
                 :href="createUrl"
                 class="pull-right btn btn-success btn-sm">Create Child</a></h3>
-        <hr>
+        <div class="card-body">
 
-        <ul class="list-unstyled row" v-if="internalChildren.length > 0">
-            <li class="clearfix">
-                <div class="col-xs-1"><strong>Order</strong></div>
-                <div class="col-xs-2"><strong>Uri</strong></div>
-                <div class="col-xs-2"><strong>Is Active</strong></div>
-                <div class="col-xs-2"><strong>Is Restricted</strong></div>
-                <div class="col-xs-4"><strong>Actions</strong></div>
-            </li>
-            <li><hr></li>
-            <li>
-                <ol class="list-unstyled children" id="children-list">
-                    <li class="child-item row"
-                        :data-id="child.id"
-                        v-for="(child, index) in internalChildren">
-                        <div class="col-xs-1" v-text="index+1"></div>
-                        <div class="col-xs-2" v-text="child.uri"></div>
-                        <div class="col-xs-2"
-                             v-text="child.is_active?'Yes':'No'"></div>
-                        <div class="col-xs-2"
-                             v-text="!child.is_restricted?'No':child.permission?child.permission.label:'Not Specified'"></div>
-                        <div class="col-xs-4 clearfix">
-                            <div class="btn-group btn-group-sm">
-                                    <button class="btn btn-primary"
-                                            @click.prevent="goToContentPage(child)">Content</button>
-                                    <button class="btn btn-info"
-                                            @click.prevent="goToEditPage(child)">Edit</button>
-                                    <button class="btn btn-danger"
-                                            @click.prevent="deleteChild(child)">Delete</button>
-                                </div>
-                        </div>
-                    </li>
-                    <li><button
-                            class="btn btn-info btn-block"
-                            @click.prevent="updateOrder">Update Order</button></li>
-                </ol>
-            </li>
-        </ul>
-  
+            <ul class="list-unstyled" v-if="internalChildren.length > 0">
+                <li class="clearfix row">
+                    <span class="col-1 inline"><strong>Order</strong></span>
+                    <span class="col-2 inline"><strong>Uri</strong></span>
+                    <span class="col-2 inline"><strong>Is Active</strong></span>
+                    <span class="col-2 inline"><strong>Is Restricted</strong></span>
+                    <span class="col-4 inline"><strong>Actions</strong></span>
+                </li>
+                <li><hr></li>
+                <li>
+                    <ol class="list-unstyled children px-1" id="children-list">
+                        <li class="child-item row"
+                            :data-id="child.id"
+                            v-for="(child, index) in internalChildren">
+                            <div class="col-1" v-text="index+1"></div>
+                            <div class="col-2" v-text="child.uri"></div>
+                            <div class="col-2"
+                                 v-text="child.is_active?'Yes':'No'"></div>
+                            <div class="col-2"
+                                 v-text="!child.is_restricted?'No':child.permission?child.permission.label:'Not Specified'"></div>
+                            <div class="col-4 clearfix">
+                                <div class="btn-group btn-group-sm">
+                                        <button class="btn btn-primary"
+                                                @click.prevent="goToContentPage(child)">Content</button>
+                                        <button class="btn btn-info"
+                                                @click.prevent="goToEditPage(child)">Edit</button>
+                                        <button class="btn btn-danger"
+                                                @click.prevent="deleteChild(child)">Delete</button>
+                                    </div>
+                            </div>
+                        </li>
+                        <li class=""><button
+                                class="btn btn-info btn-block py-1"
+                                @click.prevent="updateOrder">Update Order</button></li>
+                    </ol>
+                </li>
+            </ul>
+
+        </div>
+
     </div>
 
    
