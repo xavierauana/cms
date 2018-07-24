@@ -1,7 +1,8 @@
 <template>
         <base-content-block :identifier="content.identifier"
                             :editable="editable"
-                            :deleteable="deleteable" :type="type"
+                            :deleteable="deleteable"
+                            :type="type"
                             :languages="languages"
                             :changed="content.changed">
             <b-tabs>

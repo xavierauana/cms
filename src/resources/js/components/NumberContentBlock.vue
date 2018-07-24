@@ -1,6 +1,9 @@
 <template>
-    <base-content-block :identifier="content.identifier" :editable="editable"
-                        :deleteable="deleteable" :type="type"
+    <base-content-block :identifier="content.identifier"
+                        :editable="editable"
+                        :deleteable="deleteable"
+                        :languages="languages"
+                        :type="type"
                         :changed="content.changed">
          <b-tabs>
               <b-tab v-for="language in languages"
@@ -16,7 +19,6 @@
                          :placeholder="language.label + ' Content'"
                          :disabled="!editable"
                          content />
-
               </b-tab>
          </b-tabs>
 

@@ -1,6 +1,9 @@
 <template>
-    <base-content-block :identifier="content.identifier" :editable="editable"
-                        :deleteable="deleteable" :type="type"
+    <base-content-block :identifier="content.identifier"
+                        :editable="editable"
+                        :deleteable="deleteable"
+                        :type="type"
+                        :languages="languages"
                         :changed="content.changed">
         <b-tabs>
               <b-tab v-for="language in languages"

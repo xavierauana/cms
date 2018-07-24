@@ -24,14 +24,7 @@ import EncodedVideoContentBlock from "./components/EncodedVideoContentBlock"
 
 export default {
   install(Vue, options) {
-
-    Vue.mixin({
-                created() {
-                  console.log("plugin created in mixin")
-                }
-              })
     if (!window.NotificationCenter) window.NotificationCenter = new Vue()
-
     Vue.component('code-editor', CodeEditor);
     Vue.component('sortable-list', SortableList);
     Vue.component('content-blocks', ContentBlocks);
