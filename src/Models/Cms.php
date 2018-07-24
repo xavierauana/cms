@@ -41,6 +41,12 @@ class Cms
                         Route::group(['middleware' => 'auth:admin'],
                             function () {
 
+                                Route::post('logout', function () {
+                                    Auth::guard('admin')->logout();
+
+                                    return redirect("/");
+                                })->name('admin.logout');
+
                                 Route::get('profile',
                                     "HomeController@getProfile")
                                      ->name('profile');
@@ -225,8 +231,9 @@ class Cms
                 Route::get('user', function (Request $request) {
                     switch (ApiAuthentication::isAuthenticated()) {
                         case ApiAuthStatus::AUTHENTICATED:
-                            return response()->json(['user'       => $request->user(),
-                                                     'session_id' => session()->get('id')
+                            return response()->json([
+                                'user'       => $request->user(),
+                                'session_id' => session()->get('id')
                             ]);
                         default:
                             return response()->json('not login', 401);
@@ -234,8 +241,7 @@ class Cms
                 });
 
                 Route::get("{segment1?}/{segment2?}/{segment3?}/{segment4?}/{segment5?}",
-                    "Api\\RoutesController@resolve");
-
+                    "RoutesController@resolve");
 
             });
     }

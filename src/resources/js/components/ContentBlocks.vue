@@ -1,15 +1,13 @@
 <template>
     <div class="content-block">
-
         <b-card no-body class="mb-1">
-        <b-card-header header-tag="header" class="p-1" role="tab">
-            <h3 v-b-toggle.meta_content_section>Meta Content Sections</h3>
-          </b-card-header>
-        <b-collapse id="meta_content_section"
-                    role="tabpanel">
-        <b-card-body>
-
-             <component :is="parseContentType(block.type)"
+            <b-card-header header-tag="header" class="p-1" role="tab">
+                <h3 v-b-toggle.meta_content_section>Meta Content Sections</h3>
+            </b-card-header>
+            <b-collapse id="meta_content_section"
+                        role="tabpanel">
+                <b-card-body>
+                    <component :is="parseContentType(block.type)"
                         v-for="(block, index) in metaContent"
                         :key="index"
                         :content="block"
@@ -17,34 +15,30 @@
                         :editable="editable"
                         :deleteable="deleteable"
                         v-on:updateInput="inputUpdated"
-             ></component>
-
-        </b-card-body>
-      </b-collapse>
-     </b-card>
+                    ></component>
+                </b-card-body>
+            </b-collapse>
+        </b-card>
 
         <b-card no-body class="mb-1">
-        <b-card-header header-tag="header" class="p-1" role="tab">
-            <h3 v-b-toggle.general_content_section> Content Sections</h3>
-          </b-card-header>
-        <b-collapse id="general_content_section"
+            <b-card-header header-tag="header" class="p-1" role="tab">
+                <h3 v-b-toggle.general_content_section> Content Sections</h3>
+            </b-card-header>
+            <b-collapse id="general_content_section"
                     visible
                     role="tabpanel">
-        <b-card-body>
-
-              <component :is="parseContentType(block.type)"
+                <b-card-body>
+                    <component :is="parseContentType(block.type)"
                          v-for="(block, index) in notMetaContent"
                          :key="index"
                          :content="block"
                          :languages="languages"
                          :editable="editable"
                          :deleteable="deleteable"
-              ></component>
-
-        </b-card-body>
-      </b-collapse>
-     </b-card>
-
+                    ></component>
+                </b-card-body>
+            </b-collapse>
+        </b-card>
         <div class="row" v-if="editable && canAdd ">
             <div class="button-container col-xs-6 col-sm-4 col-md-3 col-lg-2"
                  v-for="type in Object.keys(types)">
@@ -52,9 +46,7 @@
                         @click.prevent="addContentBlock(type)">Add {{type | ucword}}</button>
             </div>
         </div>
-
     </div>
-
 </template>
 
 <script>
@@ -103,7 +95,6 @@
         },
       },
       filters : filters,
-
       created() {
         this.contentBlocks = this.contents ?
                              Object.keys(this.contents).map(key => Object.assign({
