@@ -12,7 +12,8 @@
 	
 	<!-- Styles -->
     <link href="{{ asset('css/cms/app.css') }}" rel="stylesheet">
-	@yield("stylesheets")
+    <script src="https://cdn.jsdelivr.net/npm/promise-polyfill@8/dist/polyfill.min.js"></script>
+    @yield("stylesheets")
 </head>
 <body>
     <div id="app">
