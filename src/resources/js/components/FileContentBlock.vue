@@ -6,8 +6,6 @@
               <b-tab v-for="language in languages"
                      :key="language.id"
                      :title="language.label">
-
-
                    <div class="img-container" style="position:relative"
                         v-if="hasFile(language.id)">
                     <p class="fileName">{{getFileName(language.id)}}</p>
@@ -27,12 +25,6 @@
                        :placeholder="language.label + ' Content'"
                        :disabled="!editable"
                        content />
-
-
-
-
-
-
               </b-tab>
          </b-tabs>
 

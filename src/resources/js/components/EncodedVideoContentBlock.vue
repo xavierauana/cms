@@ -2,18 +2,21 @@
     <base-content-block :identifier="content.identifier" :editable="editable"
                         :deleteable="deleteable" :type="type"
                         :changed="content.changed">
-        <tabs :tabs="getTabIds(languages)">
-            <div v-for="language in languages"
-                 :slot="getTabId(language)">
-                <div class="img-container" style="position:relative"
-                     v-if="getFile(language.id)">
-                    <img class="img-responsive"
-                         :src="getFile(language.id).link" />
+        <b-tabs>
+              <b-tab v-for="language in languages"
+                     :key="language.id"
+                     :title="language.label">
+                   <div class="img-container" style="position:relative"
+                        v-if="hasFile(language.id)">
+                    <p class="fileName">{{getFileName(language.id)}}</p>
                     <button class="btn btn-sm btn-danger"
-                            v-if="getFile(language.id).link.length > 0"
+                            v-if="hasFile(language.id)"
                             @click.prevent="removeCurrentFile(language.id)"
                             style="position: absolute; right:15px; bottom: 15px">Remove</button>
                 </div>
+
+                <progress-bar :progress="progress"
+                              v-show="progress > 0"></progress-bar>
                 <input type="file"
                        @change.once="getDirty"
                        class="form-control"
@@ -22,13 +25,13 @@
                        :placeholder="language.label + ' Content'"
                        :disabled="!editable"
                        content />
-            </div>
-        </tabs>
+              </b-tab>
+         </b-tabs>
     </base-content-block>
 </template>
 
 <script>
-     import Extension from "anacreation-cms-content-extension"
+     import Extension from "../packages/ContentBlockExtension"
 
      export default {
        extends: Extension,

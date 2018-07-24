@@ -1,7 +1,12 @@
 <script>
 export default {
   name   : "delete-item",
-  props  : ['url'],
+  props  : {
+    url: {
+      type    : String,
+      required: true
+    }
+  },
   methods: {
     deleteItem(id) {
       if (confirm('Are you sure you want to delete the item?')) {

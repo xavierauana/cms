@@ -12,7 +12,14 @@
 <script>
 export default {
   name    : "progress-bar",
-  props   : ['progress', 'type'],
+  props   : {
+    progress: {
+      type: Number
+    },
+    type    : {
+      type: String
+    },
+  },
   computed: {
     progressBarType() {
       return this.type ? `progress-bar-${this.type}` : "progress-bar-success"

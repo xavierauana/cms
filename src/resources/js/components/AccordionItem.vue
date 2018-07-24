@@ -22,7 +22,11 @@
 <script>
 export default {
   name : "accordion-item",
-  props: ['itemClass'],
+  props: {
+    itemClass: {
+      type: String
+    }
+  },
   data() {
     return {
       parentId: null,

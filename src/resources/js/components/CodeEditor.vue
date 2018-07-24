@@ -14,7 +14,14 @@
 <script>
     export default {
       name   : "code-editor",
-      props  : ['id', 'content_uri'],
+      props  : {
+        id         : {
+          type: String
+        },
+        content_uri: {
+          type: String
+        },
+      },
       data() {
         return {
           editor: null,

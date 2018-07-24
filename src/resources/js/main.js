@@ -6,7 +6,7 @@ import CodeEditor from "./components/CodeEditor"
 import SortableList from "./components/SortableList"
 import ContentBlocks from "./components/ContentBlocks"
 import PageChildren from "./components/PageChildren"
-import Tabs from "./components/Tabs"
+//import Tabs from "./components/Tabs"
 import AccordionContainer from "./components/AccordionContainer"
 import AccordionItem from "./components/AccordionItem"
 import Menu from "./components/Menu"
@@ -35,7 +35,7 @@ export default {
     Vue.component('code-editor', CodeEditor);
     Vue.component('sortable-list', SortableList);
     Vue.component('content-blocks', ContentBlocks);
-    Vue.component('tabs', Tabs);
+    //Vue.component('tabs', Tabs);
     Vue.component('accordion-container', AccordionContainer);
     Vue.component('accordion-item', AccordionItem);
     Vue.component('page-children', PageChildren);
