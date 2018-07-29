@@ -15,7 +15,7 @@
 		                :editable="{{auth()->user()->hasPermission('edit_content')}}=='1'"
 		                :deleteable="{{auth()->user()->hasPermission('delete_content')}}=='1'"
 		                :languages="{{$languages}}"
-		                :can-add="{{$page->editable}}=='1'"
+		                :can-add="{{$page->editable?:0}}=='1'"
 		                :types="{{json_encode((new \Anacreation\Cms\Services\ContentService())->getTypesForJs())}}"
 		></content-blocks>
 		

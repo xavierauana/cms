@@ -58,7 +58,7 @@ class RequestParser
     }
 
     private function createData($page) {
-        $data = $page->injectLayoutModels();
+        $data = $page->injectLayoutModels(null, $page->template);
         $data['page'] = $page;
         $data['language'] = new \Anacreation\Cms\Models\Language;
 

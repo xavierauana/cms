@@ -1,4 +1,7 @@
 <div class="container">
+	
+	@include("cms::components.alert")
+	
 	<div class="my-3 card">
 		<div class="card-header">
 	    {{$title}}

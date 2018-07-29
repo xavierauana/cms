@@ -3,7 +3,6 @@
 namespace Anacreation\Cms\Controllers;
 
 use Anacreation\Cms\Models\ContentIndex;
-use Anacreation\Cms\Models\Language;
 use Anacreation\Cms\Models\Page;
 use Anacreation\Cms\Models\Permission;
 use Anacreation\Cms\Services\ContentService;
@@ -25,7 +24,7 @@ class ContentsController extends Controller
     public function index(Page $page, LanguageService $langService) {
         $this->authorize('edit', $page);
 
-        $contents = $page->loadContents();
+        $contents = $page->loadContents(getActiveThemePath(), $page->template);
         $languages = $langService->activeLanguages;
 
         return view("cms::admin.contents.index",
@@ -38,10 +37,7 @@ class ContentsController extends Controller
      * @param \Anacreation\Cms\Models\Page $page
      * @return \Illuminate\Http\Response
      */
-    public
-    function create(
-        Page $page
-    ) {
+    public function create(Page $page) {
         $this->authorize('edit', $page);
 
         $layouts = getLayoutFiles()['layouts'];
@@ -64,10 +60,7 @@ class ContentsController extends Controller
      * @param \Anacreation\Cms\Models\Page $page
      * @return \Illuminate\Http\Response
      */
-    public
-    function store(
-        Request $request, Page $page
-    ) {
+    public function store(Request $request, Page $page) {
 
         $layouts = getLayoutFiles()['layouts'];
 
@@ -143,14 +136,8 @@ class ContentsController extends Controller
     ) {
         $this->authorize('update', $contentIndex);
 
-        $validatedData = $this->validate($request, [
-            'identifier'   => "required",
-            'lang_id'      => "required|in:" .
-                              implode(",",
-                                  Language::pluck('id')->toArray()),
-            'content'      => "nullable",
-            'content_type' => "required",
-        ]);
+        $validatedData = $this->validate($request,
+            $service->getUpdateValidationRules());
 
         $service->updateOrCreateContentIndex($page,
             $service->createContentObject($validatedData),

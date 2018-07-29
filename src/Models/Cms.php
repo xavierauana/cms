@@ -196,6 +196,14 @@ class Cms
                 })->name('set.locale');
 
             });
+
+        $plugins = app()->make("CmsPlugins");
+
+        foreach ($plugins as $pluginName => $params) {
+            if (isset($params["Routes"]) and is_callable($params["Routes"])) {
+                $params["Routes"]();
+            }
+        }
     }
 
     public static function dynamicRoutes(): void {
@@ -244,5 +252,48 @@ class Cms
                     "RoutesController@resolve");
 
             });
+    }
+
+
+    public static function registerCmsPlugins(
+        string $pluginName, string $name, string $entryPath
+    ) {
+        $plugins = app()->make('CmsPlugins');
+        $plugins[$pluginName] = [];
+        $plugins[$pluginName]["EntryPath"]['Path'] = $entryPath;
+        $plugins[$pluginName]["EntryPath"]['Name'] = $name;
+        app()->instance('CmsPlugins', $plugins);
+    }
+
+    public static function registerCmsPluginScheduler(
+        string $pluginName, callable $func
+    ) {
+        $plugins = app()->make('CmsPlugins');
+
+        if (isset($plugins[$pluginName])) {
+            $plugin = $plugins[$pluginName];
+            $plugin['Scheduler'] = $func;
+            $plugins[$pluginName] = $plugin;
+        }
+
+
+        app()->instance('CmsPlugins', $plugins);
+
+    }
+
+    public static function registerCmsPluginRoutes(
+        string $pluginName, callable $func
+    ) {
+        $plugins = app()->make('CmsPlugins');
+
+        if (isset($plugins[$pluginName])) {
+            $plugin = $plugins[$pluginName];
+            $plugin['Routes'] = $func;
+            $plugins[$pluginName] = $plugin;
+        }
+
+
+        app()->instance('CmsPlugins', $plugins);
+
     }
 }

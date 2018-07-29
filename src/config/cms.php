@@ -11,6 +11,7 @@ return [
     'content_type'           => [],
     'use_spark'              => false,
     'content_cache_duration' => 10,
+    'enable_scheduler'       => true,
     'bindings'               => [
         \Anacreation\Cms\Contracts\CmsPageInterface::class => \Anacreation\Cms\Models\Page::class
     ],

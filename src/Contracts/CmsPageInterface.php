@@ -14,5 +14,6 @@ interface CmsPageInterface
 {
     public function getActivePages(): Collection;
 
-    public function injectLayoutModels(): array;
+    public function injectLayoutModels(string $path = null, string $template
+    ): array;
 }

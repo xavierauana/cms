@@ -6,6 +6,7 @@ import CodeEditor from "./components/CodeEditor"
 import SortableList from "./components/SortableList"
 import ContentBlocks from "./components/ContentBlocks"
 import PageChildren from "./components/PageChildren"
+import BaseDateTimeInput from "./components/BaseDateTimeInput"
 //import Tabs from "./components/Tabs"
 import AccordionContainer from "./components/AccordionContainer"
 import AccordionItem from "./components/AccordionItem"
@@ -35,6 +36,7 @@ export default {
     Vue.component('menu-block', Menu);
     Vue.component('delete-item', DeleteItem);
     Vue.component('progress-bar', ProgressBar);
+    Vue.component('base-datetime', BaseDateTimeInput);
 
     //content blocks
     Vue.component('StringContent', StringContentBlock)

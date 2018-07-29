@@ -69,6 +69,17 @@ class ContentService
         }
     }
 
+    public function getUpdateValidationRules(): array {
+        return [
+            'identifier'   => "required",
+            'lang_id'      => "required|in:" .
+                              implode(",",
+                                  Language::pluck('id')->toArray()),
+            'content'      => "nullable",
+            'content_type' => "required",
+        ];
+    }
+
     /**
      * @param \Anacreation\Cms\Contracts\ContentGroupInterface $contentOwner
      * @param string                                           $identifier
@@ -148,6 +159,53 @@ class ContentService
     ): ContentObject {
         return new ContentObject($data['identifier'], $data['lang_id'],
             $data['content'], $data['content_type'], $file);
+    }
+
+    public function loadContentWithIdentifiers(
+        ContentGroupInterface $hasContent, array $identifiers
+    ) {
+        $contents = $hasContent->contentIndices()
+                               ->whereIn('identifier', $identifiers)
+                               ->get();
+
+        $contents = $contents->groupBy('identifier')->map(function (
+            $collection, $key
+        ) {
+            $data['type'] = null;
+            $data['content'] = null;
+
+            $collection->each(function (ContentIndex $ci) use (&$data
+            ) {
+                if ($data['type'] === null) {
+                    $data['type'] = $this->convertToJsString($ci->content_type);
+                }
+                $data['content'][] = [
+                    'lang_id' => $ci->lang_id,
+                    'content' => $ci->content->showBackend(),
+                ];
+            });
+
+            return $data;
+
+        })->toArray();
+
+        return $contents;
+
+    }
+
+    public function loadAdHocContent(
+        ContentGroupInterface $hasContent, array $predefinedContent
+    ): array {
+        $adHocContent = [];
+        $hasContent->contentIndices()
+                   ->select('identifier', 'content_type')->distinct()
+                   ->get()->each(function ($item) use (&$adHocContent) {
+                $adHocContent[$item->identifier]['type'] = $this->convertToJsString($item->content_type);
+            });;
+
+
+        return $predefinedContent ? array_merge($adHocContent,
+            $predefinedContent) : $adHocContent;
     }
 
     # region Private Methods

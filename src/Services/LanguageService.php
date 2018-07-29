@@ -5,7 +5,7 @@
  * Time: 10:32 PM
  */
 
-namespace Anacreation\CMS\Services;
+namespace Anacreation\Cms\Services;
 
 
 use Anacreation\Cms\CacheKey;

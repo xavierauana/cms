@@ -2,9 +2,11 @@
 
 namespace Anacreation\Cms;
 
+use Anacreation\Cms\Console\Kernel;
 use Anacreation\Cms\Handler\Handler;
 use Illuminate\Contracts\Debug\ExceptionHandler;
 use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\ServiceProvider;
 
 class CmsServiceProvider extends ServiceProvider
@@ -20,8 +22,6 @@ class CmsServiceProvider extends ServiceProvider
 
         $this->loadMigrationsFrom(__DIR__ . '/migrations');
 
-        $this->registerBindings();
-
         $this->views();
 
         $this->config();
@@ -29,6 +29,17 @@ class CmsServiceProvider extends ServiceProvider
         $this->defaultAsset();
 
         app()->bind(ExceptionHandler::class, Handler::class);
+
+        if (config('cms.enable_scheduler', false)) {
+            Log::info('enable scheduler');
+            app()->singleton('CmsScheduler', function ($app) {
+                $dispatcher = $app->make(\Illuminate\Contracts\Events\Dispatcher::class);
+
+                return new Kernel($app, $dispatcher);
+            });
+
+            app()->make('CmsScheduler');
+        }
 
     }
 
@@ -38,12 +49,15 @@ class CmsServiceProvider extends ServiceProvider
      * @return void
      */
     public function register() {
+
         $this->mergeConfigFrom(
             __DIR__ . '/config/cms.php', 'cms'
         );
         $this->mergeConfigFrom(
             __DIR__ . '/config/admin.php', 'admin'
         );
+
+        $this->registerBindings();
     }
 
     private function views() {
@@ -80,6 +94,11 @@ class CmsServiceProvider extends ServiceProvider
     }
 
     private function registerBindings() {
+
+        app()->singleton('CmsPlugins', function () {
+            return [];
+        });
+
         foreach (config("cms.bindings") as $abstract => $implementation) {
             app()->bind($abstract, $implementation);
         }
