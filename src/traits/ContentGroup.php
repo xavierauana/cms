@@ -99,6 +99,8 @@ trait ContentGroup
 
             $contents[$identifier] = $content;
         }
+
+        return $contents;
     }
 
     public function getContent(
