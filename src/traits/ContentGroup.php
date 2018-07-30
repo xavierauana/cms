@@ -87,6 +87,20 @@ trait ContentGroup
         return $predefinedContent;
     }
 
+    public function getContents(string $langCode = null) {
+
+        $identifiers = $this->contentIndices()
+                            ->pluck('identifier')
+                            ->unique()->values()->all();
+
+        $contents = [];
+        foreach ($identifiers as $identifier) {
+            $content = $this->getContent($identifier, "", $langCode);
+
+            $contents[$identifier] = $content;
+        }
+    }
+
     public function getContent(
         string $identifier, string $default = "", string $langCode = null,
         array $params = []
@@ -141,19 +155,14 @@ trait ContentGroup
 
     }
 
-    public
-    function getFile(
-        string $identifier
-    ): ?ContentTypeInterface {
+    public function getFile(string $identifier): ?ContentTypeInterface {
 
         $contentIndex = $this->getContentIndex($identifier, "file");
 
         return $contentIndex ? $contentIndex->content : null;
     }
 
-    public
-    function injectLayoutModels(
-        string $path = null, string $template
+    public function injectLayoutModels(string $path = null, string $template
     ): array {
         $vars = [];
         $templateParser = new TemplateParser();
