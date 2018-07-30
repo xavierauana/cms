@@ -6,6 +6,7 @@ use Anacreation\Cms\Models\Design;
 use Anacreation\Cms\Models\Page;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Artisan;
 
 class DesignsController extends Controller
 {
@@ -96,9 +97,12 @@ class DesignsController extends Controller
      */
     public function update(Request $request, string $type) {
         if ($request->ajax()) {
+
             $path = $this->getFilePath($request, $type);
 
             file_put_contents($path, $request->get('code'));
+
+            Artisan::call('view:clear -q');
 
             return response()->json(['status' => 'completed']);
         }
