@@ -42,6 +42,7 @@ class Cms
                             function () {
 
                                 Route::post('logout', function () {
+
                                     Auth::guard('admin')->logout();
 
                                     return redirect("/");

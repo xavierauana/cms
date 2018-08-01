@@ -21,9 +21,7 @@
             <div class="container">
 
                 <!-- Branding Image -->
-	                <a class="navbar-brand" href="{{ url('/') }}">
-                        A & A CMS
-                    </a>
+	                <a class="navbar-brand" href="{{ url('/') }}"> A & A CMS </a>
                 
                     
                     <div class="collapse navbar-collapse"
@@ -61,7 +59,7 @@
                                     <div class="dropdown-menu"
                                          aria-labelledby="navbarDropdown">
                                         <a class="dropdown-item"
-                                           href="{{ route('logout') }}"
+                                           href="#"
                                            onclick="event.preventDefault();
                                                          document.getElementById('logout-form').submit();">
                                             Logout
