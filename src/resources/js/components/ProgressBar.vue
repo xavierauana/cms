@@ -1,5 +1,5 @@
 <template>
-    <div class="progress">
+    <div class="progress my-3">
       <div class="progress-bar progress-bar-striped" :class="progressBarType"
            role="progressbar" :aria-valuenow="progress" aria-valuemin="0"
            aria-valuemax="100" :style="computedWidth">
