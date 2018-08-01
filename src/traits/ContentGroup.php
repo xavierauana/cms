@@ -92,13 +92,14 @@ trait ContentGroup
         $identifiers = $this->contentIndices()
                             ->pluck('identifier')
                             ->unique()->values()->all();
-
         $contents = [];
         foreach ($identifiers as $identifier) {
+
             $content = $this->getContent($identifier, "", $langCode);
 
             $contents[$identifier] = $content;
         }
+
 
         return $contents;
     }

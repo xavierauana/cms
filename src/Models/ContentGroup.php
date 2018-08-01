@@ -13,6 +13,6 @@ class ContentGroup extends Model implements ContentGroupInterface
     public function getContentCacheKey(
         string $langCode, string $contentIdentifier
     ): string {
-        // TODO: Implement getContentCacheKey() method.
+        return "content_group_{$this->id}";
     }
 }

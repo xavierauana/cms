@@ -21,6 +21,7 @@ use Anacreation\Cms\Models\ContentIndex;
 use Anacreation\Cms\Models\Language;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
 
 /**
  * Class ContentService
@@ -292,22 +293,20 @@ class ContentService
         ContentGroupInterface $contentOwner, ContentObject $contentObject
     ) {
 
-
         $language = (new LanguageService())->getLanguageById($contentObject->lang_id);
         $key = $contentOwner->getContentCacheKey($language->code,
             $contentObject->identifier);
 
-        \Debugbar::info("Invalidate Cache:" . $key);
-
         if (Cache::has($key)) {
+            Log::info("Invalidate Content Cache:" . $key);
             Cache::forget($key);
         }
     }
 
     /**
-     * @param array  $types
      * @param string $needle
-     * @return bool
+     * @param string $searchFor
+     * @return ContentTypeStruct|null
      */
     private function isAValidContentType(
         string $needle, string $searchFor = 'type'
