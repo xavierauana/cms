@@ -41,8 +41,8 @@
        name   : "encoded-video-content-block",
        data() {
          return {
-           type : 'encoded_video',
-           files: [],
+           type    : 'encoded_video',
+           files   : [],
            progress: 0
          }
        },
@@ -53,12 +53,18 @@
          getFile(languageId) {
            return _.find(this.files, {lang_id: languageId})
          },
+         getFileName(languageId) {
+           const file = this.getFile(languageId)
+
+           return file.src || ''
+         },
          setValue(data) {
-           let images = []
            _.forEach(data, item => {
-             images.push({lang_id: item.lang_id, link: item.content.link})
+             this.files.push({
+                               lang_id: item.lang_id,
+                               src    : item.content
+                             })
            })
-           this.files = images
          },
        }
      }
