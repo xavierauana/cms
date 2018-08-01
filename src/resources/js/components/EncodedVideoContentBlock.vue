@@ -43,6 +43,7 @@
          return {
            type : 'encoded_video',
            files: [],
+           progress: 0
          }
        },
        methods: {
