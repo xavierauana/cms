@@ -29,7 +29,6 @@ export default {
     Vue.component('code-editor', CodeEditor);
     Vue.component('sortable-list', SortableList);
     Vue.component('content-blocks', ContentBlocks);
-    //Vue.component('tabs', Tabs);
     Vue.component('accordion-container', AccordionContainer);
     Vue.component('accordion-item', AccordionItem);
     Vue.component('page-children', PageChildren);

@@ -1,6 +1,6 @@
 <template>
     <div class="content-block">
-        <b-card no-body class="mb-1">
+        <b-card no-body class="mb-1" v-if="metaContent.length">
             <b-card-header header-tag="header" class="p-1" role="tab">
                 <h3 v-b-toggle.meta_content_section>Meta Content Sections</h3>
             </b-card-header>
@@ -8,33 +8,33 @@
                         role="tabpanel">
                 <b-card-body>
                     <component :is="parseContentType(block.type)"
-                        v-for="(block, index) in metaContent"
-                        :key="index"
-                        :content="block"
-                        :languages="languages"
-                        :editable="editable"
-                        :deleteable="deleteable"
-                        v-on:updateInput="inputUpdated"
+                               v-for="(block, index) in metaContent"
+                               :key="index"
+                               :content="block"
+                               :languages="languages"
+                               :editable="editable"
+                               :deleteable="deleteable"
+                               v-on:updateInput="inputUpdated"
                     ></component>
                 </b-card-body>
             </b-collapse>
         </b-card>
 
-        <b-card no-body class="mb-1">
+        <b-card no-body class="mb-1" v-if="notMetaContent.length">
             <b-card-header header-tag="header" class="p-1" role="tab">
                 <h3 v-b-toggle.general_content_section> Content Sections</h3>
             </b-card-header>
             <b-collapse id="general_content_section"
-                    visible
-                    role="tabpanel">
+                        visible
+                        role="tabpanel">
                 <b-card-body>
                     <component :is="parseContentType(block.type)"
-                         v-for="(block, index) in notMetaContent"
-                         :key="index"
-                         :content="block"
-                         :languages="languages"
-                         :editable="editable"
-                         :deleteable="deleteable"
+                               v-for="(block, index) in notMetaContent"
+                               :key="index"
+                               :content="block"
+                               :languages="languages"
+                               :editable="editable"
+                               :deleteable="deleteable"
                     ></component>
                 </b-card-body>
             </b-collapse>
@@ -106,14 +106,11 @@
         NotificationCenter.$on(Events.CONTENT_GET_DIRTY, identifier => this.setContentBlockDirty(identifier, true))
         NotificationCenter.$on(Events.CONTENT_GET_CLEAN, identifier => this.setContentBlockDirty(identifier, false))
       },
-      methods: {
+      methods : {
         parseContentType(type) {
           return this.types[type] || null
         },
         addContentBlock(type) {
-          console.log('added, ', type)
-          console.log('types, ', this.types)
-          console.log('keys, ', Object.keys(this.types))
           if (Object.keys(this.types).indexOf(type) >= 0) {
             this.contentBlocks.push({
                                       type      : type,

@@ -25,6 +25,11 @@ class Page extends Model
         'permission_id',
         'is_restricted',
     ];
+    protected $casts = [
+        'is_active'     => 'Boolean',
+        'has_children'  => 'Boolean',
+        'is_restricted' => 'Boolean',
+    ];
 
     # region Relation
 

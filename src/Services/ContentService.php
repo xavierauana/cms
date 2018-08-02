@@ -30,7 +30,10 @@ use Illuminate\Support\Facades\Log;
 class ContentService
 {
     /**
-     *
+     * ContentTypes array keys are the default content types listed in
+     * _definition.dtd
+     * Class is the php class responsible for handling backend
+     * interaction Component is the vue front end component
      */
     private const ContentTypes = [
         'text'     => [

@@ -52,7 +52,7 @@ class TemplateParser
         foreach ($xml->content as $content) {
             if (!array_key_exists((string)$content->identifier, $contents)) {
                 $contents[(string)$content->identifier] = [];
-                $contents[(string)$content->identifier]['type'] = (string)$content->type;
+                $contents[(string)$content->identifier]['type'] = (string)$content['type'];
             }
         }
 
