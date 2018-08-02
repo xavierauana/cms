@@ -21,6 +21,7 @@ import FileContentBlock from "./components/FileContentBlock"
 import NumberContentBlock from "./components/NumberContentBlock"
 import BooleanContentBlock from "./components/BooleanContentBlock"
 import DatetimeContentBlock from "./components/DatetimeContentBlock"
+import DateContentBlock from "./components/DateContentBlock"
 import EncodedVideoContentBlock from "./components/EncodedVideoContentBlock"
 
 export default {
@@ -44,6 +45,7 @@ export default {
     Vue.component('NumberContent', NumberContentBlock)
     Vue.component('BooleanContent', BooleanContentBlock)
     Vue.component('DatetimeContent', DatetimeContentBlock)
+    Vue.component('DateContent', DateContentBlock)
     Vue.component('BaseContentBlock', BaseContentBlock)
     Vue.component('EncodedVideoContentBlock', EncodedVideoContentBlock)
   }
