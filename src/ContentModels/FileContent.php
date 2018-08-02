@@ -36,7 +36,7 @@ class FileContent extends Model implements ContentTypeInterface
         return $this;
     }
 
-    public function show(array $params = [])  {
+    public function show(array $params = []) {
         return $this->link;
     }
 
@@ -48,7 +48,7 @@ class FileContent extends Model implements ContentTypeInterface
     }
 
     private function isUploadFile($contentObject) {
-        return get_class($contentObject->content) === UploadedFile::class;
+        return $contentObject->file and get_class($contentObject->file) === UploadedFile::class;
     }
 
     /**

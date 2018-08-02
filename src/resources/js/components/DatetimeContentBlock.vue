@@ -29,9 +29,8 @@
 
     export default {
       extends: Extension,
-      name   : "datetime-content-block",
+      name   : "DatetimeContentBlock",
       mounted() {
-        console.log('datetime mounted')
         this.languages.map(language => this.getInputEl(language))
             .forEach(el => flatpickr(el, {
               enableTime: true,

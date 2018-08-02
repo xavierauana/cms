@@ -1,70 +1,49 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<!DOCTYPE layout [
-        <!ELEMENT layout (model*,content+)>
-        <!ATTLIST layout editable (true|false) "true">
-        <!ELEMENT content (identifier, type, value?)>
-        <!ELEMENT identifier (#PCDATA)>
-        <!ELEMENT value (#PCDATA)>
-        <!ELEMENT type (#PCDATA)>
-        <!ELEMENT editable (#PCDATA)>
-        <!ELEMENT model (class, name)>
-        <!ELEMENT class (#PCDATA)>
-        <!ELEMENT name (#PCDATA)>
-        <!ENTITY STRING_CONTENT "string">
-        <!ENTITY NUMBER_CONTENT "number">
-        <!ENTITY TEXT_CONTENT "text">
-        <!ENTITY DATE_CONTENT "date">
-        <!ENTITY FILE_CONTENT "file">
-        <!ENTITY BOOLEAN_CONTENT "boolean">
-        ]>
+
+<!DOCTYPE layout SYSTEM
+        "https://s3-ap-southeast-1.amazonaws.com/layout-demo-1/layout.dtd">
 
 <layout editable="false">
-    <model>
-        <class>App\User</class>
-        <name>user</name>
-    </model>
-    <model>
-        <class>App\Template</class>
-        <name>template</name>
-    </model>
-    <content>
+    <content type="string">
         <identifier>meta_title</identifier>
-        <type>&STRING_CONTENT;</type>
     </content>
-    <content>
+    <content type="string">
         <identifier>meta_keywords</identifier>
-        <type>&STRING_CONTENT;</type>
     </content>
-    <content>
+    <content type="string">
         <identifier>meta_description</identifier>
-        <type>&STRING_CONTENT;</type>
     </content>
-    <content>
+    <content type="string">
         <identifier>poster</identifier>
-        <type>&FILE_CONTENT;</type>
     </content>
-    <content>
-        <identifier>video</identifier>
-        <type>&STRING_CONTENT;</type>
+    <content type="file">
+        <identifier editable="true">video</identifier>
     </content>
-    <content>
+    <content type="date">
         <identifier>date</identifier>
-        <type>&STRING_CONTENT;</type>
     </content>
-    <content>
+    <content type="date">
+        <identifier>datet_1</identifier>
+    </content>
+    <content type="string">
         <identifier>title</identifier>
-        <type>&STRING_CONTENT;</type>
     </content>
-    <content>
+    <content type="string">
         <identifier>summary</identifier>
-        <type>&TEXT_CONTENT;</type>
     </content>
-    <content>
+    <content type="number">
+        <identifier>number</identifier>
+    </content>
+    <content type="text">
         <identifier>content</identifier>
-        <type>&TEXT_CONTENT;</type>
     </content>
-    <content>
+    <content type="file">
         <identifier>file</identifier>
-        <type>&FILE_CONTENT;</type>
+    </content>
+    <content type="encoded_video">
+        <identifier>encoded_file</identifier>
+    </content>
+    <content type="datetime">
+        <identifier>datetime</identifier>
     </content>
 </layout>

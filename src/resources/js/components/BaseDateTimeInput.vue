@@ -2,7 +2,7 @@
      <input type="text"
             class="form-control"
             :ref="`datetime-input-${_uid}`"
-            />
+     />
 </template>
 <script>
     import flatpickr from 'flatpickr'
