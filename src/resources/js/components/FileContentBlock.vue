@@ -36,56 +36,60 @@
 </template>
 
 <script>
-                                //import Extension from "anacreation-cms-content-extension"
-                                import Extension
-                                  from "../packages/ContentBlockExtension"
-                                import * as Events from "../EventNames"
+import Extension from "../packages/ContentBlockExtension"
+import * as Events from "../EventNames"
 
-                                export default {
-                                  extends: Extension,
-                                  name   : "FileContentBlock",
-                                  data() {
-                                    return {
-                                      type    : 'file',
-                                      files   : [],
-                                      progress: 0
-                                    }
-                                  },
-                                  mounted() {
-                                    NotificationCenter.$on(Events.UPLOAD_PROGRESS, this.updateProgressBar)
-                                  },
-                                  methods: {
-                                    updateProgressBar(payload) {
-                                      console.log('get notification for file component', payload)
-                                      if (payload.identifier === this.content.identifier) {
-                                        const totalLength = payload.progressEvent.lengthComputable ? payload.progressEvent.total : payload.progressEvent.target.getResponseHeader('content-length') || payload.progressEvent.target.getResponseHeader('x-decompressed-content-length');
-                                        console.log("onUploadProgress", totalLength);
-                                        if (totalLength !== null) {
-                                          this.progress = Math.round((payload.progressEvent.loaded * 100) / totalLength);
-                                        }
-                                      }
-                                    },
-                                    hasFile(languageId) {
-                                      return !!this.getFile(languageId)
-                                    },
-                                    getFile(languageId) {
-                                      return _.find(this.files, {lang_id: languageId})
-                                    },
-                                    getFileName(languageId) {
-                                      const file = this.getFile(languageId)
+export default {
+  extends: Extension,
+  name   : "FileContentBlock",
+  data() {
+    return {
+      type    : 'file',
+      files   : [],
+      progress: 0
+    }
+  },
+  mounted() {
+    NotificationCenter.$on(Events.UPLOAD_PROGRESS, this.updateProgressBar)
+  },
+  methods: {
+    updateProgressBar(payload) {
+      if (payload.identifier === this.content.identifier) {
+        const totalLength = this.getTotalLength()
+        if (totalLength !== null) {
+          this.progress = Math.round((payload.progressEvent.loaded * 100) / totalLength);
+        }
+      }
+    },
+    getTotalLength() {
+      if (payload.progressEvent.lengthComputable) {
+        return payload.progressEvent.total
+      } else {
+        return payload.progressEvent.target.getResponseHeader('content-length')
+          || payload.progressEvent.target.getResponseHeader('x-decompressed-content-length');
+      }
+    },
+    hasFile(languageId) {
+      const result = this.getFile(languageId)
 
-                                      return file.src || ''
-                                    },
-                                    setValue() {
-                                      _.forEach(this.content.content, item => {
-                                        this.files.push({
-                                                          lang_id: item.lang_id,
-                                                          src    : item.content
-                                                        })
-                                      })
-                                    },
-                                  }
-                                }
+      return result && result.src.length
+    },
+    getFile(languageId) {
+      return _.find(this.files, {lang_id: languageId})
+    },
+    getFileName(languageId) {
+      return this.getFile(languageId).src || ''
+    },
+    setValue() {
+      _.forEach(this.content.content, item => {
+        this.files.push({
+                          lang_id: item.lang_id,
+                          src    : item.content
+                        })
+      })
+    },
+  }
+}
 </script>
 
 <style>

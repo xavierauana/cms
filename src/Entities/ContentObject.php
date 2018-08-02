@@ -8,6 +8,8 @@
 namespace Anacreation\Cms\Entities;
 
 
+use Illuminate\Http\UploadedFile;
+
 class ContentObject
 {
     public $identifier;
@@ -18,19 +20,21 @@ class ContentObject
 
     /**
      * ContentObject constructor.
-     * @param $identifier
-     * @param $lang_id
-     * @param $content
-     * @param $content_type
+     * @param                                    $identifier
+     * @param                                    $lang_id
+     * @param                                    $content
+     * @param                                    $content_type
+     * @param UploadedFile|null                  $file
      */
     public function __construct(
-        $identifier, $lang_id, $content, $content_type, $file = null
+        $identifier, $lang_id, $content, $content_type,
+        UploadedFile $file = null
     ) {
         $this->identifier = $identifier;
         $this->lang_id = $lang_id;
         $this->content = $content;
         $this->content_type = $content_type;
-        $this->file = $file ?? null;
+        $this->file = $file;
     }
 
 

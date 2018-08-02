@@ -117,60 +117,42 @@ export default {
     parseDataFromInputs(input) {
 
       let inputTagName = input.tagName;
-      let data = {}
+      let data = {
+        identifier  : this.inputIdentifier,
+        content_type: this.type,
+        lang_id     : input.dataset.lang_id,
+      }
 
       switch (inputTagName) {
         case "TEXTAREA":
-          const id      = input.id,
-                editor  = CKEDITOR.instances[id],
-                content = editor.getData()
-
-          data = {
-            identifier  : this.inputIdentifier,
-            content_type: this.type,
-            lang_id     : input.dataset.lang_id,
-            content     : content,
-          }
+          data['content'] = CKEDITOR.instances[input.id].getData()
           break;
         case "SELECT":
-          data = {
-            identifier  : this.inputIdentifier,
-            content_type: this.type,
-            lang_id     : input.dataset.lang_id,
-            content     : input.value,
-          }
+          data['content'] = input.value
           break;
         default:
-          data = this.parseDataFromInputEl(input)
+          data = this.parseDataFromInputEl(input, data)
       }
       return data
     },
-    parseDataFromInputEl(input) {
-      let data = {}
+    parseDataFromInputEl(input, data) {
       switch (input.getAttribute('type').toLocaleLowerCase()) {
         case "file":
           let formData = new FormData()
-          formData.append('content', input.files[0])
-          formData.append('identifier', this.inputIdentifier)
-          formData.append('content_type', this.type)
-          formData.append('lang_id', input.dataset.lang_id)
+          const inputFile = input.files[0]
+          console.log(input.files)
+          console.log(inputFile)
+          formData.append('content', inputFile)
+          formData.append('identifier', data['identifier'])
+          formData.append('content_type', data['content_type'])
+          formData.append('lang_id', data['lang_id'])
           data = formData
           break
         case "checkbox":
-          data = {
-            identifier  : this.inputIdentifier,
-            content_type: this.type,
-            lang_id     : input.dataset.lang_id,
-            content     : input.checked ? input.value : "",
-          }
+          data["content"] = input.checked ? input.value : ""
           break
         default:
-          data = {
-            identifier  : this.inputIdentifier,
-            content_type: this.type,
-            lang_id     : input.dataset.lang_id,
-            content     : input.value
-          }
+          data["content"] = input.value
       }
       return data
     }

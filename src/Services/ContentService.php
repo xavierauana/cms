@@ -8,6 +8,7 @@
 namespace Anacreation\Cms\Services;
 
 use Anacreation\Cms\ContentModels\BooleanContent;
+use Anacreation\Cms\ContentModels\DateContent;
 use Anacreation\Cms\ContentModels\DatetimeContent;
 use Anacreation\Cms\ContentModels\FileContent;
 use Anacreation\Cms\ContentModels\NumberContent;
@@ -19,6 +20,7 @@ use Anacreation\Cms\Entities\ContentObject;
 use Anacreation\Cms\Exceptions\IncorrectContentTypeException;
 use Anacreation\Cms\Models\ContentIndex;
 use Anacreation\Cms\Models\Language;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
@@ -59,6 +61,10 @@ class ContentService
         'datetime' => [
             "class"     => DatetimeContent::class,
             "component" => "DatetimeContent"
+        ],
+        'date'     => [
+            "class"     => DateContent::class,
+            "component" => "DateContent"
         ],
     ];
 
@@ -126,38 +132,40 @@ class ContentService
 
     /**
      * @param \Anacreation\Cms\Contracts\ContentGroupInterface $contentOwner
-     * @param \Anacreation\CMS\Entities\ContentObject          $contentInput
+     * @param ContentObject                                    $contentObject
+     * @param UploadedFile|null                                $file
      * @throws \Anacreation\Cms\Exceptions\IncorrectContentTypeException
      */
     public function updateOrCreateContentIndex(
-        ContentGroupInterface $contentOwner, ContentObject $contentInput
+        ContentGroupInterface $contentOwner, ContentObject $contentObject
     ): void {
 
-        if (($contentType = $this->convertToContentTypeClass($contentInput->content_type)) === null) {
+        if (($contentType = $this->convertToContentTypeClass($contentObject->content_type)) === null) {
             throw new IncorrectContentTypeException();
         }
 
-        $this->invalidateContentCache($contentOwner, $contentInput);
+        $this->invalidateContentCache($contentOwner, $contentObject);
 
 
-        $index = $contentOwner->contentIndices()
-                              ->fetchIndex($contentInput->identifier,
-                                  $contentInput->lang_id)
-                              ->first();
+        $contentIndex = $contentOwner->contentIndices()
+                                     ->fetchIndex($contentObject->identifier,
+                                         $contentObject->lang_id)
+                                     ->first();
 
-        if ($this->contentTypeIsSameAsInputContentType($index, $contentType)) {
-            $index->content->updateContent($contentInput);
+        if ($this->contentTypeIsSameAsInputContentType($contentIndex,
+            $contentType)) {
+            $contentIndex->content->updateContent($contentObject);
         } else {
-            $this->createContent($contentOwner, $contentInput, $index,
+            $this->createContent($contentOwner, $contentObject, $contentIndex,
                 $contentType);
         };
 
     }
 
     /**
-     * @param array                              $data
-     * @param \Illuminate\Http\UploadedFile|null $file
-     * @return \Anacreation\Cms\Entities\ContentObject
+     * @param array             $data
+     * @param UploadedFile|null $file
+     * @return ContentObject
      */
     public function createContentObject(array $data, UploadedFile $file = null
     ): ContentObject {
@@ -212,6 +220,41 @@ class ContentService
             $predefinedContent) : $adHocContent;
     }
 
+    public function deleteContent(array $queryString, Builder $query): array {
+
+        if (isset($queryString['remove_content'])) {
+            if (isset($queryString['lang_id'])) {
+                $contentIndex = $query->whereLangId($queryString['lang_id'])
+                                      ->first();
+                if ($contentIndex) {
+                    $contentIndex
+                        ->content
+                        ->deleteContent($queryString);
+                    $content = "deleted";
+                } else {
+                    $content = "no content found";
+                }
+
+            } else {
+                $content = "no content index found";
+            }
+
+
+            $response = [
+                'status'  => 'completed',
+                'content' => $content
+            ];
+        } else {
+            $query->delete();
+
+            $response = [
+                'status' => 'completed',
+            ];
+        }
+
+        return $response;
+    }
+
     # region Private Methods
 
     /**
@@ -255,7 +298,7 @@ class ContentService
 
     /**
      * @param \Anacreation\Cms\Contracts\ContentGroupInterface $contentOwner
-     * @param \Anacreation\CMS\Entities\ContentObject          $contentInput
+     * @param ContentObject                                    $contentInput
      * @param                                                  $index
      * @param                                                  $contentType
      */
@@ -290,7 +333,7 @@ class ContentService
 
     /**
      * @param \Anacreation\Cms\Contracts\ContentGroupInterface $contentOwner
-     * @param \Anacreation\Cms\Entities\ContentObject          $contentObject
+     * @param ContentObject                                    $contentObject
      */
     private function invalidateContentCache(
         ContentGroupInterface $contentOwner, ContentObject $contentObject

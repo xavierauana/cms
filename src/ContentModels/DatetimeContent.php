@@ -12,6 +12,8 @@ class DatetimeContent extends Model implements ContentTypeInterface
 {
     use ContentType;
 
+    protected $table = 'datetime_contents';
+
     protected $dates = [
         'content'
     ];
@@ -33,9 +35,16 @@ class DatetimeContent extends Model implements ContentTypeInterface
     }
 
     public function show(array $params = []) {
-        Carbon::setLocale(app()->getLocale());
+        $locale = $params['locale'] ?? app()->getLocale();
+        $format = $params['$format'] ?? null;
 
-        return $this->content->toDayDateTimeString();
+        Carbon::setLocale($locale);
+
+        if ($format) {
+            return $this->content->format($format);
+        }
+
+        return $this->content->toDateTimeString();
     }
 
     public function deleteContent(array $query = null) {
