@@ -21,7 +21,8 @@
             <div class="container">
 
                 <!-- Branding Image -->
-	                <a class="navbar-brand" href="{{ url('/') }}"> A & A CMS </a>
+	                <a class="navbar-brand"
+	                   href="{{ url('/') }}"> A & A CMS </a>
                 
                     
                     <div class="collapse navbar-collapse"
@@ -86,14 +87,12 @@
                     </div>
             </div>
         </nav>
-	    
+	
 	    @yield('content')
     </div>
 
     <!-- Scripts -->
-    {{--<script src="{{asset("vendor/cms/ckeditor/ckeditor.js")}}"></script>--}}
-    {{--<script src="//cdn.ckeditor.com/4.6.2/full/ckeditor.js"></script>--}}
-    <script src="//cdn.ckeditor.com/4.6.2/standard/ckeditor.js"></script>
+    <script src="{{asset("vendor/cms/ckeditor/ckeditor.js")}}"></script>
     <script src="{{ asset('js/src-noconflict/ace.js') }}"></script>
     <script src="{{ asset('js/cms/manifest.js') }}"></script>
     <script src="{{ asset('js/cms/vendor.js') }}"></script>
