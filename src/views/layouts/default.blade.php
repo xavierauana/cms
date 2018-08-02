@@ -21,7 +21,8 @@
             <div class="container">
 
                 <!-- Branding Image -->
-	                <a class="navbar-brand" href="{{ url('/') }}"> A & A CMS </a>
+	                <a class="navbar-brand"
+	                   href="{{ url('/') }}"> A & A CMS </a>
                 
                     
                     <div class="collapse navbar-collapse"
@@ -86,7 +87,7 @@
                     </div>
             </div>
         </nav>
-	    
+	
 	    @yield('content')
     </div>
 
