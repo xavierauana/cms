@@ -105,12 +105,10 @@ class ContentsController extends Controller
     ) {
         $this->authorize('update', $contentIndex);
 
-        $validatedData = $this->validate($request,
+        $this->validate($request,
             $service->getUpdateValidationRules());
 
-        $service->updateOrCreateContentIndex($page,
-            $service->createContentObject($validatedData,
-                $request->file('content')));
+        $service->updateOrCreateContentIndex($page, $request);
 
         return response()->json("done");
     }
