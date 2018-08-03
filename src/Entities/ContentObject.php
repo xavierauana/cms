@@ -36,6 +36,4 @@ class ContentObject
         $this->content_type = $content_type;
         $this->file = $file;
     }
-
-
 }
