@@ -6,7 +6,6 @@ use Anacreation\Cms\Console\Kernel;
 use Anacreation\Cms\Handler\Handler;
 use Illuminate\Contracts\Debug\ExceptionHandler;
 use Illuminate\Support\Facades\Blade;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\ServiceProvider;
 
 class CmsServiceProvider extends ServiceProvider
@@ -31,7 +30,6 @@ class CmsServiceProvider extends ServiceProvider
         app()->bind(ExceptionHandler::class, Handler::class);
 
         if (config('cms.enable_scheduler', false)) {
-            Log::info('enable scheduler');
             app()->singleton('CmsScheduler', function ($app) {
                 $dispatcher = $app->make(\Illuminate\Contracts\Events\Dispatcher::class);
 

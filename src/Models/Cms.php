@@ -8,8 +8,10 @@
 namespace Anacreation\Cms\Models;
 
 
+use Anacreation\Cms\Contracts\ContentGroupInterface;
 use Anacreation\Cms\Services\ApiAuthentication;
 use Anacreation\Cms\Services\ApiAuthStatus;
+use Anacreation\Cms\Services\ContentService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -297,4 +299,5 @@ class Cms
         app()->instance('CmsPlugins', $plugins);
 
     }
+
 }
