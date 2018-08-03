@@ -160,7 +160,7 @@ trait ContentGroup
 
     public function getFile(string $identifier): ?ContentTypeInterface {
 
-        $contentIndex = $this->getContentIndex($identifier, "file");
+        $contentIndex = $this->getContentIndex($identifier);
 
         return $contentIndex ? $contentIndex->content : null;
     }

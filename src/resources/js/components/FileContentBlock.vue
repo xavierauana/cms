@@ -55,13 +55,13 @@ export default {
   methods: {
     updateProgressBar(payload) {
       if (payload.identifier === this.content.identifier) {
-        const totalLength = this.getTotalLength()
+        const totalLength = this.getTotalLength(payload)
         if (totalLength !== null) {
           this.progress = Math.round((payload.progressEvent.loaded * 100) / totalLength);
         }
       }
     },
-    getTotalLength() {
+    getTotalLength(payload) {
       if (payload.progressEvent.lengthComputable) {
         return payload.progressEvent.total
       } else {

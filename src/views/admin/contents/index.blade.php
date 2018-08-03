@@ -11,15 +11,7 @@
 		@endif
 		@endslot
 		
-		<content-blocks
-				:contents="{{ count($contents) > 0 ? json_encode($contents) : json_encode(new stdClass()) }}"
-				:editable="{{json_encode(auth()->user()->hasPermission('edit_content'))}}"
-				:deleteable="{{json_encode(auth()->user()->hasPermission('delete_content'))}}"
-				:languages="{{$languages}}"
-				:can-add="{{json_encode($page->editable)}}"
-				:types="{{json_encode((new \Anacreation\Cms\Services\ContentService())->getTypesForJs())}}"
-		></content-blocks>
-		
+		@include("cms::admin.contents.content_blocks",['contentOwner'=>$page])
 		
 		<page-children v-if="{{json_encode($page->has_children)}} "
 		               base-url="{{route('pages.index')}}"

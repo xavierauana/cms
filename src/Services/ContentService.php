@@ -21,7 +21,7 @@ use Anacreation\Cms\Exceptions\IncorrectContentTypeException;
 use Anacreation\Cms\Models\ContentIndex;
 use Anacreation\Cms\Models\Language;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Http\UploadedFile;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 
@@ -132,13 +132,14 @@ class ContentService
 
     /**
      * @param \Anacreation\Cms\Contracts\ContentGroupInterface $contentOwner
-     * @param ContentObject                                    $contentObject
-     * @param UploadedFile|null                                $file
+     * @param \Illuminate\Http\Request                         $request
      * @throws \Anacreation\Cms\Exceptions\IncorrectContentTypeException
      */
     public function updateOrCreateContentIndex(
-        ContentGroupInterface $contentOwner, ContentObject $contentObject
+        ContentGroupInterface $contentOwner, Request $request
     ): void {
+
+        $contentObject = $this->createContentObject($request);
 
         if (($contentType = $this->convertToContentTypeClass($contentObject->content_type)) === null) {
             throw new IncorrectContentTypeException();
@@ -163,14 +164,16 @@ class ContentService
     }
 
     /**
-     * @param array             $data
-     * @param UploadedFile|null $file
+     * @param \Illuminate\Http\Request $request
      * @return ContentObject
      */
-    public function createContentObject(array $data, UploadedFile $file = null
-    ): ContentObject {
-        return new ContentObject($data['identifier'], $data['lang_id'],
-            $data['content'], $data['content_type'], $file);
+    public function createContentObject(Request $request): ContentObject {
+        return new ContentObject(
+            $request->get('identifier'),
+            $request->get('lang_id'),
+            $request->get('content'),
+            $request->get('content_type'),
+            $request->file('content'));
     }
 
     public function loadContentWithIdentifiers(
