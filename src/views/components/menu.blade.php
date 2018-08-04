@@ -6,7 +6,8 @@
 		   style="color:white">Create Link in {{$menu->name}}</a>
 	@endslot
 	@slot('id'){{$menu->id}} @endslot
-	@slot('title'){{$menu->name}} <small> (Code: {{$menu->code}})</small> @endslot
+	@slot('title'){{$menu->name}}
+	<small> (Code: {{$menu->code}})</small> @endslot
 	<div class="sortable-list-container" id="menu_{{$menu->id}}_container">
 			@include('cms::components.links',['links'=>$menu->links, 'parentId'=>0])
 	</div>

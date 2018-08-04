@@ -96,6 +96,18 @@ class Link extends Model
         return $query->whereIsActive(true);
     }
 
+    public function scopeTopLevel(Builder $query): Builder {
+        return $query->whereParentId(0);
+    }
+
+    public function scopeOrder(Builder $query): Builder {
+        return $query->orderBy('order')->orderBy('created_at');
+    }
+
+    public function scopeDefault(Builder $query): Builder {
+        return $query->active()->topLevel()->order();
+    }
+
     public function getCacheKey(): string {
         return "link_" . $this->id;
     }

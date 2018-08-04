@@ -20,7 +20,7 @@ class MenusController extends Controller
 
         $menus = Menu::with([
             'links' => function ($query) {
-                $query->whereParentId(0)->orderBy('order', 'asc');
+                $query->whereParentId(0)->order();
             }
         ])->get();
 

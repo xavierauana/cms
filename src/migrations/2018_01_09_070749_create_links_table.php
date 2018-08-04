@@ -15,7 +15,7 @@ class CreateLinksTable extends Migration
         Schema::create('links', function (Blueprint $table) {
             $table->increments('id');
             $table->string('external_uri')->nullable();
-            $table->unsignedInteger('order')->default(0);
+            $table->unsignedInteger('order')->default(999);
             $table->boolean('is_active')->default(true);
             $table->unsignedInteger('menu_id');
             $table->unsignedInteger('parent_id')->default(0);

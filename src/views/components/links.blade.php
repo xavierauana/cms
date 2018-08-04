@@ -1,7 +1,7 @@
 <ol style="min-height: 10px;"
     data-parentId="{{$parentId}}"
     class="connectedSortable my-3">
-	@foreach($links as $link)
+@foreach($links as $link)
 		<li data-id="{{$link->id}}"
 		    data-order="{{$link->order}}"
 		    data-parentId="{{$parentId}}"
@@ -29,10 +29,7 @@
 				</div>
 				
 			</form>
-			
-		
-			
-			@include('cms::components.links',['links'=>$link->children()->orderBy('order')->get(), 'parentId'=>$link->id])
+			@include('cms::components.links',['links'=>$link->children()->order()->get(), 'parentId'=>$link->id])
 		</li>
 	@endforeach
 </ol>
