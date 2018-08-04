@@ -13,5 +13,5 @@
 		{!! $page->getContent('controlled_content') !!}
     </div>
 	@endif
-
+	
 @endsection

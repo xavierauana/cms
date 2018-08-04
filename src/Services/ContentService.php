@@ -141,6 +141,21 @@ class ContentService
 
         $contentObject = $this->createContentObject($request);
 
+        $this->updateOrCreateContentIndexWithContentObject($contentOwner,
+            $contentObject);
+
+    }
+
+    /**
+     * @param \Anacreation\Cms\Contracts\ContentGroupInterface $contentOwner
+     * @param \Anacreation\Cms\Entities\ContentObject          $contentObject
+     * @throws \Anacreation\Cms\Exceptions\IncorrectContentTypeException
+     */
+    public function updateOrCreateContentIndexWithContentObject(
+        ContentGroupInterface $contentOwner, ContentObject $contentObject
+    ): void {
+
+
         if (($contentType = $this->convertToContentTypeClass($contentObject->content_type)) === null) {
             throw new IncorrectContentTypeException();
         }
@@ -162,6 +177,7 @@ class ContentService
         };
 
     }
+
 
     /**
      * @param \Illuminate\Http\Request $request
