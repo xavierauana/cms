@@ -69,10 +69,9 @@ class LinksController extends Controller
     public function store(
         Menu $menu, Request $request, Page $page, Link $model
     ) {
-
         $this->authorize('store', $model);
 
-        $request = $this->sanitizeInputs($request);
+        $this->sanitizeInputs($request);
 
         $standard = $page->pluck('id')->toArray();
 
@@ -196,7 +195,8 @@ class LinksController extends Controller
         foreach ($validatedData['name'] as $data) {
             $contentObject = new ContentObject('link', $data['lang_id'],
                 $data['content'], 'string');
-            $service->updateOrCreateContentIndex($newLink, $contentObject);
+            $service->updateOrCreateContentIndexWithContentObject($newLink,
+                $contentObject);
         }
 
         return $newLink;
@@ -219,7 +219,8 @@ class LinksController extends Controller
         foreach ($validatedData['name'] as $data) {
             $contentObject = new ContentObject('link', $data['lang_id'],
                 $data['content'], 'string');
-            $service->updateOrCreateContentIndex($link, $contentObject);
+            $service->updateOrCreateContentIndexWithContentObject($link,
+                $contentObject);
         }
     }
 

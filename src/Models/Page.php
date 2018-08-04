@@ -5,6 +5,8 @@ namespace Anacreation\Cms\Models;
 use Anacreation\Cms\Contracts\CacheManageableInterface;
 use Anacreation\Cms\Contracts\CmsPageInterface;
 use Anacreation\Cms\Contracts\ContentGroupInterface;
+use Anacreation\Cms\Events\PageDeleted;
+use Anacreation\Cms\Events\PageSaved;
 use Anacreation\Cms\traits\ContentGroup;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -15,6 +17,12 @@ class Page extends Model
     implements ContentGroupInterface, CacheManageableInterface, CmsPageInterface
 {
     use ContentGroup;
+
+
+    protected $dispatchesEvents = [
+        'saved'   => PageSaved::class,
+        'deleted' => PageDeleted::class,
+    ];
 
     protected $fillable = [
         'uri',

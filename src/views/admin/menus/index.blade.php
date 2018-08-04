@@ -10,9 +10,11 @@
 		@endslot
 		
 		@component('cms::elements.accordion_container',['id'=>'menus_accrodion'])
+			
 			@foreach($menus as $index=>$menu)
 				@include("cms::components.menu")
 			@endforeach
+		
 		@endcomponent
 	
 	@endcomponent
