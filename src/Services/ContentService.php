@@ -12,6 +12,7 @@ use Anacreation\Cms\ContentModels\DateContent;
 use Anacreation\Cms\ContentModels\DatetimeContent;
 use Anacreation\Cms\ContentModels\FileContent;
 use Anacreation\Cms\ContentModels\NumberContent;
+use Anacreation\Cms\ContentModels\PlainTextContent;
 use Anacreation\Cms\ContentModels\StringContent;
 use Anacreation\Cms\ContentModels\TextContent;
 use Anacreation\Cms\Contracts\ContentGroupInterface;
@@ -38,31 +39,35 @@ class ContentService
      * interaction Component is the vue front end component
      */
     private const ContentTypes = [
-        'text'     => [
+        'plain_text' => [
+            "class"     => PlainTextContent::class,
+            "component" => "PlainTextContent"
+        ],
+        'text'       => [
             "class"     => TextContent::class,
             "component" => "TextContent"
         ],
-        'string'   => [
+        'string'     => [
             "class"     => StringContent::class,
             "component" => "StringContent"
         ],
-        'number'   => [
+        'number'     => [
             "class"     => NumberContent::class,
             "component" => "NumberContent"
         ],
-        'file'     => [
+        'file'       => [
             "class"     => FileContent::class,
             "component" => "FileContent"
         ],
-        'boolean'  => [
+        'boolean'    => [
             "class"     => BooleanContent::class,
             "component" => "BooleanContent"
         ],
-        'datetime' => [
+        'datetime'   => [
             "class"     => DatetimeContent::class,
             "component" => "DatetimeContent"
         ],
-        'date'     => [
+        'date'       => [
             "class"     => DateContent::class,
             "component" => "DateContent"
         ],

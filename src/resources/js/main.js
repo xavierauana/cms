@@ -2,12 +2,18 @@
 //window.ContentMixin = require("./mixins/ContentBlock.js")
 require('jquery-ui');
 
+window.Vue = window.Vue || require('vue')
+
+
+import vBootstrap from "bootstrap-vue"
+
+Vue.use(vBootstrap)
+
 import CodeEditor from "./components/CodeEditor"
 import SortableList from "./components/SortableList"
 import ContentBlocks from "./components/ContentBlocks"
 import PageChildren from "./components/PageChildren"
 import BaseDateTimeInput from "./components/BaseDateTimeInput"
-//import Tabs from "./components/Tabs"
 import AccordionContainer from "./components/AccordionContainer"
 import AccordionItem from "./components/AccordionItem"
 import Menu from "./components/Menu"
@@ -17,12 +23,15 @@ import DeleteItem from "./components/DeleteItem"
 import BaseContentBlock from "./components/BaseContentBlock"
 import StringContentBlock from "./components/StringContentBlock"
 import TextContentBlock from "./components/TextContentBlock"
+import PlainTextContentBlock from "./components/PlainTextContentBlock"
 import FileContentBlock from "./components/FileContentBlock"
 import NumberContentBlock from "./components/NumberContentBlock"
 import BooleanContentBlock from "./components/BooleanContentBlock"
 import DatetimeContentBlock from "./components/DatetimeContentBlock"
 import DateContentBlock from "./components/DateContentBlock"
 import EncodedVideoContentBlock from "./components/EncodedVideoContentBlock"
+
+
 
 export default {
   install(Vue, options) {
@@ -41,6 +50,7 @@ export default {
     //content blocks
     Vue.component('StringContent', StringContentBlock)
     Vue.component('TextContent', TextContentBlock)
+    Vue.component('PlainTextContent', PlainTextContentBlock)
     Vue.component('FileContent', FileContentBlock)
     Vue.component('NumberContent', NumberContentBlock)
     Vue.component('BooleanContent', BooleanContentBlock)

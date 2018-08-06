@@ -122,10 +122,10 @@ export default {
         content_type: this.type,
         lang_id     : input.dataset.lang_id,
       }
-
       switch (inputTagName) {
         case "TEXTAREA":
-          data['content'] = CKEDITOR.instances[input.id].getData()
+          const editor = CKEDITOR.instances[input.id]
+          data['content'] = editor ? editor.getData() : input.value
           break;
         case "SELECT":
           data['content'] = input.value
@@ -140,8 +140,6 @@ export default {
         case "file":
           let formData = new FormData()
           const inputFile = input.files[0]
-          console.log(input.files)
-          console.log(inputFile)
           formData.append('content', inputFile)
           formData.append('identifier', data['identifier'])
           formData.append('content_type', data['content_type'])
