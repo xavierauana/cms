@@ -17,9 +17,7 @@ window.Vue = require('vue');
 
 //import ContentBlocks from "anacreation-cms-content-blocks"
 import ContentBlocks from "./main"
-import vBootstrap from "bootstrap-vue"
 
-Vue.use(vBootstrap)
 Vue.use(ContentBlocks)
 
 const app = new Vue({
