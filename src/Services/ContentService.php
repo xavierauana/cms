@@ -244,7 +244,7 @@ class ContentService
             $predefinedContent) : $adHocContent;
     }
 
-    public function deleteContent(array $queryString, Builder $query): array {
+    public function deleteContent(array $queryString, $query): array {
 
         if (isset($queryString['remove_content'])) {
             if (isset($queryString['lang_id'])) {
