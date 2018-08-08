@@ -31,16 +31,16 @@
       extends: Extension,
       name   : "DatetimeContentBlock",
       mounted() {
-        this.languages.map(language => this.getInputEl(language))
-            .forEach(el => flatpickr(el, {
-              enableTime: true,
-              dateFormat: "Y-m-d H:i"
-            }))
-      },
-      data() {
-        return {
-          type: 'datetime'
-        }
+        _.chain(this.languages)
+         .map(language => this.getInputEl(language))
+         .forEach(el => flatpickr(el, {
+           enableTime: true,
+           dateFormat: "Y-m-d H:i",
+           onReady   : () => {
+             console.log('Datetime flickr is ready!')
+           }
+         }))
+         .value();
       }
     }
 </script>

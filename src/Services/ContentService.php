@@ -21,7 +21,6 @@ use Anacreation\Cms\Entities\ContentObject;
 use Anacreation\Cms\Exceptions\IncorrectContentTypeException;
 use Anacreation\Cms\Models\ContentIndex;
 use Anacreation\Cms\Models\Language;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;

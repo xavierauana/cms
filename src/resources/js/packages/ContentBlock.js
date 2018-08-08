@@ -22,6 +22,10 @@ export default {
       type    : Object,
       required: true
     },
+    type      : {
+      type    : String,
+      required: true
+    },
   },
   mounted() {
     this.setValue()

@@ -23,25 +23,24 @@
     </base-content-block>
 </template>
 <script>
+    import flatpickr from "flatpickr"
 
-    import flatpickr from 'flatpickr'
     import Extension from "../packages/ContentBlockExtension"
 
     export default {
       extends: Extension,
       name   : "DateContentBlock",
       mounted() {
-        console.log('datetime mounted')
-        this.languages.map(language => this.getInputEl(language))
-            .forEach(el => flatpickr(el, {
-              enableTime: false,
-              dateFormat: "Y-m-d"
-            }))
-      },
-      data() {
-        return {
-          type: 'date'
-        }
+        _.chain(this.languages)
+         .map(language => this.getInputEl(language))
+         .forEach(el => flatpickr(el, {
+           enableTime: false,
+           dateFormat: "Y-m-d",
+           onReady   : () => {
+             console.log('Date flickr is ready!')
+           }
+         }))
+         .value();
       }
     }
 </script>
