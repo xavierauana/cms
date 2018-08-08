@@ -29,10 +29,5 @@
     export default {
       extends: Extension,
       name   : "StringContentBlock",
-      data() {
-        return {
-          type: 'string'
-        }
-      }
     }
 </script>

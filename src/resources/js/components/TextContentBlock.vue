@@ -40,8 +40,7 @@
       name   : "TextContentBlock",
       data() {
         return {
-          editorClass: 'summernote-editor',
-          type       : 'text'
+          editorClass: 'summernote-editor'
         }
       },
       methods: {

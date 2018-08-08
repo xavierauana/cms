@@ -44,7 +44,6 @@ export default {
   name   : "FileContentBlock",
   data() {
     return {
-      type    : 'file',
       files   : [],
       progress: 0
     }

@@ -36,11 +36,6 @@
          if (this.identifier) {
            this.loadContent()
          }
-       },
-       data() {
-         return {
-           type: 'number'
-         }
        }
      }
 </script>
