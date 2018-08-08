@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="49c0659f-8551-4476-ba1f-1e75e8595f61" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/src/Services/ContentService.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Services/ContentService.php" afterDir="false" />
-    </list>
+    <list default="true" id="49c0659f-8551-4476-ba1f-1e75e8595f61" name="Default" comment="" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -15,20 +13,7 @@
     <pharConfigPath>$PROJECT_DIR$/composer.json</pharConfigPath>
   </component>
   <component name="FileEditorManager">
-    <leaf>
-      <file leaf-file-name="ContentService.php" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/Services/ContentService.php">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="240">
-              <caret line="246" column="54" selection-start-line="246" selection-start-column="54" selection-end-line="246" selection-end-column="54" />
-              <folding>
-                <element signature="e#7951#8936#0#PHP" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-    </leaf>
+    <leaf />
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -162,16 +147,15 @@
       <workItem from="1519781475673" duration="305000" />
       <workItem from="1523842222172" duration="28000" />
       <workItem from="1533220310672" duration="476000" />
-      <workItem from="1533533349467" duration="28000" />
+      <workItem from="1533533349467" duration="318000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="837000" />
+    <option name="totallyTimeSpent" value="1127000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="0" width="1280" height="800" extended-state="6" />
-    <editor active="true" />
     <layout>
       <window_info anchor="bottom" id="TODO" order="6" />
       <window_info id="DB Browser" order="3" />
@@ -237,11 +221,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/Services/ContentService.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="240">
-          <caret line="246" column="54" selection-start-line="246" selection-start-column="54" selection-end-line="246" selection-end-column="54" />
-          <folding>
-            <element signature="e#7951#8936#0#PHP" expanded="true" />
-          </folding>
+        <state relative-caret-position="2055">
+          <caret line="256" column="41" lean-forward="true" selection-start-line="256" selection-start-column="41" selection-end-line="256" selection-end-column="41" />
         </state>
       </provider>
     </entry>
