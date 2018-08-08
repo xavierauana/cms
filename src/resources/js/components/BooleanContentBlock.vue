@@ -20,7 +20,6 @@
                 <option value="1">Yes</option>
                 <option value="0">No</option>
             </select>
-
             </b-tab>
          </b-tabs>
     </base-content-block>
@@ -32,11 +31,6 @@
      export default {
        extends: Extension,
        name   : "boolean-content-block",
-       data() {
-         return {
-           type: 'boolean'
-         }
-       },
        methods: {
          setValue(data) {
            _.forEach(data, item => {

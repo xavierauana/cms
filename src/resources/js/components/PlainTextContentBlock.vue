@@ -29,11 +29,6 @@
 
     export default {
       extends: Extension,
-      name   : "PlainTextContentBlock",
-      data() {
-        return {
-          type: 'plain_text'
-        }
-      }
+      name   : "PlainTextContentBlock"
     }
 </script>
