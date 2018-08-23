@@ -23,7 +23,10 @@ class DesignsController extends Controller
     /**
      * Display a listing of the resource.
      *
+     * @param \Anacreation\Cms\Models\Design $design
+     * @param \Anacreation\Cms\Models\Page   $page
      * @return \Illuminate\Http\Response
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
 
 
@@ -50,7 +53,7 @@ class DesignsController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\Response
+     * @return void
      */
     public function store(Request $request) {
         //
@@ -60,7 +63,7 @@ class DesignsController extends Controller
      * Display the specified resource.
      *
      * @param  int $id
-     * @return \Illuminate\Http\Response
+     * @return void
      */
     public function show($id) {
         //
@@ -102,7 +105,7 @@ class DesignsController extends Controller
 
             file_put_contents($path, $request->get('code'));
 
-            Artisan::call('view:clear -q');
+            Artisan::call('view:clear', ['--quiet' => true]);
 
             return response()->json(['status' => 'completed']);
         }
