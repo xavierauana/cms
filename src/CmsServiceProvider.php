@@ -3,20 +3,19 @@
 namespace Anacreation\Cms;
 
 use Anacreation\Cms\Console\Kernel;
+use Anacreation\Cms\Contracts\CmsPageInterface as Page;
 use Anacreation\Cms\Handler\Handler;
 use Illuminate\Contracts\Debug\ExceptionHandler;
 use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 
 class CmsServiceProvider extends ServiceProvider
 {
     /**
      * Bootstrap any application services.
-     *
-     * @return void
      */
     public function boot() {
-
         Blade::doubleEncode();
 
         $this->loadMigrationsFrom(__DIR__ . '/migrations');
@@ -27,7 +26,7 @@ class CmsServiceProvider extends ServiceProvider
 
         $this->defaultAsset();
 
-        app()->bind(ExceptionHandler::class, Handler::class);
+        $this->registerBindings();
 
         if (config('cms.enable_scheduler', false)) {
             app()->singleton('CmsScheduler', function ($app) {
@@ -38,16 +37,12 @@ class CmsServiceProvider extends ServiceProvider
 
             app()->make('CmsScheduler');
         }
-
     }
 
     /**
      * Register any application services.
-     *
-     * @return void
      */
     public function register() {
-
         $this->mergeConfigFrom(
             __DIR__ . '/config/cms.php', 'cms'
         );
@@ -64,7 +59,6 @@ class CmsServiceProvider extends ServiceProvider
         $this->publishes([
             __DIR__ . '/views' => resource_path('views/vendor/cms'),
         ], 'backend_views');
-
     }
 
     private function config() {
@@ -87,18 +81,21 @@ class CmsServiceProvider extends ServiceProvider
         ], 'assets');
 
         $this->publishes([
-            __DIR__ . '/resources' => resource_path('cms')
+            __DIR__ . '/resources' => resource_path('cms'),
         ], 'dev');
     }
 
     private function registerBindings() {
+        app()->bind(ExceptionHandler::class, Handler::class);
+
+        foreach (config('cms.bindings') as $abstract => $implementation) {
+            app()->bind($abstract, $implementation);
+        }
+
+        Route::model('page', get_class(app(Page::class)));
 
         app()->singleton('CmsPlugins', function () {
             return [];
         });
-
-        foreach (config("cms.bindings") as $abstract => $implementation) {
-            app()->bind($abstract, $implementation);
-        }
     }
 }
