@@ -3,7 +3,7 @@
 namespace Anacreation\Cms\Controllers;
 
 use Anacreation\Cms\Models\ContentIndex;
-use Anacreation\Cms\Models\Page;
+use Anacreation\Cms\Contracts\CmsPageInterface as Page;
 use Anacreation\Cms\Models\Permission;
 use Anacreation\Cms\Services\ContentService;
 use Anacreation\Cms\Services\LanguageService;
@@ -15,35 +15,42 @@ class ContentsController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @param \Anacreation\Cms\Models\Page              $page
-     * @param \Anacreation\Cms\Services\LanguageService $langService
+     * @param \Anacreation\Cms\Contracts\CmsPageInterface $page
+     * @param \Anacreation\Cms\Services\LanguageService   $langService
+     *
      * @return \Illuminate\Http\Response
+     *
      * @throws \Illuminate\Auth\Access\AuthorizationException
      */
-    public function index(Page $page, LanguageService $langService) {
+    public function index(Page $page, LanguageService $langService)
+    {
         $this->authorize('edit', $page);
 
         $contents = $page->loadContents(getActiveThemePath(), $page->template);
+
         $languages = $langService->activeLanguages;
 
-        return view("cms::admin.contents.index",
+        return view('cms::admin.contents.index',
             compact('page', 'contents', 'languages'));
     }
 
     /**
      * Show the form for creating a new resource.
      *
-     * @param \Anacreation\Cms\Models\Page $page
+     * @param \Anacreation\Cms\Contracts\CmsPageInterface $page
+     *
      * @return \Illuminate\Http\Response
+     *
      * @throws \Illuminate\Auth\Access\AuthorizationException
      */
-    public function create(Page $page) {
+    public function create(Page $page)
+    {
         $this->authorize('edit', $page);
 
         $layouts = getLayoutFiles()['layouts'];
 
         $defaultPermission = [
-            0 => "Not Specified"
+            0 => 'Not Specified',
         ];
         $permissions = array_merge($defaultPermission,
             Permission::pluck('label', 'id')
@@ -56,21 +63,22 @@ class ContentsController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request    $request
-     * @param \Anacreation\Cms\Models\Page $page
+     * @param \Illuminate\Http\Request                    $request
+     * @param \Anacreation\Cms\Contracts\CmsPageInterface $page
+     *
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request, Page $page) {
-
+    public function store(Request $request, Page $page)
+    {
         $layouts = getLayoutFiles()['layouts'];
 
         $validatedInputs = $this->validate($request, [
-            'uri'           => 'required|unique:pages',
-            'template'      => 'required|in:' . implode(',', $layouts),
-            'has_children'  => 'required|boolean',
-            'is_active'     => 'required|boolean',
+            'uri' => 'required|unique:pages',
+            'template' => 'required|in:'.implode(',', $layouts),
+            'has_children' => 'required|boolean',
+            'is_active' => 'required|boolean',
             'is_restricted' => 'required|boolean',
-            'permission_id' => 'in:0,' . implode(Permission::pluck('id')
+            'permission_id' => 'in:0,'.implode(Permission::pluck('id')
                                                            ->toArray()),
         ]);
 
@@ -83,23 +91,24 @@ class ContentsController extends Controller
      * Show the form for editing the specified resource.
      *
      * @param  $contentIndex
+     *
      * @return \Illuminate\Http\Response
      */
-
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request                $request
+     * @param \Illuminate\Http\Request                 $request
      * @param \Anacreation\Cms\Models\Page             $page
      * @param \Anacreation\Cms\Models\ContentIndex     $contentIndex
      * @param \Anacreation\Cms\Services\ContentService $service
+     *
      * @return \Illuminate\Http\Response
+     *
      * @throws \Illuminate\Auth\Access\AuthorizationException
      * @throws \Anacreation\Cms\Exceptions\IncorrectContentTypeException
      */
-    public
-    function update(
+    public function update(
         Request $request, Page $page, ContentIndex $contentIndex,
         ContentService $service
     ) {
@@ -110,25 +119,25 @@ class ContentsController extends Controller
 
         $service->updateOrCreateContentIndex($page, $request);
 
-        return response()->json("done");
+        return response()->json('done');
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param \Anacreation\Cms\Models\Page             $page
-     * @param string                                   $contentIdentifier
-     * @param \Illuminate\Http\Request                 $request
-     * @param \Anacreation\Cms\Services\ContentService $service
+     * @param \Anacreation\Cms\Contracts\CmsPageInterface $page
+     * @param string                                      $contentIdentifier
+     * @param \Illuminate\Http\Request                    $request
+     * @param \Anacreation\Cms\Services\ContentService    $service
+     *
      * @return \Illuminate\Http\Response
+     *
      * @throws \Illuminate\Auth\Access\AuthorizationException
      */
-    public
-    function destroy(
+    public function destroy(
         Page $page, string $contentIdentifier, Request $request,
         ContentService $service
     ) {
-
         $this->authorize('delete', new ContentIndex());
 
         $queryString = $request->query();
@@ -140,10 +149,10 @@ class ContentsController extends Controller
 
         return response()->json(array_merge($responseData,
             ['identifier' => $contentIdentifier]));
-
     }
 
-    public function destroyChild(Page $page, int $childId) {
+    public function destroyChild(Page $page, int $childId)
+    {
         $this->authorize('delete', $page);
 
         if ($child = $page->children()->find($childId)) {
@@ -151,10 +160,8 @@ class ContentsController extends Controller
         }
 
         return response()->json([
-            'status'  => 'completed',
-            'childId' => $childId
+            'status' => 'completed',
+            'childId' => $childId,
         ]);
     }
-
-
 }
