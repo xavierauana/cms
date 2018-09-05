@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="49c0659f-8551-4476-ba1f-1e75e8595f61" name="Default" comment="" />
+    <list default="true" id="49c0659f-8551-4476-ba1f-1e75e8595f61" name="Default" comment="">
+      <change beforePath="$PROJECT_DIR$/src/Models/Page.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Models/Page.php" afterDir="false" />
+    </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -13,7 +15,17 @@
     <pharConfigPath>$PROJECT_DIR$/composer.json</pharConfigPath>
   </component>
   <component name="FileEditorManager">
-    <leaf />
+    <leaf>
+      <file leaf-file-name="Page.php" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/Models/Page.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="160">
+              <caret line="86" column="56" selection-start-line="86" selection-start-column="56" selection-end-line="86" selection-end-column="56" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+    </leaf>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -24,6 +36,7 @@
         <option value="$PROJECT_DIR$/composer.json" />
         <option value="$PROJECT_DIR$/src/traits/ContentGroup.php" />
         <option value="$PROJECT_DIR$/src/Services/ContentService.php" />
+        <option value="$PROJECT_DIR$/src/Models/Page.php" />
       </list>
     </option>
   </component>
@@ -46,7 +59,7 @@
     <handled-path value="$PROJECT_DIR$/src/resources/js/plugins/jqueryui/node_modules" />
   </component>
   <component name="PhpWorkspaceProjectConfiguration" interpreter_name="PHP 7.1.3" />
-  <component name="ProjectFrameBounds" extendedState="6" fullScreen="true">
+  <component name="ProjectFrameBounds" fullScreen="true">
     <option name="width" value="1280" />
     <option name="height" value="800" />
   </component>
@@ -148,20 +161,21 @@
       <workItem from="1523842222172" duration="28000" />
       <workItem from="1533220310672" duration="476000" />
       <workItem from="1533533349467" duration="318000" />
+      <workItem from="1536117870713" duration="16000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="1127000" />
+    <option name="totallyTimeSpent" value="1143000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="0" width="1280" height="800" extended-state="6" />
+    <editor active="true" />
     <layout>
       <window_info anchor="bottom" id="TODO" order="6" />
       <window_info id="DB Browser" order="3" />
       <window_info anchor="bottom" id="DB Execution Console" order="12" />
       <window_info anchor="bottom" id="Event Log" order="9" side_tool="true" />
-      <window_info anchor="bottom" id="Database Changes" order="12" />
       <window_info anchor="bottom" id="Run" order="2" />
       <window_info anchor="bottom" id="Version Control" order="10" />
       <window_info id="npm" order="3" side_tool="true" />
@@ -169,16 +183,17 @@
       <window_info anchor="bottom" id="Terminal" order="8" />
       <window_info anchor="right" id="Remote Host" order="4" />
       <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.1875" />
-      <window_info anchor="right" id="Database" order="3" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info id="Favorites" order="2" side_tool="true" weight="0.1875" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
+      <window_info anchor="bottom" id="Database Changes" order="12" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="bottom" id="Changes" order="7" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
+      <window_info anchor="right" id="Database" order="3" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.3288889" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Application Servers" order="11" />
@@ -223,6 +238,13 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="2055">
           <caret line="256" column="41" lean-forward="true" selection-start-line="256" selection-start-column="41" selection-end-line="256" selection-end-column="41" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Models/Page.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="160">
+          <caret line="86" column="56" selection-start-line="86" selection-start-column="56" selection-end-line="86" selection-end-column="56" />
         </state>
       </provider>
     </entry>
