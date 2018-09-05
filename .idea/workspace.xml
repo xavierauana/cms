@@ -19,8 +19,23 @@
       <file leaf-file-name="Page.php" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/Models/Page.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="160">
-              <caret line="86" column="56" selection-start-line="86" selection-start-column="56" selection-end-line="86" selection-end-column="56" />
+            <state relative-caret-position="1792">
+              <caret line="64" column="38" selection-start-line="64" selection-start-column="38" selection-end-line="64" selection-end-column="38" />
+              <folding>
+                <element signature="e#42#97#0#PHP" expanded="true" />
+                <element signature="e#1101#1202#0#PHP" expanded="true" />
+                <element signature="e#1208#1309#0#PHP" expanded="true" />
+                <element signature="e#1315#1413#0#PHP" expanded="true" />
+                <element signature="e#1459#1549#0#PHP" expanded="true" />
+                <element signature="e#1726#1830#0#PHP" expanded="true" />
+                <element signature="e#1836#1939#0#PHP" expanded="true" />
+                <element signature="e#1945#2063#0#PHP" expanded="true" />
+                <element signature="e#2167#2248#0#PHP" expanded="true" />
+                <element signature="e#2277#2460#0#PHP" expanded="true" />
+                <element signature="e#2451#2672#0#PHP" expanded="true" />
+                <element signature="e#2678#2973#0#PHP" expanded="true" />
+                <element signature="e#2979#3126#0#PHP" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -161,12 +176,12 @@
       <workItem from="1523842222172" duration="28000" />
       <workItem from="1533220310672" duration="476000" />
       <workItem from="1533533349467" duration="318000" />
-      <workItem from="1536117870713" duration="16000" />
+      <workItem from="1536117870713" duration="222000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="1143000" />
+    <option name="totallyTimeSpent" value="1349000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="0" width="1280" height="800" extended-state="6" />
@@ -243,8 +258,23 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/Models/Page.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="160">
-          <caret line="86" column="56" selection-start-line="86" selection-start-column="56" selection-end-line="86" selection-end-column="56" />
+        <state relative-caret-position="1792">
+          <caret line="64" column="38" selection-start-line="64" selection-start-column="38" selection-end-line="64" selection-end-column="38" />
+          <folding>
+            <element signature="e#42#97#0#PHP" expanded="true" />
+            <element signature="e#1101#1202#0#PHP" expanded="true" />
+            <element signature="e#1208#1309#0#PHP" expanded="true" />
+            <element signature="e#1315#1413#0#PHP" expanded="true" />
+            <element signature="e#1459#1549#0#PHP" expanded="true" />
+            <element signature="e#1726#1830#0#PHP" expanded="true" />
+            <element signature="e#1836#1939#0#PHP" expanded="true" />
+            <element signature="e#1945#2063#0#PHP" expanded="true" />
+            <element signature="e#2167#2248#0#PHP" expanded="true" />
+            <element signature="e#2277#2460#0#PHP" expanded="true" />
+            <element signature="e#2451#2672#0#PHP" expanded="true" />
+            <element signature="e#2678#2973#0#PHP" expanded="true" />
+            <element signature="e#2979#3126#0#PHP" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
