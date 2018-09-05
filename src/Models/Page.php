@@ -84,7 +84,7 @@ class Page extends Model implements ContentGroupInterface, CacheManageableInterf
 
     public function scopeSorted(Builder $query): Builder
     {
-        return $query->latest()->orderBy('order', 'asc');
+        return $query->orderBy('order', 'asc')->latest();
     }
 
     //endregion
