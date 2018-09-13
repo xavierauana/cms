@@ -76,6 +76,7 @@ class Page extends Model
         }
 
         return url($this->uri ?? "/");
+        
     }
 
     //endregion
