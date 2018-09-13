@@ -14,29 +14,41 @@ class SettingService
 {
 
     const cacheKeyPrefix = "cms_setting:";
+    const tableName      = "cms_settings";
 
-    static function set(string $key, string $value) {
+    /**
+     * SettingService constructor.
+     */
+    public function __construct() {
 
-        $cacheKey = self::getCacheKey($key);
+    }
 
-        if (DB::table("cms_settings")->whereKey($key)->count()) {
-            DB::table("cms_settings")->whereKey($key)->update(compact('value'));
+    public function set(string $key, string $value) {
+
+        $cacheKey = $this->getCacheKey($key);
+
+        if (DB::table(SettingService::tableName)->whereKey($key)->count()) {
+            DB::table(SettingService::tableName)->whereKey($key)
+              ->update(compact('value'));
 
             cache()->forget($cacheKey);
             cache()->forever($cacheKey, $value);
         } else {
-            DB::table("cms_settings")->insert(compact('key', 'value'));
+            $label = ucwords($key);
+            DB::table(SettingService::tableName)->insert(compact('label', 'key',
+                'value'));
 
             cache()->forever($cacheKey, $value);
         }
     }
 
-    static function get(string $key, string $default = null) {
-        $cacheKey = self::getCacheKey($key);
+    public function get(string $key, string $default = null) {
+        $cacheKey = $this->getCacheKey($key);
         if (cache()->has($cacheKey)) {
             $value = cache($cacheKey);
         } else {
-            $record = DB::table("cms_settings")->whereKey($key)->first();
+            $record = DB::table(SettingService::tableName)->whereKey($key)
+                        ->first();
             if ($record) {
                 cache()->forever($cacheKey, $record->value);
             }
@@ -51,9 +63,13 @@ class SettingService
      * @param string $key
      * @return string
      */
-    private static function getCacheKey(string $key): string {
-        $cacheKey = static::cacheKeyPrefix . $key;
+    private function getCacheKey(string $key): string {
+        $cacheKey = SettingService::cacheKeyPrefix . $key;
 
         return $cacheKey;
+    }
+
+    public function all() {
+
     }
 }
