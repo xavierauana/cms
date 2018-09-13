@@ -19,5 +19,6 @@ class CmsDatabaseSeeder extends Seeder
         $this->call(LinkSeeder::class);
         $this->call(PermissionSeeder::class);
         $this->call(RoleSeeder::class);
+        $this->call(DefaultSettingSeeder::class);
     }
 }

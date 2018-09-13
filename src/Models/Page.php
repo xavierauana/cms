@@ -66,6 +66,18 @@ class Page extends Model
             'Not Specified';
     }
 
+    public function getAbsoluteUrl(): string {
+
+        if ($parent = $this->parent) {
+            
+            $parentUrl = $parent->getAbsoluteUrl();
+
+            return $parentUrl . "/{$this->uri}";
+        }
+
+        return url($this->uri);
+    }
+
     //endregion
 
     // region Scope
