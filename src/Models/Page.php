@@ -69,6 +69,7 @@ class Page extends Model
     public function getAbsoluteUrl(): string {
 
         if ($parent = $this->parent) {
+            
             $parentUrl = $parent->getAbsoluteUrl();
 
             return $parentUrl . "/{$this->uri}";
