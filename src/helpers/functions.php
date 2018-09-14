@@ -2,8 +2,11 @@
 
 use Anacreation\Cms\Services\SettingService;
 
-function getActiveThemePath(): string {
-    return resource_path("views/themes/" . config("cms.active_theme"));
+if (!function_exists("getActiveThemePath")) {
+
+    function getActiveThemePath(): string {
+        return resource_path("views/themes/" . config("cms.active_theme"));
+    }
 }
 
 
@@ -23,6 +26,8 @@ if (!function_exists("setting")) {
 if (!function_exists("getAnalyticUrl")) {
     function getAnalyticUrl(string $url, string $source, array $param = null
     ): string {
+
+        /** @var AnalyticUrlBuilderInterface $builder */
         $builder = app(\Anacreation\Cms\Contracts\AnalyticUrlBuilderInterface::class);
 
         $builder->setUrl($url)
