@@ -15,7 +15,8 @@
 	"laravelcollective/html": "^5.5",
 	"lavary/laravel-menu": "^1.7",
 	"tymon/jwt-auth": "^0.5.12",
-	"maatwebsite/excel": "^3.0"
+	"maatwebsite/excel": "^3.0",
+	"anacreation/ga-url-builder": "~1.0"
   },
   "require-dev": {
 	"filp/whoops": "~2.0",

@@ -146,7 +146,6 @@ class ContentService
         $contentObject = $this->createContentObject($request);
 
 
-
         $this->updateOrCreateContentIndexWithContentObject($contentOwner,
             $contentObject);
 
@@ -166,7 +165,8 @@ class ContentService
             throw new IncorrectContentTypeException();
         }
 
-        $this->invalidateContentCache($contentOwner, $contentObject);
+        $this->invalidateContentCacheWithContentObject($contentOwner,
+            $contentObject);
 
 
         $contentIndex = $contentOwner->contentIndices()
@@ -360,18 +360,13 @@ class ContentService
      * @param \Anacreation\Cms\Contracts\ContentGroupInterface $contentOwner
      * @param ContentObject                                    $contentObject
      */
-    private function invalidateContentCache(
+    private function invalidateContentCacheWithContentObject(
         ContentGroupInterface $contentOwner, ContentObject $contentObject
     ) {
-
         $language = (new LanguageService())->getLanguageById($contentObject->lang_id);
-        $key = $contentOwner->getContentCacheKey($language->code,
-            $contentObject->identifier);
 
-        if (Cache::has($key)) {
-            Log::info("Invalidate Content Cache:" . $key);
-            Cache::forget($key);
-        }
+        $this->invalidateContentCache($contentOwner, $contentObject->identifier,
+            $language->code);
     }
 
     /**
@@ -409,6 +404,27 @@ class ContentService
     }
 
     # endregion
+
+
+    /**
+     * @param \Anacreation\Cms\Contracts\ContentGroupInterface $contentOwner
+     * @param string                                           $identifier
+     * @param string                                           $langCode
+     */
+    public function invalidateContentCache(
+        $contentOwner, string $identifier, string $langCode
+    ): void {
+
+        if ($contentOwner instanceof ContentGroupInterface) {
+
+            $key = $contentOwner->getContentCacheKey($langCode, $identifier);
+
+            if (Cache::has($key)) {
+                Log::info("Invalidate Content Cache:" . $key);
+                Cache::forget($key);
+            }
+        }
+    }
 
 
 }

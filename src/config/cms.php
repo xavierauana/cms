@@ -12,20 +12,9 @@ return [
     'content_cache_duration' => 10,
     'enable_scheduler'       => true,
     'bindings'               => [
-        \Anacreation\Cms\Contracts\CmsPageInterface::class => \Anacreation\Cms\Models\Page::class
+        \Anacreation\Cms\Contracts\CmsPageInterface::class            => \Anacreation\Cms\Models\Page::class,
+        \Anacreation\Cms\Contracts\AnalyticUrlBuilderInterface::class => \Anacreation\GAUrlBuilder\Builder::class,
     ],
     'single_login_session'   => false,
-    /**
-     * 'content_type'   =>  [
-     * 'encoded_video' => [
-     * 'class'     => \App\NewType::class,
-     * 'component' => "EncodedVideoContentBlock"
-     * ]
-     * ]
-     * content_type array keys are the default content types listed in
-     * _definition.dtd
-     * Class is the php class responsible for handling backend
-     * interaction Component is the vue front end component
-     */
     'content_type'           => [],
 ];
