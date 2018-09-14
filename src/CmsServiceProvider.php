@@ -3,8 +3,10 @@
 namespace Anacreation\Cms;
 
 use Anacreation\Cms\Console\Kernel;
+use Anacreation\Cms\Contracts\AnalyticUrlBuilderInterface;
 use Anacreation\Cms\Contracts\CmsPageInterface as Page;
 use Anacreation\Cms\Handler\Handler;
+use Anacreation\GAUrlBuilder\Builder;
 use Illuminate\Contracts\Debug\ExceptionHandler;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Route;
