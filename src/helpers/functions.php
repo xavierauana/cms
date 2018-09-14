@@ -7,12 +7,43 @@ function getActiveThemePath(): string {
 }
 
 
-function setting(string $key = null, $default) {
-    $service = app(SettingService::class);
+if (!function_exists("setting")) {
 
-    if ($key !== null) {
-        return $service->get($key, $default);
+    function setting(string $key = null, $default) {
+        $service = app(SettingService::class);
+
+        if ($key !== null) {
+            return $service->get($key, $default);
+        }
+
+        return $service;
     }
+}
 
-    return $service;
+if (!function_exists("getAnalyticUrl")) {
+    function getAnalyticUrl(string $url, string $source, array $param = null
+    ): string {
+        $builder = app(\Anacreation\Cms\Contracts\AnalyticUrlBuilderInterface::class);
+
+        $builder->setUrl($url)
+                ->setSource($source);
+
+        $availableKeys = [
+            'name',
+            'term',
+            'medium',
+            'content',
+        ];
+
+        foreach ($availableKeys as $key) {
+            if (in_array($key, array_keys($param))) {
+                $word = ucwords($key);
+                $method = "set{$word}";
+                $builder->$method($param[$key]);
+            }
+        }
+
+        return $builder->get();
+
+    }
 }
