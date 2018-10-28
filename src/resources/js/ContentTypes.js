@@ -6,6 +6,7 @@
 export const types = {
   file        : 'FileContent',
   text        : 'TextContent',
+  plain_text  : 'PlainTextContent',
   number      : 'NumberContent',
   string      : 'StringContent',
   datetime    : 'DatetimeContent',
