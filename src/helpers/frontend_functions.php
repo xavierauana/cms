@@ -18,32 +18,35 @@ use Anacreation\Cms\Models\Page;
  * @return array|null
  * @throws \Exception
  */
-function getPage(array $segments, array $vars = null): ?array {
+if (!function_exists('getPage')) {
+    function getPage(array $segments, array $vars = null): ?array {
 
-    list($pages, $pageRepo) = getActivePages($vars['page']);
+        list($pages, $pageRepo) = getActivePages($vars['page']);
 
-    if (isRequestHome($segments, $vars)) {
-        $id = $pages[""];
+        if (isRequestHome($segments, $vars)) {
+            $id = $pages[""];
 
-        if ($page = $pageRepo->with('children')->find($id)) {
-            return createData($page);
+            if ($page = $pageRepo->with('children')->find($id)) {
+                return createData($page);
+            }
+
+            throw new Exception("No Home Page");
+
+        } elseif ($id = getPageId($segments, $pages)) {
+
+            /** @var Page $page */
+            $page = isset($vars['page']) ? $vars['page']->children()
+                                                        ->with('children')
+                                                        ->find($id) :
+                $pageRepo->with('children')->find($id);
+
+            return ($segments = getNextRequestSegments($segments,
+                $page)) ? getPage($segments,
+                ['page' => $page]) : createData($page);
         }
 
-        throw new Exception("No Home Page");
-
-    } elseif ($id = getPageId($segments, $pages)) {
-
-        /** @var Page $page */
-        $page = isset($vars['page']) ? $vars['page']->children()
-                                                    ->with('children')
-                                                    ->find($id) :
-            $pageRepo->with('children')->find($id);
-
-        return ($segments = getNextRequestSegments($segments,
-            $page)) ? getPage($segments, ['page' => $page]) : createData($page);
+        return null;
     }
-
-    return null;
 }
 
 /**
@@ -51,14 +54,16 @@ function getPage(array $segments, array $vars = null): ?array {
  * @param       $page
  * @return bool
  */
-function getNextRequestSegments(array $segments, $page): ?array {
-    if ($page and isset($segments[1])) {
-        unset($segments[0]);
+if (!function_exists('getNextRequestSegments')) {
+    function getNextRequestSegments(array $segments, $page): ?array {
+        if ($page and isset($segments[1])) {
+            unset($segments[0]);
 
-        return array_values($segments);
+            return array_values($segments);
+        }
+
+        return null;
     }
-
-    return null;
 }
 
 /**
@@ -66,24 +71,28 @@ function getNextRequestSegments(array $segments, $page): ?array {
  * @param       $pages
  * @return bool
  */
-function getPageId(array $segments, $pages): ?int {
-    if (in_array($segments[0], array_keys($pages))) {
-        return $pages[$segments[0]];
-    }
+if (!function_exists('getPageId')) {
+    function getPageId(array $segments, $pages): ?int {
+        if (in_array($segments[0], array_keys($pages))) {
+            return $pages[$segments[0]];
+        }
 
-    return null;
+        return null;
+    }
 }
 
 /**
  * @param $page
  * @return mixed
  */
-function createData($page) {
-    $data = $page->injectLayoutModels();
-    $data['page'] = $page;
-    $data['language'] = new \Anacreation\Cms\Models\Language;
+if (!function_exists('createData')) {
+    function createData($page) {
+        $data = $page->injectLayoutModels();
+        $data['page'] = $page;
+        $data['language'] = new \Anacreation\Cms\Models\Language;
 
-    return $data;
+        return $data;
+    }
 }
 
 /**
@@ -91,79 +100,94 @@ function createData($page) {
  * @param array $vars
  * @return bool
  */
-function isRequestHome(array $segments, array $vars = null): bool {
-    return !isset($vars['page']) and count($segments) === 0;
+if (!function_exists('isRequestHome')) {
+    function isRequestHome(array $segments, array $vars = null): bool {
+        return !isset($vars['page']) and count($segments) === 0;
+    }
 }
 
 /**
  * @param \Anacreation\Cms\Models\Page $page
  * @return array
  */
-function getActivePages(Page $page = null): array {
+if (!function_exists('getActivePages')) {
+    function getActivePages(Page $page = null): array {
 
-    if ($page) {
-        $pageRepo = $page;
+        if ($page) {
+            $pageRepo = $page;
 
-        $query = $pageRepo->children();
+            $query = $pageRepo->children();
 
-    } else {
-        $pageRepo = app()->make(Page::class);
+        } else {
+            $pageRepo = app()->make(Page::class);
 
-        $query = $pageRepo->topLevel();
-    }
-
-    $allActivePageUri = $query->active()
-                              ->pluck('id', 'uri')
-                              ->toArray();
-
-    $removeSlash = function ($string) {
-        return str_replace("/", "", $string);
-    };
-
-    $pages = array_combine(
-        array_map($removeSlash, array_keys($allActivePageUri)),
-        array_values($allActivePageUri));
-
-    return array($pages, $pageRepo);
-}
-
-function getPageChildren(Page $page) {
-    return $page->children;
-}
-
-function getLayoutFiles() {
-    $layouts = scandir(getActiveThemePath() . "/layouts");
-
-    return sanitizeFileNames(compact("layouts"));
-
-}
-
-function getPartialFiles() {
-
-    $partials = scandir(getActiveThemePath() . "/partials");
-
-    return sanitizeFileNames(compact("partials"));
-
-}
-
-function getDesignFiles() {
-    return [
-        'layouts'  => getLayoutFiles()['layouts'],
-        'partials' => getPartialFiles()['partials']
-    ];
-}
-
-function sanitizeFileNames(array $items) {
-    foreach ($items as $key => $rawNameArray) {
-        $rawNameArray = array_slice($rawNameArray, 2);
-
-        foreach ($rawNameArray as $index => $fileName) {
-            $rawNameArray[$index] = str_replace('.blade.php', '',
-                $fileName);
+            $query = $pageRepo->topLevel();
         }
-        $items[$key] = $rawNameArray;
+
+        $allActivePageUri = $query->active()
+                                  ->pluck('id', 'uri')
+                                  ->toArray();
+
+        $removeSlash = function ($string) {
+            return str_replace("/", "", $string);
+        };
+
+        $pages = array_combine(
+            array_map($removeSlash, array_keys($allActivePageUri)),
+            array_values($allActivePageUri));
+
+        return array($pages, $pageRepo);
     }
-
-    return $items;
-
 }
+
+if (!function_exists('getPageChildren')) {
+    function getPageChildren(Page $page) {
+        return $page->children;
+    }
+}
+
+if (!function_exists('getLayoutFiles')) {
+    function getLayoutFiles() {
+        $layouts = scandir(getActiveThemePath() . "/layouts");
+
+        return sanitizeFileNames(compact("layouts"));
+
+    }
+}
+
+if (!function_exists('getPartialFiles')) {
+    function getPartialFiles() {
+
+        $partials = scandir(getActiveThemePath() . "/partials");
+
+        return sanitizeFileNames(compact("partials"));
+
+    }
+}
+
+if (!function_exists('getDesignFiles')) {
+    function getDesignFiles() {
+        return [
+            'layouts'  => getLayoutFiles()['layouts'],
+            'partials' => getPartialFiles()['partials']
+        ];
+    }
+}
+
+if (!function_exists('sanitizeFileNames')) {
+    function sanitizeFileNames(array $items) {
+        foreach ($items as $key => $rawNameArray) {
+            $rawNameArray = array_slice($rawNameArray, 2);
+
+            foreach ($rawNameArray as $index => $fileName) {
+                $rawNameArray[$index] = str_replace('.blade.php', '',
+                    $fileName);
+            }
+            $items[$key] = $rawNameArray;
+        }
+
+        return $items;
+
+    }
+}
+

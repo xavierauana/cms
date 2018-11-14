@@ -37,6 +37,11 @@ class Language extends Model implements CacheManageableInterface
         return $langService->defaultLanguage;
     }
 
+    public function getActiveLanguagesAttribute(): Collection {
+
+        return $this->activeLanguages();
+    }
+
     public function fallbackLanguage(): Relation {
         return $this->belongsTo(Language::class, 'fallback_language_id');
     }

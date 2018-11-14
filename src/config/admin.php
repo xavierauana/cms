@@ -44,14 +44,14 @@ return [
     // id, password, remember_token, created_at, updated_at are defaults fields
     'table'     => [
         [
-            'type'   => 'string',
             'name'   => 'name',
+            'type'   => 'string',
             'unique' => false,
             'index'  => false,
         ],
         [
-            'type'   => 'string',
             'name'   => 'email',
+            'type'   => 'string',
             'unique' => true,
         ]
     ]
