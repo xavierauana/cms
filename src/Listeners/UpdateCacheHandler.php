@@ -10,7 +10,7 @@ use Anacreation\Cms\Events\LanguageDeleted;
 use Anacreation\Cms\Events\LanguageSaved;
 use App\Events\Event;
 use Illuminate\Support\Facades\Cache;
-use PHPMailer\PHPMailer\Exception;
+use InvalidArgumentException;
 
 class UpdateCacheHandler
 {
@@ -49,7 +49,7 @@ class UpdateCacheHandler
         } elseif ($param instanceof CacheManageableInterface) {
             $key = $param->getCacheKey();
         } else {
-            throw new Exception("Invalided cache model!");
+            throw new InvalidArgumentException("Invalided cache model!");
         }
 
         if (Cache::has($key)) {

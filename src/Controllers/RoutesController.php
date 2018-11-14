@@ -11,8 +11,8 @@ namespace Anacreation\Cms\Controllers;
 use Anacreation\Cms\Exceptions\NoAuthenticationException;
 use Anacreation\Cms\Exceptions\PageNotFoundHttpException;
 use Anacreation\Cms\Exceptions\UnAuthorizedException;
-use Anacreation\Cms\Models\Language;
 use Anacreation\Cms\Models\Page;
+use Anacreation\Cms\Services\LanguageService;
 use Anacreation\Cms\Services\RequestParser;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -23,7 +23,7 @@ class RoutesController extends Controller
 {
     public function resolve(Request $request, RequestParser $parser) {
 
-        $this->setLocale();
+        $this->setLocale($request);
 
         if ($request->ajax()) {
             return $this->parseAjax();
@@ -33,22 +33,17 @@ class RoutesController extends Controller
 
     }
 
-    private function setLocale(): void {
+    private function setLocale(Request $request): void {
 
         if (!session()->has("id")) {
             session()->put("id", str_random(64));
         }
 
-        if (session()->has('locale')) {
-            $sessionLocale = session()->get('locale');
+        $checkLocale = $request->get('locale') ?? session()->get('locale');
 
-            $locale = in_array($sessionLocale,
-                Language::active()->pluck('code')
-                        ->toArray()) ? $sessionLocale : optional(Language::whereIsActive(true)
-                                                                         ->first())->code;
+        $locale = $this->getLocale($checkLocale);
 
-            app()->setLocale($locale);
-        }
+        app()->setLocale($locale);
     }
 
     private function constructView(Page $page, $vars): View {
@@ -114,5 +109,27 @@ class RoutesController extends Controller
      */
     private function parseAjax() {
         throw new PageNotFoundHttpException();
+    }
+
+    /**
+     * @param $checkLocale
+     * @return mixed
+     */
+    private function getLocale(string $checkLocale = null): string {
+
+        $service = (new LanguageService);
+        $defaultLanguage = $service->defaultLanguage;
+
+        if ($checkLocale === null) {
+            return $defaultLanguage->code;
+        }
+
+        $activeLanguages = $service->activeLanguages;
+
+        $locale = in_array($checkLocale,
+            $activeLanguages->pluck('code')
+                            ->toArray()) ? $checkLocale : $defaultLanguage->code;
+
+        return $locale;
     }
 }
