@@ -296,7 +296,7 @@ class ContentService
         $key = "contentIndex_{$language->id}_{$identifier}";
 
         if (Cache::has($key)) {
-            return = Cache::get($key);
+            return Cache::get($key);
         }
 
         $index = $contentOwner->contentIndices()
