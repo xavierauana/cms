@@ -292,12 +292,44 @@ class ContentService
         ContentGroupInterface $contentOwner, Language $language,
         string $identifier
     ): ?ContentIndex {
-        return $contentOwner->contentIndices()
-                            ->fetchIndex($identifier, $language->id)
-                            ->first() ??
-               $contentOwner->contentIndices()->fetchIndex($identifier,
-                   $language->fallbackLanguage->id)
-                            ->first();
+
+        $key = "contentIndex_{$language->id}_{$identifier}";
+
+        if (Cache::has($key)) {
+            return = Cache::get($key);
+        }
+
+        $index = $contentOwner->contentIndices()
+                              ->with('content')
+                              ->fetchIndex($identifier, $language->id)
+                              ->first();
+
+        if ($index) {
+
+            Cache::put($key, $index, config('cms.content_cache_duration'));
+
+            return $index;
+        }
+
+        $fallBackKey = "contentIndex_{$language->fallbackLanguage->id}_{$identifier}";
+
+        if (Cache::has($fallBackKey)) {
+            return Cache::get($fallBackKey);
+        }
+
+        $fallBackIndex = $contentOwner->contentIndices()
+                                      ->with('content')
+                                      ->fetchIndex($identifier,
+                                          $language->fallbackLanguage->id)
+                                      ->first();
+
+        if ($fallBackIndex) {
+
+            Cache::put($fallBackKey, $fallBackIndex,
+                config('cms.content_cache_duration'));
+
+            return $index;
+        }
     }
 
     /**
