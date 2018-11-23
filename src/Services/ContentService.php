@@ -292,8 +292,8 @@ class ContentService
         ContentGroupInterface $contentOwner, Language $language,
         string $identifier
     ): ?ContentIndex {
-
-        $key = "contentIndex_{$language->id}_{$identifier}";
+        
+        $key = $contentOwner->getContentCacheKey($language->code, $identifier);
 
         if (Cache::has($key)) {
             return Cache::get($key);
