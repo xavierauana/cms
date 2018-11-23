@@ -26,11 +26,17 @@ class Language extends Model implements CacheManageableInterface
         'deleted' => LanguageDeleted::class,
     ];
 
+    // Relation
+    public function fallbackLanguage(): Relation {
+        return $this->belongsTo(Language::class, 'fallback_language_id');
+    }
 
+    // Scope
     public function scopeActive(Builder $query): Builder {
         return $query->whereIsActive(true);
     }
 
+    // Accessor
     public function getDefaultLanguageAttribute(): Language {
         $langService = new LanguageService();
 
@@ -42,15 +48,12 @@ class Language extends Model implements CacheManageableInterface
         return $this->activeLanguages();
     }
 
-    public function fallbackLanguage(): Relation {
-        return $this->belongsTo(Language::class, 'fallback_language_id');
-    }
-
     public function getFallbackLanguageAttribute(): Language {
-        return $this->fallbackLanguage()->first() ?? $this->whereIsDefault(true)
-                                                          ->firstOrFail();
+        return $this->fallbackLanguage ?? $this->defaultLanguage;
     }
 
+    // Helpers
+    
     public function getCacheKey(): string {
         return "language_" . $this->id;
     }

@@ -83,6 +83,27 @@ class ContentService
         }
     }
 
+    private static function getCacheContentIndexWithKey(
+        string $key, ContentGroupInterface $contentOwner, string $identifier,
+        Language $language
+    ): ?ContentIndex {
+
+        if (Cache::has($key)) {
+            return Cache::get($key);
+        }
+
+        $index = $contentOwner->contentIndices()
+                              ->with('content')
+                              ->fetchIndex($identifier, $language->id)
+                              ->first();
+
+        if ($index) {
+            Cache::put($key, $index, config('cms.content_cache_duration'));
+        }
+
+        return $index;
+    }
+
     public function getUpdateValidationRules(): array {
         return [
             'identifier'   => "required",
@@ -292,46 +313,26 @@ class ContentService
         ContentGroupInterface $contentOwner, Language $language,
         string $identifier
     ): ?ContentIndex {
-        
-        $key = $contentOwner->getContentCacheKey($language->code, $identifier);
 
-        if (Cache::has($key)) {
-            return Cache::get($key);
-        }
+        $key = "contentIndex_" . $contentOwner->getContentCacheKey($language->code,
+                $identifier);
 
-        $index = $contentOwner->contentIndices()
-                              ->with('content')
-                              ->fetchIndex($identifier, $language->id)
-                              ->first();
+        $index = static::getCacheContentIndexWithKey($key, $contentOwner,
+            $identifier, $language);
 
         if ($index) {
-
-            Cache::put($key, $index, config('cms.content_cache_duration'));
-
             return $index;
         }
 
-        $fallBackKey = "contentIndex_{$language->fallbackLanguage->id}_{$identifier}";
+        $fallBackKey = "contentIndex_" . $contentOwner->getContentCacheKey($language->fallbackLanguage->code,
+                $identifier);
 
-        if (Cache::has($fallBackKey)) {
-            return Cache::get($fallBackKey);
-        }
+        $fallBackIndex = static::getCacheContentIndexWithKey($fallBackKey,
+            $contentOwner,
+            $identifier, $language->fallbackLanguage);
 
-        $fallBackIndex = $contentOwner->contentIndices()
-                                      ->with('content')
-                                      ->fetchIndex($identifier,
-                                          $language->fallbackLanguage->id)
-                                      ->first();
+        return $fallBackIndex;
 
-        if ($fallBackIndex) {
-
-            Cache::put($fallBackKey, $fallBackIndex,
-                config('cms.content_cache_duration'));
-
-            return $index;
-        }
-
-        return null;
     }
 
     /**
