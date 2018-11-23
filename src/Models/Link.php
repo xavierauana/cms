@@ -72,7 +72,6 @@ class Link extends Model
 
             return $ci->content->show();
         } catch (\Exception $e) {
-            \Debugbar::info('Cannot find CI for link:' . $this->uri . " with languageCode:" . $langCode);
             $language = (new LanguageService())->getFallbackLanguage($langCode);
 
             return $this->getNameAttribute($language->code);
