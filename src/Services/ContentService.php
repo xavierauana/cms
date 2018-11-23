@@ -330,6 +330,8 @@ class ContentService
 
             return $index;
         }
+
+        return null;
     }
 
     /**
