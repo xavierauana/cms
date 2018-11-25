@@ -2,8 +2,6 @@
 
 namespace Anacreation\Cms\Controllers;
 
-use Anacreation\Cms\Events\MenuDeleted;
-use Anacreation\Cms\Events\MenuSaved;
 use Anacreation\Cms\Models\Menu;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;

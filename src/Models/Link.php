@@ -6,7 +6,6 @@ use Anacreation\Cms\Contracts\CacheManageableInterface;
 use Anacreation\Cms\Contracts\ContentGroupInterface;
 use Anacreation\Cms\Events\LinkDeleted;
 use Anacreation\Cms\Events\LinkSaved;
-use Anacreation\Cms\Services\ContentService;
 use Anacreation\CMS\Services\LanguageService;
 use Anacreation\Cms\traits\ContentGroup;
 use Illuminate\Database\Eloquent\Builder;
@@ -36,6 +35,8 @@ class Link extends Model
         'uri',
         'absoluteUri'
     ];
+
+    public const Identifier = "link";
 
     // Relation
     public function menu(): Relation {
@@ -67,15 +68,16 @@ class Link extends Model
     public function getNameAttribute(string $langCode = null): string {
 
         $langCode = $langCode ?? app()->getLocale();
-        try {
-            $ci = ContentService::getContentIndex($this, 'link', $langCode);
 
-            return $ci->content->show();
-        } catch (\Exception $e) {
-            $language = (new LanguageService())->getFallbackLanguage($langCode);
+        $name = $this->getContent(Link::Identifier, "", $langCode);
 
-            return $this->getNameAttribute($language->code);
+        if ($name) {
+            return $name;
         }
+
+        $language = (new LanguageService())->getFallbackLanguage($langCode);
+
+        return $this->getNameAttribute($language->code);
 
     }
 
@@ -114,6 +116,6 @@ class Link extends Model
     public function getContentCacheKey(
         string $langCode, string $contentIdentifier
     ): string {
-        return $this->getCacheKey() . "_" . $langCode . "_" . $contentIdentifier;
+        return $this->getCacheKey() . "_" . $langCode . "_" . Link::Identifier;
     }
 }
