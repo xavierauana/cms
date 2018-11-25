@@ -2,6 +2,7 @@
 
 namespace Anacreation\Cms\Models;
 
+use Anacreation\Cms\CacheKey;
 use Anacreation\Cms\Contracts\CacheManageableInterface;
 use Anacreation\Cms\Contracts\CmsPageInterface;
 use Anacreation\Cms\Contracts\ContentGroupInterface;
@@ -76,7 +77,7 @@ class Page extends Model
         }
 
         return url($this->uri ?? "/");
-        
+
     }
 
     //endregion
@@ -110,11 +111,32 @@ class Page extends Model
     }
 
     public function getActivePages(): Collection {
-        $query = $this->id ?
-            $this->children() :
-            $this->with('children')->topLevel();
 
-        return $query->active()->get();
+        if ($this->id) {
+            $pages = cache($this->getCacheKey());
+
+            if ($pages) {
+                return $pages;
+            }
+
+            $pages = $this->children()->sorted()->get();
+
+            cache()->forever($this->getCacheKey(), $pages);
+
+            return $pages;
+        } else {
+            $pages = cache(CacheKey::TOP_LEVEL_ACTIVE_PAGES);
+
+            if ($pages) {
+                return $pages;
+            }
+
+            $pages = $this->with('children')->topLevel()->sorted()->get();
+
+            cache()->forever(CacheKey::TOP_LEVEL_ACTIVE_PAGES, $pages);
+
+            return $pages;
+        }
     }
 
     public function removeUrlStartSlash(string $uri = null): string {

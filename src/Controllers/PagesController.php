@@ -20,7 +20,10 @@ class PagesController extends Controller
      */
     public function index(Page $page) {
         $this->authorize('index', $page);
-        $pages = $page->whereParentId(0)->get();
+        $pages = $page->whereParentId(0)
+                      ->orderBy('order')
+                      ->orderBy('created_at')
+                      ->get();
 
         return view('cms::admin.pages.index', compact('pages'));
     }
@@ -69,6 +72,7 @@ class PagesController extends Controller
             'has_children'  => 'required|boolean',
             'is_active'     => 'required|boolean',
             'is_restricted' => 'required|boolean',
+            'order'         => 'nullable|numeric|min:0',
             'permission_id' => 'required|in:0,' . implode(',',
                     Permission::pluck('id')->toArray()),
         ]);
@@ -129,6 +133,7 @@ class PagesController extends Controller
             'has_children'  => 'required|boolean',
             'is_active'     => 'required|boolean',
             'is_restricted' => 'required|boolean',
+            'order'         => 'nullable|numeric|min:0',
             'permission_id' => 'required|in:0,' . implode(',',
                     Permission::pluck('id')->toArray()),
         ]);

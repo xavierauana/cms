@@ -12,8 +12,8 @@
 			{{Form::text('label', $language->label, ['class'=>'form-control', 'placeholder'=>'Language Label', 'required'])}}
 			@if ($errors->has('label'))
 				<span class="help-block">
-                                        <strong>{{ $errors->first('label') }}</strong>
-                                    </span>
+                    <strong>{{ $errors->first('label') }}</strong>
+                </span>
 			@endif
 		</div>
 		<div class="form-group">
@@ -21,8 +21,8 @@
 			{{Form::text('code', $language->code, ['class'=>'form-control', 'placeholder'=>'Language Code','required'])}}
 			@if ($errors->has('code'))
 				<span class="help-block">
-                                        <strong>{{ $errors->first('code') }}</strong>
-                                    </span>
+                    <strong>{{ $errors->first('code') }}</strong>
+                </span>
 			@endif
 		</div>
 		<div class="form-group">
@@ -30,8 +30,8 @@
 			{{Form::select('is_active', [0=>'No', 1=>'Yes'],$language->is_active,['class'=>'form-control'])}}
 			@if ($errors->has('is_active'))
 				<span class="help-block">
-                                        <strong>{{ $errors->first('is_active') }}</strong>
-                                    </span>
+                    <strong>{{ $errors->first('is_active') }}</strong>
+                </span>
 			@endif
 		</div>
 		<div class="form-group">
@@ -39,8 +39,8 @@
 			{{Form::select('is_default', [0=>'No', 1=>'Yes'],$language->is_default,['class'=>'form-control'])}}
 			@if ($errors->has('is_default'))
 				<span class="help-block">
-                                        <strong>{{ $errors->first('is_default') }}</strong>
-                                    </span>
+                    <strong>{{ $errors->first('is_default') }}</strong>
+                </span>
 			@endif
 		</div>
 		<div class="form-group">
@@ -48,8 +48,8 @@
 			{{Form::select('fallback_language_id', $languages, $language->fallback_language_id,['class'=>'form-control'])}}
 			@if ($errors->has('fallback_language_id'))
 				<span class="help-block">
-                                        <strong>{{ $errors->first('fallback_language_id') }}</strong>
-                                    </span>
+                    <strong>{{ $errors->first('fallback_language_id') }}</strong>
+                </span>
 			@endif
 		</div>
 		

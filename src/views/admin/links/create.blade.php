@@ -12,8 +12,8 @@
 			{{Form::text('external_uri', '', ['class'=>'form-control', 'placeholder'=>'page uri'])}}
 			@if ($errors->has('external_uri'))
 				<span class="help-block">
-                                        <strong>{{ $errors->first('external_uri') }}</strong>
-                                    </span>
+                    <strong>{{ $errors->first('external_uri') }}</strong>
+                </span>
 			@endif
 		</div>
 		<div class="form-group">
@@ -21,8 +21,8 @@
 			{{Form::select('page_id', $pages ,null,['class'=>'form-control'])}}
 			@if ($errors->has('page_id'))
 				<span class="help-block">
-                                        <strong>{{ $errors->first('page_id') }}</strong>
-                                    </span>
+                    <strong>{{ $errors->first('page_id') }}</strong>
+                </span>
 			@endif
 		</div>
 		<div class="card">
@@ -67,8 +67,8 @@
 			{{Form::select('is_active', [0=>'No', 1=>'Yes'],0,['class'=>'form-control'])}}
 			@if ($errors->has('is_active'))
 				<span class="help-block">
-                                        <strong>{{ $errors->first('is_active') }}</strong>
-                                    </span>
+                    <strong>{{ $errors->first('is_active') }}</strong>
+                </span>
 			@endif
 		</div>
 		<div class="form-group">
@@ -76,8 +76,8 @@
 			{{Form::select('parent_id', $links ,null,['class'=>'form-control'])}}
 			@if ($errors->has('parent_id'))
 				<span class="help-block">
-                                        <strong>{{ $errors->first('parent_id') }}</strong>
-                                    </span>
+                    <strong>{{ $errors->first('parent_id') }}</strong>
+                </span>
 			@endif
 		</div>
 		<div class="form-group">

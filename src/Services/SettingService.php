@@ -8,6 +8,7 @@
 namespace Anacreation\Cms\Services;
 
 
+use Anacreation\Cms\CacheKey;
 use Illuminate\Support\Facades\DB;
 
 class SettingService
@@ -70,6 +71,25 @@ class SettingService
     }
 
     public function all() {
+        $settings = cache(CacheKey::CMS_SETTINGS);
 
+        if (!$settings) {
+            $settings = DB::table(SettingService::tableName)->get();
+            cache()->forever(CacheKey::CMS_SETTINGS, $settings);
+        }
+
+
+        return $settings;
+    }
+
+    public function find(int $settingId) {
+        return DB::table(SettingService::tableName)->find($settingId);
+    }
+
+    public function update(int $settingId, array $data) {
+        DB::table(SettingService::tableName)->whereId($settingId)
+          ->update($data);
+
+        cache()->forget(CacheKey::CMS_SETTINGS);
     }
 }

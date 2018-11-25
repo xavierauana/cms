@@ -188,6 +188,9 @@ class Cms
                                     'PermissionsController');
                                 Route::resource('languages',
                                     'LanguagesController');
+
+                                Route::resource('settings',
+                                    'CmsSettingsController');
                             });
                     });
 

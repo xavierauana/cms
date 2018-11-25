@@ -3,42 +3,33 @@
 @section("content")
 	
 	@component('cms::components.container')
-		@slot('title')All Languages <a href="{{route('languages.create')}}"
-		                               class="btn btn-sm btn-success pull-right">Create Language</a> @endslot
+		@slot('title')Systems Settings @endslot
 		
 		<div class="table-responsive">
-			<delete-item url="/admin/languages/" inline-template>
 			<table class="table table-hover" ref="table">
 				<thead>
 					<tr>
 						<th>Label</th>
-						<th>Code</th>
-						<th>Is Active</th>
-						<th>Is Default</th>
+						<th>Value</th>
 						<th>Actions</th>
 					</tr>
 				</thead>
 				<tbody>
 				
-				@foreach($languages as $language)
-					<tr data-id="{{$language->id}}">
-						<td>{{$language->label}}</td>
-						<td>{{$language->code}}</td>
-						<td>{{$language->is_active?"Yes":"No"}}</td>
-						<td>{{$language->is_default?"Yes":"No"}}</td>
+				@foreach($settings as $setting)
+					<tr data-id="{{$setting->id}}">
+						<td>{{$setting->label}}</td>
+						<td>{{$setting->value}}</td>
 						<td>
 							<div class="btn-group btn-group-sm">
-								<a href="{{route('languages.edit', $language->id)}}"
+								<a href="{{route('settings.edit', $setting->id)}}"
 								   class="btn btn-info">Edit</a>
-								<button class="btn btn-danger"
-								        @click.prevent="deleteItem({{$language->id}})">Delete</button>
 							</div>
 						</td>
 					</tr>
 				@endforeach
 				</tbody>
 			</table>
-				</delete-item>
 		</div>
 	@endcomponent
 @endsection

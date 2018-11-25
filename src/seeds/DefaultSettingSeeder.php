@@ -29,10 +29,12 @@ class DefaultSettingSeeder extends Seeder
             ],
         ];
 
-        foreach ($keys as $key) {
-            DB::table('cms_setting')->insert([
-                'key'   => $key,
-                'value' => null
+        foreach ($keys as $setting) {
+            DB::table('cms_settings')->insert([
+                'key'        => $setting['key'],
+                'label'      => $setting['label'],
+                'is_default' => $setting['is_default'],
+                'value'      => null,
             ]);
         }
 

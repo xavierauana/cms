@@ -46,9 +46,8 @@
 
         <ul class="dropdown-menu">
             @if(Auth::guard('admin')->user()->hasPermission('index_language'))
-		        <li><a class="nav-link" href="{{route('languages.index')}}">Languages</a>
-			        @endif
-            </li>
+		        <li><a class="nav-link" href="{{route('languages.index')}}">Languages</a>@endif</li>
+		        <li><a class="nav-link" href="{{route('settings.index')}}">Systems Settings</a>
         </ul>
     </li>
 

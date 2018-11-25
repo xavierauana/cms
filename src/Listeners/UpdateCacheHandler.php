@@ -31,7 +31,7 @@ class UpdateCacheHandler
      */
     public function handle(CacheManageableEvent $event) {
         if ($this->isPageEvent($event)) {
-            $this->invalidatePageCache();
+            $this->invalidatePageCache($event->manageableObject);
         } elseif ($this->isLanguageEvent($event)) {
             $this->invalidateLanguageCache();
         } else {
@@ -61,9 +61,18 @@ class UpdateCacheHandler
         return strpos(get_class($event), "Page") > -1;
     }
 
-    private function invalidatePageCache() {
-        $key = CacheKey::ACTIVE_PAGES;
-        $this->invalidateCache($key);
+    private function invalidatePageCache(
+        CacheManageableInterface $manageableObject
+    ) {
+
+        $keys = [
+            $manageableObject->getCacheKey(),
+            CacheKey::TOP_LEVEL_ACTIVE_PAGES,
+            CacheKey::ACTIVE_PAGES
+        ];
+        foreach ($keys as $key) {
+            $this->invalidateCache($key);
+        }
     }
 
     private function isLanguageEvent($event) {

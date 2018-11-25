@@ -16,9 +16,10 @@ class CreateCmsSettingsTable extends Migration
         Schema::create(SettingService::tableName, function (Blueprint $table) {
             $table->increments('id');
             $table->string('label');
-            $table->string('key');
-            $table->string('value');
+            $table->string('key')->unique();
+            $table->string('value')->nullable();
             $table->boolean('is_default')->default(false);
+            $table->boolean('is_editable')->default(false);
             $table->timestamps();
         });
     }
