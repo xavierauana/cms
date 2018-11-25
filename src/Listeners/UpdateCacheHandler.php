@@ -62,12 +62,19 @@ class UpdateCacheHandler
     private function invalidatePageCache(
         CacheManageableInterface $manageableObject
     ) {
+        /** @var \Anacreation\Cms\Models\Page $page */
+        $page = $manageableObject;
 
         $keys = [
             $manageableObject->getCacheKey(),
             CacheKey::TOP_LEVEL_ACTIVE_PAGES,
             CacheKey::ACTIVE_PAGES
         ];
+
+        if ($parent = $page->parent) {
+            $keys[] = $parent->getCacheKey();
+        }
+
         foreach ($keys as $key) {
             $this->invalidateCache($key);
         }
