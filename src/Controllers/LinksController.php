@@ -63,8 +63,8 @@ class LinksController extends Controller
      * @param  \Illuminate\Http\Request    $request
      * @param \Anacreation\Cms\Models\Page $page
      * @param \Anacreation\Cms\Models\Link $model
-     * @return void
      * @throws \Illuminate\Auth\Access\AuthorizationException
+     * @throws \Anacreation\Cms\Exceptions\IncorrectContentTypeException
      */
     public function store(
         Menu $menu, Request $request, Page $page, Link $model
@@ -129,6 +129,7 @@ class LinksController extends Controller
      * @param \Anacreation\Cms\Models\Menu                  $menu
      * @param Link                                          $link
      * @return \Illuminate\Http\Response
+     * @throws \Anacreation\Cms\Exceptions\IncorrectContentTypeException
      */
     public function update(UpdateRequest $request, Menu $menu, Link $link) {
 
@@ -183,6 +184,7 @@ class LinksController extends Controller
      * @param \Anacreation\Cms\Models\Menu             $menu
      * @param                                          $validatedData
      * @return \Anacreation\Cms\Models\Link
+     * @throws \Anacreation\Cms\Exceptions\IncorrectContentTypeException
      */
     private function createLink(
         Menu $menu, $validatedData
@@ -193,7 +195,8 @@ class LinksController extends Controller
         $newLink = $menu->links()->create($validatedData);
 
         foreach ($validatedData['name'] as $data) {
-            $contentObject = new ContentObject('link', $data['lang_id'],
+            $contentObject = new ContentObject(Link::Identifier,
+                $data['lang_id'],
                 $data['content'], 'string');
             $service->updateOrCreateContentIndexWithContentObject($newLink,
                 $contentObject);
@@ -205,6 +208,7 @@ class LinksController extends Controller
     /**
      * @param $link
      * @param $validatedData
+     * @throws \Anacreation\Cms\Exceptions\IncorrectContentTypeException
      */
     private function updateLink($link, $validatedData) {
 
@@ -217,7 +221,8 @@ class LinksController extends Controller
         $link->update($validatedData);
 
         foreach ($validatedData['name'] as $data) {
-            $contentObject = new ContentObject('link', $data['lang_id'],
+            $contentObject = new ContentObject(Link::Identifier,
+                $data['lang_id'],
                 $data['content'], 'string');
             $service->updateOrCreateContentIndexWithContentObject($link,
                 $contentObject);

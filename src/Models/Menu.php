@@ -5,11 +5,11 @@ namespace Anacreation\Cms\Models;
 use Anacreation\Cms\Contracts\CacheManageableInterface;
 use Anacreation\Cms\Events\MenuDeleted;
 use Anacreation\Cms\Events\MenuSaved;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
-use PhpParser\Builder;
 
 class Menu extends Model implements CacheManageableInterface
 {

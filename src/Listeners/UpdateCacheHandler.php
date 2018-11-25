@@ -8,7 +8,6 @@ use Anacreation\Cms\Contracts\CacheManageableInterface;
 use Anacreation\CMS\Events\CacheManageableEvent;
 use Anacreation\Cms\Events\LanguageDeleted;
 use Anacreation\Cms\Events\LanguageSaved;
-use App\Events\Event;
 use Illuminate\Support\Facades\Cache;
 use InvalidArgumentException;
 
@@ -41,7 +40,6 @@ class UpdateCacheHandler
 
     /**
      * @param string|CacheManageableInterface $param
-     * @throws \PHPMailer\PHPMailer\Exception
      */
     private function invalidateCache($param): void {
         if (is_string($param)) {
@@ -90,4 +88,5 @@ class UpdateCacheHandler
             $this->invalidateCache($key);
         }
     }
+
 }
