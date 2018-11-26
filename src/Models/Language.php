@@ -49,10 +49,8 @@ class Language extends Model implements CacheManageableInterface
     }
 
     public function getFallbackLanguageAttribute(): Language {
-        $langService = new LanguageService();
-        $fallbackLang = $langService->getLanguageById($this->fallback_language_id);
-
-        return $fallbackLang ?? $this->defaultLanguage;
+        return $this->fallback_language_id === 0 ? $this->defaultLanguage :
+            (new LanguageService)->getLanguageById($this->fallback_language_id);
     }
 
     // Helpers
