@@ -115,7 +115,7 @@ trait ContentGroup
         if (isset($value) and !empty($value)) {
             return $value;
         }
-        
+
         if ($langCode === app(LanguageService::class)->getDefaultLanguage()->code) {
             return $default;
         }

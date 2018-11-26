@@ -95,31 +95,6 @@ class ContentService
         ];
     }
 
-//    /**
-//     * @param \Anacreation\Cms\Contracts\ContentGroupInterface $contentOwner
-//     * @param string                                           $identifier
-//     * @param string|null                                      $locale
-//     * @return \Anacreation\Cms\Models\ContentIndex|null
-//     */
-//    public static function getContentIndex(
-//        ContentGroupInterface $contentOwner,
-//        string $identifier, string $locale = null
-//    ): ?ContentIndex {
-//
-//        /** @var \Anacreation\CMS\Services\LanguageService $langService */
-//        $langService = app()->make(LanguageService::class);
-//
-//        $language = $langService->getLanguage($locale ?? app()->getLocale());
-//
-//        $index = $contentOwner->contentIndices()
-//                              ->with('content')
-//                              ->fetchIndex($identifier, $language->id)
-//                              ->first();
-//
-//
-//        return $index;
-//    }
-
 
     /**
      * @param string $jsText
