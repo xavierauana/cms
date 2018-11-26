@@ -33,9 +33,11 @@ trait ContentGroup
      */
     protected function loadFromCache($key, callable $callable) {
         $duration = config("cms.content_cache_duration");
+
         if (Cache::has($key)) {
 
             return Cache::get($key);
+
         } else {
 
             $value = $callable();
@@ -48,19 +50,7 @@ trait ContentGroup
 
     public function loadContents(string $path, string $template) {
 
-        $contentIdentifiers = [];
-
-        $templateParser = new TemplateParser();
-
-        $xml = $templateParser->loadTemplateDefinition($path,
-            $template);
-
-        if ($xml) {
-            $contentIdentifiers = $templateParser->loadPredefinedIdentifiers($xml,
-                $this->editable);
-        }
-
-        $contentIdentifiers = $this->loadAdHocContents($contentIdentifiers);
+        $contentIdentifiers = $this->fetchContentIdentifiers($path, $template);
 
         return $this->loadContentWithIdentifiers($contentIdentifiers);
 
@@ -126,25 +116,33 @@ trait ContentGroup
             return $value;
         }
 
-        $langService = app()->make(LanguageService::class);
+        $langService = app(LanguageService::class);
         $language = $langService->getLanguage($langCode);
-        $fallbacklang = $language->fallbackLanguage;
+        $fallbackLang = $language->fallbackLanguage;
 
         if ($language->fallback_langauge_id == 0 and $langService->getDefaultLanguage()->code == $langCode) {
             return $default;
         }
 
 
-        return $this->getContent($identifier, $default, $fallbacklang->code,
+        return $this->getContent($identifier, $default, $fallbackLang->code,
             $params);
 
     }
 
-    private function getContentIndex(
+    public function getContentIndex(
         string $identifier, string $locale = null
     ): ?ContentIndex {
 
-        return ContentService::getContentIndex($this, $identifier, $locale);
+        $language = app(LanguageService::class)->getLanguage($locale ?? app()->getLocale());
+
+        $index = $this->contentIndices()
+                      ->with('content')
+                      ->fetchIndex($identifier, $language->id)
+                      ->first();
+
+
+        return $index;
     }
 
     public function getContentWithTemplate(
@@ -160,9 +158,9 @@ trait ContentGroup
 
     public function getFile(string $identifier): ?ContentTypeInterface {
 
-        $contentIndex = $this->getContentIndex($identifier);
+        $index = $this->getContentIndex($identifier);
 
-        return $contentIndex ? $contentIndex->content : null;
+        return $index ? $index->content : null;
     }
 
     public function injectLayoutModels(string $path = null, string $template
@@ -184,6 +182,22 @@ trait ContentGroup
         }
 
         return $vars;
+    }
+
+    /**
+     * @param string $path
+     * @param string $template
+     * @return array
+     */
+    private function fetchContentIdentifiers(string $path, string $template
+    ): array {
+
+        $contentIdentifiers = (new TemplateParser)->loadPredefinedIdentifiers($path,
+            $template, $this->editable);
+
+        $contentIdentifiers = $this->loadAdHocContents($contentIdentifiers);
+
+        return $contentIdentifiers;
     }
 
 }
