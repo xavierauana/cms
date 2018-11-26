@@ -46,20 +46,22 @@ class TemplateParser
         return $layoutDefinition;
     }
 
-    public function loadPredefinedIdentifiers($xml, bool &$editable = null
+    public function loadPredefinedIdentifiers(
+        string $path, string $template, bool &$editable = null
     ): array {
         $contents = [];
+
+        $xml = $this->loadTemplateDefinition($path, $template);
+
         foreach ($xml->content as $content) {
-            if (!array_key_exists((string)$content->identifier, $contents)) {
-                $contents[(string)$content->identifier] = [];
-                $contents[(string)$content->identifier]['type'] = (string)$content['type'];
+            if ($this->notYetParsed($content, $contents)) {
+                $this->constructContentDefinitionArray($contents, $content);
             }
         }
 
         if ($editable != null) {
             $this->setLayoutEditable($xml, $editable);
         }
-
 
         return $contents;
     }
@@ -71,5 +73,25 @@ class TemplateParser
                 break;
             }
         }
+    }
+
+    /**
+     * @param $contents
+     * @param $content
+     * @return mixed
+     */
+    private function constructContentDefinitionArray(array &$contents, $content
+    ) {
+        $contents[(string)$content->identifier] = [];
+        $contents[(string)$content->identifier]['type'] = (string)$content['type'];
+    }
+
+    /**
+     * @param $content
+     * @param $contents
+     * @return bool
+     */
+    private function notYetParsed($content, $contents): bool {
+        return !array_key_exists((string)$content->identifier, $contents);
     }
 }

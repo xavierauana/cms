@@ -83,17 +83,6 @@ class ContentService
         }
     }
 
-    private static function getCacheContentIndexWithKey(
-        ContentGroupInterface $contentOwner, string $identifier,
-        Language $language
-    ): ?ContentIndex {
-
-        return $contentOwner->contentIndices()
-                            ->with('content')
-                            ->fetchIndex($identifier, $language->id)
-                            ->first();
-
-    }
 
     public function getUpdateValidationRules(): array {
         return [
@@ -106,25 +95,30 @@ class ContentService
         ];
     }
 
-    /**
-     * @param \Anacreation\Cms\Contracts\ContentGroupInterface $contentOwner
-     * @param string                                           $identifier
-     * @param string|null                                      $locale
-     * @return \Anacreation\Cms\Models\ContentIndex|null
-     */
-    public static function getContentIndex(
-        ContentGroupInterface $contentOwner,
-        string $identifier, string $locale = null
-    ): ?ContentIndex {
-
-        /** @var \Anacreation\CMS\Services\LanguageService $langService */
-        $langService = app()->make(LanguageService::class);
-
-        $language = $langService->getLanguage($locale ?? app()->getLocale());
-
-        return static::fetchContentIndexWith($contentOwner, $language,
-            $identifier);
-    }
+//    /**
+//     * @param \Anacreation\Cms\Contracts\ContentGroupInterface $contentOwner
+//     * @param string                                           $identifier
+//     * @param string|null                                      $locale
+//     * @return \Anacreation\Cms\Models\ContentIndex|null
+//     */
+//    public static function getContentIndex(
+//        ContentGroupInterface $contentOwner,
+//        string $identifier, string $locale = null
+//    ): ?ContentIndex {
+//
+//        /** @var \Anacreation\CMS\Services\LanguageService $langService */
+//        $langService = app()->make(LanguageService::class);
+//
+//        $language = $langService->getLanguage($locale ?? app()->getLocale());
+//
+//        $index = $contentOwner->contentIndices()
+//                              ->with('content')
+//                              ->fetchIndex($identifier, $language->id)
+//                              ->first();
+//
+//
+//        return $index;
+//    }
 
 
     /**
@@ -293,27 +287,6 @@ class ContentService
     }
 
     # region Private Methods
-
-    /**
-     * @param \Anacreation\Cms\Contracts\ContentGroupInterface $contentOwner
-     * @param \Anacreation\Cms\Models\Language                 $language
-     * @param string                                           $identifier
-     * @return \Anacreation\Cms\Models\ContentIndex|null
-     */
-    private static function fetchContentIndexWith(
-        ContentGroupInterface $contentOwner, Language $language,
-        string $identifier
-    ): ?ContentIndex {
-
-        $index = $contentOwner->contentIndices()
-                              ->with('content')
-                              ->fetchIndex($identifier, $language->id)
-                              ->first();
-
-
-        return $index;
-
-    }
 
     /**
      * @param array  $types
