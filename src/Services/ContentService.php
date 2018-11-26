@@ -176,6 +176,7 @@ class ContentService
      * @param \Anacreation\Cms\Contracts\ContentGroupInterface $contentOwner
      * @param \Anacreation\Cms\Entities\ContentObject          $contentObject
      * @throws \Anacreation\Cms\Exceptions\IncorrectContentTypeException
+     * @throws \Exception
      */
     public function updateOrCreateContentIndexWithContentObject(
         ContentGroupInterface $contentOwner, ContentObject $contentObject
@@ -185,10 +186,6 @@ class ContentService
         if (($contentType = $this->convertToContentTypeClass($contentObject->content_type)) === null) {
             throw new IncorrectContentTypeException();
         }
-
-        $this->invalidateContentCacheWithContentObject($contentOwner,
-            $contentObject);
-
 
         $contentIndex = $contentOwner->contentIndices()
                                      ->fetchIndex($contentObject->identifier,
@@ -202,6 +199,9 @@ class ContentService
             $this->createContent($contentOwner, $contentObject, $contentIndex,
                 $contentType);
         };
+
+        $this->invalidateContentCacheWithContentObject($contentOwner,
+            $contentObject);
 
     }
 
@@ -373,6 +373,7 @@ class ContentService
         $content = app()->make($contentType);
 
         $content->saveContent($contentInput);
+        
         $contentOwner->contentIndices()->create([
             'content_type' => get_class($content),
             'content_id'   => $content->id,
