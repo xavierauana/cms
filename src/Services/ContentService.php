@@ -84,24 +84,15 @@ class ContentService
     }
 
     private static function getCacheContentIndexWithKey(
-        string $key, ContentGroupInterface $contentOwner, string $identifier,
+        ContentGroupInterface $contentOwner, string $identifier,
         Language $language
     ): ?ContentIndex {
 
-        if (Cache::has($key)) {
-            return Cache::get($key);
-        }
+        return $contentOwner->contentIndices()
+                            ->with('content')
+                            ->fetchIndex($identifier, $language->id)
+                            ->first();
 
-        $index = $contentOwner->contentIndices()
-                              ->with('content')
-                              ->fetchIndex($identifier, $language->id)
-                              ->first();
-
-        if ($index) {
-            Cache::put($key, $index, config('cms.content_cache_duration'));
-        }
-
-        return $index;
     }
 
     public function getUpdateValidationRules(): array {
@@ -314,20 +305,13 @@ class ContentService
         string $identifier
     ): ?ContentIndex {
 
-        $index = static::getCacheContentIndexWithKey($contentOwner->getContentCacheKey($language->code,
-            $identifier), $contentOwner,
-            $identifier, $language);
+        $index = $contentOwner->contentIndices()
+                              ->with('content')
+                              ->fetchIndex($identifier, $language->id)
+                              ->first();
 
-        if ($index) {
-            return $index;
-        }
 
-        $fallBackIndex = static::getCacheContentIndexWithKey($contentOwner->getContentCacheKey($language->fallbackLanguage->code,
-            $identifier),
-            $contentOwner,
-            $identifier, $language->fallbackLanguage);
-
-        return $fallBackIndex;
+        return $index;
 
     }
 

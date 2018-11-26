@@ -33,9 +33,11 @@ trait ContentGroup
      */
     protected function loadFromCache($key, callable $callable) {
         $duration = config("cms.content_cache_duration");
+
         if (Cache::has($key)) {
 
             return Cache::get($key);
+
         } else {
 
             $value = $callable();
@@ -126,16 +128,16 @@ trait ContentGroup
             return $value;
         }
 
-        $langService = app()->make(LanguageService::class);
+        $langService = app(LanguageService::class);
         $language = $langService->getLanguage($langCode);
-        $fallbacklang = $language->fallbackLanguage;
+        $fallbackLang = $language->fallbackLanguage;
 
         if ($language->fallback_langauge_id == 0 and $langService->getDefaultLanguage()->code == $langCode) {
             return $default;
         }
 
 
-        return $this->getContent($identifier, $default, $fallbacklang->code,
+        return $this->getContent($identifier, $default, $fallbackLang->code,
             $params);
 
     }
