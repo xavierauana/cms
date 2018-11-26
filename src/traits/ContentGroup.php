@@ -115,15 +115,12 @@ trait ContentGroup
         if (isset($value) and !empty($value)) {
             return $value;
         }
-
-        $langService = app(LanguageService::class);
-        $language = $langService->getLanguage($langCode);
-        $fallbackLang = $language->fallbackLanguage;
-
-        if ($language->fallback_langauge_id == 0 and $langService->getDefaultLanguage()->code == $langCode) {
+        
+        if ($langCode === app(LanguageService::class)->getDefaultLanguage()->code) {
             return $default;
         }
 
+        $fallbackLang = app(LanguageService::class)->getFallbackLanguage($langCode);
 
         return $this->getContent($identifier, $default, $fallbackLang->code,
             $params);
