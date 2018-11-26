@@ -8,6 +8,7 @@
 namespace Anacreation\Cms\Contracts;
 
 
+use Anacreation\Cms\Models\ContentIndex;
 use Illuminate\Database\Eloquent\Relations\Relation;
 
 interface ContentGroupInterface
@@ -17,4 +18,8 @@ interface ContentGroupInterface
     public function getContentCacheKey(
         string $langCode, string $contentIdentifier
     ): string;
+
+    public function getContentIndex(
+        string $identifier, string $locale = null
+    ): ?ContentIndex;
 }
