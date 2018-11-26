@@ -314,20 +314,16 @@ class ContentService
         string $identifier
     ): ?ContentIndex {
 
-        $key = "contentIndex_" . $contentOwner->getContentCacheKey($language->code,
-                $identifier);
-
-        $index = static::getCacheContentIndexWithKey($key, $contentOwner,
+        $index = static::getCacheContentIndexWithKey($contentOwner->getContentCacheKey($language->code,
+            $identifier), $contentOwner,
             $identifier, $language);
 
         if ($index) {
             return $index;
         }
 
-        $fallBackKey = "contentIndex_" . $contentOwner->getContentCacheKey($language->fallbackLanguage->code,
-                $identifier);
-
-        $fallBackIndex = static::getCacheContentIndexWithKey($fallBackKey,
+        $fallBackIndex = static::getCacheContentIndexWithKey($contentOwner->getContentCacheKey($language->fallbackLanguage->code,
+            $identifier),
             $contentOwner,
             $identifier, $language->fallbackLanguage);
 
@@ -373,7 +369,7 @@ class ContentService
         $content = app()->make($contentType);
 
         $content->saveContent($contentInput);
-        
+
         $contentOwner->contentIndices()->create([
             'content_type' => get_class($content),
             'content_id'   => $content->id,
