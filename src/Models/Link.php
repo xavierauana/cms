@@ -62,7 +62,8 @@ class Link extends Model
     }
 
     public function getAbsoluteUriAttribute(): string {
-        return $this->page ? url($this->page->uri) : $this->external_uri;
+
+        return $this->page ? url($this->constructFullUrl($this->page)) : $this->external_uri;
     }
 
     public function getNameAttribute(string $langCode = null): string {
@@ -117,5 +118,16 @@ class Link extends Model
         string $langCode, string $contentIdentifier
     ): string {
         return $this->getCacheKey() . "_" . $langCode . "_" . Link::Identifier;
+    }
+
+    private function constructFullUrl(Page $p): string {
+        if ($parent = $p->parent) {
+            $uri = $p->uri . "/" . $this->constructFullUrl($parent);
+        } else {
+            $uri = $p->uri;
+        }
+
+        return $uri;
+
     }
 }
