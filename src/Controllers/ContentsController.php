@@ -2,8 +2,8 @@
 
 namespace Anacreation\Cms\Controllers;
 
-use Anacreation\Cms\Models\ContentIndex;
 use Anacreation\Cms\Contracts\CmsPageInterface as Page;
+use Anacreation\Cms\Models\ContentIndex;
 use Anacreation\Cms\Models\Permission;
 use Anacreation\Cms\Services\ContentService;
 use Anacreation\Cms\Services\LanguageService;
@@ -22,8 +22,7 @@ class ContentsController extends Controller
      *
      * @throws \Illuminate\Auth\Access\AuthorizationException
      */
-    public function index(Page $page, LanguageService $langService)
-    {
+    public function index(Page $page, LanguageService $langService) {
         $this->authorize('edit', $page);
 
         $contents = $page->loadContents(getActiveThemePath(), $page->template);
@@ -43,8 +42,7 @@ class ContentsController extends Controller
      *
      * @throws \Illuminate\Auth\Access\AuthorizationException
      */
-    public function create(Page $page)
-    {
+    public function create(Page $page) {
         $this->authorize('edit', $page);
 
         $layouts = getLayoutFiles()['layouts'];
@@ -68,17 +66,16 @@ class ContentsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request, Page $page)
-    {
+    public function store(Request $request, Page $page) {
         $layouts = getLayoutFiles()['layouts'];
 
         $validatedInputs = $this->validate($request, [
-            'uri' => 'required|unique:pages',
-            'template' => 'required|in:'.implode(',', $layouts),
-            'has_children' => 'required|boolean',
-            'is_active' => 'required|boolean',
+            'uri'           => 'required|unique:pages',
+            'template'      => 'required|in:' . implode(',', $layouts),
+            'has_children'  => 'required|boolean',
+            'is_active'     => 'required|boolean',
             'is_restricted' => 'required|boolean',
-            'permission_id' => 'in:0,'.implode(Permission::pluck('id')
+            'permission_id' => 'in:0,' . implode(Permission::pluck('id')
                                                            ->toArray()),
         ]);
 
@@ -140,19 +137,14 @@ class ContentsController extends Controller
     ) {
         $this->authorize('delete', new ContentIndex());
 
-        $queryString = $request->query();
-
-        $query = $page->contentIndices()
-                      ->whereIdentifier($contentIdentifier);
-
-        $responseData = $service->deleteContent($queryString, $query);
+        $responseData = $service->deleteContent($page, $contentIdentifier,
+            $request->query());
 
         return response()->json(array_merge($responseData,
             ['identifier' => $contentIdentifier]));
     }
 
-    public function destroyChild(Page $page, int $childId)
-    {
+    public function destroyChild(Page $page, int $childId) {
         $this->authorize('delete', $page);
 
         if ($child = $page->children()->find($childId)) {
@@ -160,7 +152,7 @@ class ContentsController extends Controller
         }
 
         return response()->json([
-            'status' => 'completed',
+            'status'  => 'completed',
             'childId' => $childId,
         ]);
     }
