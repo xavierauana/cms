@@ -15,6 +15,7 @@ use Anacreation\Cms\ContentModels\NumberContent;
 use Anacreation\Cms\ContentModels\PlainTextContent;
 use Anacreation\Cms\ContentModels\StringContent;
 use Anacreation\Cms\ContentModels\TextContent;
+use Anacreation\Cms\Contracts\CmsPageInterface;
 use Anacreation\Cms\Contracts\ContentGroupInterface;
 use Anacreation\Cms\Contracts\ContentTypeInterface;
 use Anacreation\Cms\Entities\ContentObject;
@@ -153,7 +154,7 @@ class ContentService
                                      ->first();
 
         if ($this->contentTypeIsSameAsInputContentType($contentIndex,
-            $contentType)) {
+                $contentType) and ($content = $contentIndex->content)) {
             $contentIndex->content->updateContent($contentObject);
         } else {
             $this->createContent($contentOwner, $contentObject, $contentIndex,
@@ -226,17 +227,32 @@ class ContentService
             $predefinedContent) : $adHocContent;
     }
 
-    public function deleteContent(array $queryString, $query): array {
+    public function deleteContent(
+        CmsPageInterface $page, string $identifier, array $queryString
+    ): array {
+        $query = $page->contentIndices()
+                      ->whereIdentifier($identifier);
 
         if (isset($queryString['remove_content'])) {
+
             if (isset($queryString['lang_id'])) {
+
                 $contentIndex = $query->whereLangId($queryString['lang_id'])
                                       ->first();
                 if ($contentIndex) {
-                    $contentIndex
-                        ->content
+
+                    $contentIndex->content
                         ->deleteContent($queryString);
+
+                    $contentIndex->delete();
+
                     $content = "deleted";
+
+                    $language = app(LanguageService::class)->getLanguageById($contentIndex->lang_id);
+
+                    $this->invalidateContentCache($page, $identifier,
+                        $language->code);
+
                 } else {
                     $content = "no content found";
                 }
@@ -245,13 +261,22 @@ class ContentService
                 $content = "no content index found";
             }
 
-
             $response = [
                 'status'  => 'completed',
                 'content' => $content
             ];
+
         } else {
+
             $query->delete();
+
+            $languages = app(LanguageService::class)->languages;
+
+            foreach ($languages as $language) {
+                $this->invalidateContentCache($page, $identifier,
+                    $language->code);
+            }
+
 
             $response = [
                 'status' => 'completed',

@@ -57,7 +57,7 @@ class Link extends Model
 
     // Accessor
 
-    public function getUriAttribute(): string {
+    public function getUriAttribute(): ?string {
         return $this->page_id ? optional($this->page)->uri : $this->external_uri;
     }
 

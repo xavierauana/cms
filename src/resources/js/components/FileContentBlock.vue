@@ -71,7 +71,7 @@ export default {
     hasFile(languageId) {
       const result = this.getFile(languageId)
 
-      return result && result.src.length
+      return result && result.src && result.src.length
     },
     getFile(languageId) {
       return _.find(this.files, {lang_id: languageId})
