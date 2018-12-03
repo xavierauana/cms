@@ -1,6 +1,10 @@
 <?php
 
 use Anacreation\Cms\Services\SettingService;
+use Illuminate\Contracts\Auth\Authenticatable;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 
 if (!function_exists("getActiveThemePath")) {
 
@@ -50,5 +54,19 @@ if (!function_exists("getAnalyticUrl")) {
 
         return $builder->get();
 
+    }
+}
+if (!function_exists("updateUserSession")) {
+    function updateUserSession(Authenticatable $user, Request $request
+    ): string {
+        $table = "user_sessions";
+        if (Schema::hasTable($table)) {
+            DB::table($table)->insert([
+                'user_id'    => $user->id,
+                'session'    => $request->session()->getId(),
+                'created_at' => \Carbon\Carbon::now(),
+                'updated_at' => \Carbon\Carbon::now(),
+            ]);
+        }
     }
 }

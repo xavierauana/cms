@@ -17,7 +17,10 @@ use Anacreation\Cms\Services\RequestParser;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\View\View;
+use InvalidArgumentException;
 
 class RoutesController extends Controller
 {
@@ -91,15 +94,23 @@ class RoutesController extends Controller
                 throw new NoAuthenticationException("You are not allowed to visit the page!");
             }
 
-            if ($this->pageHasPermissionControl($page)) {
-                if ($this->userHasPagePermission($request, $page)) {
-                    return $this->constructView($page, $vars);
-                }
-                throw new UnAuthorizedException("You are not allowed to visit the page!");
+            if (config("cms.single_login_session", false) == true) {
+                $this->checkUserSessions($request);
             }
 
-            return $this->constructView($page, $vars);
+            if ($this->pageHasPermissionControl($page)) {
+                if ($this->userHasPagePermission($request,
+                    $page)) {
+                    return $this->constructView($page, $vars);
+                }
+
+                throw new UnAuthorizedException("You are not allowed to visit the page!");
+            }
         }
+
+
+        return $this->constructView($page, $vars);
+
 
         throw new PageNotFoundHttpException();
     }
@@ -107,7 +118,8 @@ class RoutesController extends Controller
     /**
      * @throws \Anacreation\Cms\Exceptions\PageNotFoundHttpException
      */
-    private function parseAjax() {
+    private
+    function parseAjax() {
         throw new PageNotFoundHttpException();
     }
 
@@ -115,7 +127,10 @@ class RoutesController extends Controller
      * @param $checkLocale
      * @return mixed
      */
-    private function getLocale(string $checkLocale = null): string {
+    private
+    function getLocale(
+        string $checkLocale = null
+    ): string {
 
         $service = (new LanguageService);
         $defaultLanguage = $service->defaultLanguage;
@@ -131,5 +146,33 @@ class RoutesController extends Controller
                             ->toArray()) ? $checkLocale : $defaultLanguage->code;
 
         return $locale;
+    }
+
+    /**
+     * @param \Illuminate\Http\Request $request
+     * @throws \Anacreation\Cms\Exceptions\NoAuthenticationException
+     */
+    private function checkUserSessions(Request $request): void {
+        $table = "user_sessions";
+
+        if(!Schema::hasTable($table)) throw new InvalidArgumentException("No user_sessions table");
+
+        $sessionId = $request->session()
+                             ->getId();
+        $userId = Auth::user()->count();
+        if (DB::table($table)
+              ->latest()
+              ->whereUserId($userId)
+              ->take(1)
+              ->get()
+              ->filter(function ($obj) use ($sessionId) {
+                  return $obj->session == $sessionId;
+              })
+              ->count() === 0
+        ) {
+            Auth::logout();
+
+            throw new NoAuthenticationException("You are not allowed to visit the page!");
+        }
     }
 }

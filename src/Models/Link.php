@@ -122,7 +122,7 @@ class Link extends Model
 
     private function constructFullUrl(Page $p): string {
         if ($parent = $p->parent) {
-            $uri = $p->uri . "/" . $this->constructFullUrl($parent);
+            $uri = $this->constructFullUrl($parent) . "/" . $p->uri;
         } else {
             $uri = $p->uri;
         }
