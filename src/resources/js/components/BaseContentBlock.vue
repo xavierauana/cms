@@ -24,15 +24,16 @@
             </div>
         </b-card-header>
             <b-collapse :id="`collapse_${_uid}`" :visible="open"
-                    role="tabpanel">
+                        role="tabpanel">
             <b-card-body>
               <slot></slot>
             </b-card-body>
             <b-card-footer>
-                 <button type="submit"
-                         class="btn btn-success"
-                         v-if="editable">Update</button>
-                <button @click.prevent="remove(identifier)" v-if="deleteable"
+                 <button v-if="editable"
+                         type="submit"
+                         class="btn btn-success">Update</button>
+                <button v-if="deleteable"
+                        @click.prevent="remove(identifier)"
                         class="btn btn-danger pull-right">Delete</button>
             </b-card-footer>
         </b-collapse>

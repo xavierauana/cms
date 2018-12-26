@@ -3,13 +3,12 @@
 namespace Anacreation\Cms;
 
 use Anacreation\Cms\Console\Kernel;
-use Anacreation\Cms\Contracts\AnalyticUrlBuilderInterface;
 use Anacreation\Cms\Contracts\CmsPageInterface as Page;
 use Anacreation\Cms\Handler\Handler;
-use Anacreation\GAUrlBuilder\Builder;
 use Illuminate\Contracts\Debug\ExceptionHandler;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 
 class CmsServiceProvider extends ServiceProvider
@@ -18,6 +17,12 @@ class CmsServiceProvider extends ServiceProvider
      * Bootstrap any application services.
      */
     public function boot() {
+
+        if ($this->requestFrontend()) {
+            $this->registerFrontendViewComposers();
+        }
+
+
         Blade::doubleEncode();
 
         $this->loadMigrationsFrom(__DIR__ . '/migrations');
@@ -73,13 +78,12 @@ class CmsServiceProvider extends ServiceProvider
 
     private function defaultAsset() {
         $this->publishes([
-            __DIR__ . '/public/css'            => public_path('css/cms'),
-            __DIR__ . '/public/js'             => public_path('js/cms'),
-            __DIR__ . '/public/ckeditor'       => public_path('vendor/ckeditor'),
-            __DIR__ . '/public/src-noconflict' => public_path('js/src-noconflict'),
-            __DIR__ . '/../fonts'              => public_path('fonts'),
-            __DIR__ . '/seeds'                 => database_path('seeds'),
-            __DIR__ . '/themes'                => resource_path('views/themes'),
+            __DIR__ . '/public/css'      => public_path('css/cms'),
+            __DIR__ . '/public/js'       => public_path('js/cms'),
+            __DIR__ . '/public/ckeditor' => public_path('vendor/cms/ckeditor'),
+            __DIR__ . '/../fonts'        => public_path('fonts'),
+            __DIR__ . '/seeds'           => database_path('seeds'),
+            __DIR__ . '/themes'          => resource_path('views/themes'),
         ], 'assets');
 
         $this->publishes([
@@ -99,5 +103,17 @@ class CmsServiceProvider extends ServiceProvider
         app()->singleton('CmsPlugins', function () {
             return [];
         });
+    }
+
+    private function requestFrontend(): bool {
+        $fistSegment = (request()->segments())[0] ?? null;
+
+        return $fistSegment !== config("admin.route_prefix");
+    }
+
+    private function registerFrontendViewComposers() {
+        foreach (config('cms.view_composer') as $view => $composer) {
+            View::composer($view, $composer);
+        }
     }
 }

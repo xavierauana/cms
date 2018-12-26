@@ -13,6 +13,7 @@
 	<!-- Styles -->
     <link href="{{ asset('css/cms/app.css') }}" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/promise-polyfill@8/dist/polyfill.min.js"></script>
+	@stack("header-scripts")
 	@yield("stylesheets")
 </head>
 <body>
@@ -60,6 +61,10 @@
                                     <div class="dropdown-menu"
                                          aria-labelledby="navbarDropdown">
                                         <a class="dropdown-item"
+                                           href="{{route("profile")}}">
+                                            My Profile
+                                        </a>
+                                        <a class="dropdown-item"
                                            href="#"
                                            onclick="event.preventDefault();
                                                          document.getElementById('logout-form').submit();">
@@ -93,7 +98,6 @@
 
     <!-- Scripts -->
     <script src="{{asset("vendor/cms/ckeditor/ckeditor.js")}}"></script>
-    <script src="{{ asset('js/src-noconflict/ace.js') }}"></script>
     <script src="{{ asset('js/cms/manifest.js') }}"></script>
     <script src="{{ asset('js/cms/vendor.js') }}"></script>
     <script src="{{ asset('js/cms/app.js') }}"></script>

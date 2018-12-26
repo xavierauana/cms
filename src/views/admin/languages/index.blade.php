@@ -3,8 +3,12 @@
 @section("content")
 	
 	@component('cms::components.container')
-		@slot('title')All Languages <a href="{{route('languages.create')}}"
-		                               class="btn btn-sm btn-success pull-right">Create Language</a> @endslot
+		@slot('title')All Languages
+		@if(Auth::guard('admin')->user()->hasPermission('create_language'))
+			<a href="{{route('languages.create')}}"
+			   class="btn btn-sm btn-success pull-right">Create Language</a>
+		@endif
+		@endslot
 		
 		<div class="table-responsive">
 			<delete-item url="/admin/languages/" inline-template>
@@ -19,26 +23,10 @@
 					</tr>
 				</thead>
 				<tbody>
-				
-				@foreach($languages as $language)
-					<tr data-id="{{$language->id}}">
-						<td>{{$language->label}}</td>
-						<td>{{$language->code}}</td>
-						<td>{{$language->is_active?"Yes":"No"}}</td>
-						<td>{{$language->is_default?"Yes":"No"}}</td>
-						<td>
-							<div class="btn-group btn-group-sm">
-								<a href="{{route('languages.edit', $language->id)}}"
-								   class="btn btn-info">Edit</a>
-								<button class="btn btn-danger"
-								        @click.prevent="deleteItem({{$language->id}})">Delete</button>
-							</div>
-						</td>
-					</tr>
-				@endforeach
+					@each('cms::admin.languages.tableRow', $languages, 'language')
 				</tbody>
 			</table>
-				</delete-item>
+			</delete-item>
 		</div>
 	@endcomponent
 @endsection

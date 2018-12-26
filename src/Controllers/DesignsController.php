@@ -2,6 +2,7 @@
 
 namespace Anacreation\Cms\Controllers;
 
+use Anacreation\Cms\Exceptions\UnAuthorizedException;
 use Anacreation\Cms\Models\Design;
 use Anacreation\Cms\Models\Page;
 use App\Http\Controllers\Controller;
@@ -32,7 +33,7 @@ class DesignsController extends Controller
 
     public function index(Design $design, Page $page) {
 
-        $this->authorize('index', $design);
+        //        $this->authorize('index', $design);
         $design = getDesignFiles();
         $pages = $page->get()->groupBy('template');
 
@@ -43,10 +44,24 @@ class DesignsController extends Controller
     /**
      * Show the form for creating a new resource.
      *
+     * @param \Illuminate\Http\Request $request
+     * @param string                   $type
      * @return \Illuminate\Http\Response
+     * @throws \Anacreation\Cms\Exceptions\UnAuthorizedException
      */
-    public function create() {
-        //
+    public function create(Request $request, string $type) {
+        if ($type === 'definition') {
+            if (!$request->user()->hasPermission('create_definition')) {
+                throw new UnAuthorizedException();
+            }
+        } else {
+            if (!$request->user()->hasPermission('update_layout')) {
+                throw new UnAuthorizedException();
+            }
+        }
+
+        return view("cms::admin.designs.create", compact('type'));
+
     }
 
     /**
@@ -55,8 +70,31 @@ class DesignsController extends Controller
      * @param  \Illuminate\Http\Request $request
      * @return void
      */
-    public function store(Request $request) {
-        //
+    public function store(Request $request, string $type) {
+        if ($type === 'definition') {
+            if (!$request->user()->hasPermission('store_definition')) {
+                throw new UnAuthorizedException();
+            }
+            $path = $this->getDefinitionFilePath($request, $type);
+        } else {
+            if (!$request->user()->hasPermission('store_layout')) {
+                throw new UnAuthorizedException();
+            }
+            $path = $this->getFilePath($request, $type);
+        }
+
+        $path = $type === 'definition' ? $path . ".xml" : $path;
+        $handle = fopen($path, "w");
+        fwrite($handle, "");
+        fclose($handle);
+
+
+        $type = ucwords($type);
+
+        $file = $request->get('file');
+
+        return redirect()->route('designs.index')
+                         ->withStatus("{$type} - {$file} is created!");
     }
 
     /**
@@ -72,22 +110,27 @@ class DesignsController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int $id
+     * @param \Illuminate\Http\Request $request
+     * @param string                   $type
      * @return \Illuminate\Http\Response
      */
     public function edit(Request $request, string $type) {
 
-        if ($request->ajax()) {
-
-            $path = $this->getFilePath($request, $type);
-
-            $content = file_get_contents($path);
-
-            return response()->json($content);
+        if (!$request->ajax()) {
+            return view('cms::admin.designs.edit',
+                [
+                    'file' => $request->get('file'),
+                    'type' => $type,
+                ]);
         }
 
-        return view('cms::admin.designs.edit',
-            ['file' => $request->get('file')]);
+        $path = $type === 'definition' ?
+            $this->getDefinitionFilePath($request, $type) :
+            $this->getFilePath($request, $type);
+
+        $content = file_get_contents($path);
+
+        return response()->json($content);
 
     }
 
@@ -97,18 +140,36 @@ class DesignsController extends Controller
      * @param  \Illuminate\Http\Request $request
      * @param string                    $type
      * @return \Illuminate\Http\Response
+     * @throws \Anacreation\Cms\Exceptions\UnAuthorizedException
      */
     public function update(Request $request, string $type) {
-        if ($request->ajax()) {
 
+        if ($type === 'definition') {
+            if (!$request->user()->hasPermission('update_definition')) {
+                throw new UnAuthorizedException();
+            }
+            $path = $this->getDefinitionFilePath($request, $type);
+        } else {
+            if (!$request->user()->hasPermission('update_layout')) {
+                throw new UnAuthorizedException();
+            }
             $path = $this->getFilePath($request, $type);
+        }
 
-            file_put_contents($path, $request->get('code'));
+        file_put_contents($path, $request->get('code'));
 
-            Artisan::call('view:clear', ['--quiet' => true]);
+        Artisan::call('view:clear', ['--quiet' => true]);
 
+        if ($request->ajax()) {
             return response()->json(['status' => 'completed']);
         }
+
+        $type = ucwords($type);
+
+        $file = $request->get('file');
+
+        return redirect()->route('designs.index')
+                         ->withStatus("{$type} - {$file} is updated!");
     }
 
     /**
@@ -131,6 +192,10 @@ class DesignsController extends Controller
         $path = getActiveThemePath() . "/" . $type . "/" . $request->get('file') . ".blade.php";
 
         return $path;
+    }
+
+    private function getDefinitionFilePath(Request $request, string $type) {
+        return getActiveThemePath() . "/" . $type . "/" . $request->get('file');
     }
 
 }

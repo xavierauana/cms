@@ -57,12 +57,18 @@ trait ContentGroup
     }
 
     private function loadContentWithIdentifiers(array $contentIdentifiers) {
-        $identifiers = array_keys($contentIdentifiers);
-        $service = app()->make(ContentService::class);
 
-        $contents = $service->loadContentWithIdentifiers($this, $identifiers);
+        $contents = app()->make(ContentService::class)
+                         ->loadContentWithIdentifiers($this,
+                             array_keys($contentIdentifiers));
 
-        return array_merge($contentIdentifiers, $contents);
+        foreach ($contentIdentifiers as $identifier => $definition) {
+            if (isset($contents[$identifier]) and isset($contents[$identifier]['content'])) {
+                $contentIdentifiers[$identifier]['content'] = $contents[$identifier]['content'];
+            }
+        }
+
+        return $contentIdentifiers;
     }
 
     private function loadAdHocContents(array $predefinedContent = []): array {

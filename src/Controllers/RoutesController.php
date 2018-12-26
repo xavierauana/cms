@@ -82,6 +82,7 @@ class RoutesController extends Controller
      * @throws \Anacreation\Cms\Exceptions\UnAuthorizedException
      */
     private function parseView(Request $request, RequestParser $parser) {
+
         if ($vars = $parser->parse($request)) {
 
             $page = $vars['page'];
@@ -111,8 +112,6 @@ class RoutesController extends Controller
 
         return $this->constructView($page, $vars);
 
-
-        throw new PageNotFoundHttpException();
     }
 
     /**
@@ -155,7 +154,9 @@ class RoutesController extends Controller
     private function checkUserSessions(Request $request): void {
         $table = "user_sessions";
 
-        if(!Schema::hasTable($table)) throw new InvalidArgumentException("No user_sessions table");
+        if (!Schema::hasTable($table)) {
+            throw new InvalidArgumentException("No user_sessions table");
+        }
 
         $sessionId = $request->session()
                              ->getId();

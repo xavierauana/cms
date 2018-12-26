@@ -1,4 +1,4 @@
-@if(Auth::guard('admin')->user()->hasPermission('index_design'))
+@if(Auth::guard('admin')->user()->hasPermission(['edit_layout','edit_definition']))
 	<li><a class="nav-link"
 	       href="{{route('designs.index')}}">Design</a></li> @endif
 @if(Auth::guard('admin')->user()->hasPermission('index_menu'))
@@ -27,13 +27,6 @@
 		        <li><a class="nav-link"
 		               href="{{'/'.config('admin.route_prefix')."/permissions"}}">Permissions</a></li> @endif
             </li>
-		        <li role="separator" class="divider"></li>
-		        @if(Auth::guard('admin')->user()->hasPermission('index_administrator'))
-			        <li><a class="nav-link">Administrators</a></li>@endif
-		
-		        <li><a class="nav-link"
-		               href="{{config('admin.route_prefix')."/roles"}}">Admin Roles</a></li>
-		        <li><a class="nav-link">Admin Permissions</a></li>
         </ul>
     </li>
 	<li class="dropdown">
@@ -46,8 +39,15 @@
 
         <ul class="dropdown-menu">
             @if(Auth::guard('admin')->user()->hasPermission('index_language'))
-		        <li><a class="nav-link" href="{{route('languages.index')}}">Languages</a>@endif</li>
-		        <li><a class="nav-link" href="{{route('settings.index')}}">Systems Settings</a>
+		        <li><a class="nav-link" href="{{route('languages.index')}}">Languages</a></li>@endif
+	        @if(Auth::guard('admin')->user()->hasPermission('index_setting'))
+		        <li><a class="nav-link" href="{{route('settings.index')}}">Systems Settings</a></li>@endif
+	        @if(Auth::guard('admin')->user()->hasPermission('index_admin'))
+		        <li><a class="nav-link"
+		               href="{{route('administrators.index')}}">Administrators</a></li>@endif
+	        @if(Auth::guard('admin')->user()->hasPermission('index_admin_role'))
+		        <li><a class="nav-link" href="{{route('admin_roles.index')}}">Administrator Roles</a></li>@endif
+				
         </ul>
     </li>
 

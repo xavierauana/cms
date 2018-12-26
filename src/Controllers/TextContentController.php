@@ -3,7 +3,6 @@
 namespace Anacreation\CMS\Controllers;
 
 use App\Http\Controllers\Controller;
-use App\TextContent;
 use Illuminate\Http\Request;
 
 class TextContentController extends Controller

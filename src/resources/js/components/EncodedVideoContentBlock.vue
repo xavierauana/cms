@@ -30,6 +30,7 @@
                        :disabled="!editable"
                        content />
               </b-tab>
+            <div class="helper-text"><em v-text="content.helper"></em></div>
          </b-tabs>
     </base-content-block>
 </template>

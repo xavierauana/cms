@@ -52,7 +52,6 @@ class TemplateParser
         $contents = [];
 
         $xml = $this->loadTemplateDefinition($path, $template);
-
         foreach ($xml->content as $content) {
             if ($this->notYetParsed($content, $contents)) {
                 $this->constructContentDefinitionArray($contents, $content);
@@ -84,6 +83,7 @@ class TemplateParser
     ) {
         $contents[(string)$content->identifier] = [];
         $contents[(string)$content->identifier]['type'] = (string)$content['type'];
+        $contents[(string)$content->identifier]['helper'] = (string)$content->helper;
     }
 
     /**

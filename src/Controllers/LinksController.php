@@ -69,7 +69,7 @@ class LinksController extends Controller
     public function store(
         Menu $menu, Request $request, Page $page, Link $model
     ) {
-        $this->authorize('store', $model);
+        $this->authorize('create', $model);
 
         $this->sanitizeInputs($request);
 
@@ -103,7 +103,7 @@ class LinksController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function show(Link $link) {
-        dd('hrere');
+        $this->authorize('show', $link);
     }
 
     /**
@@ -115,6 +115,7 @@ class LinksController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function edit(Menu $menu, Link $link, Page $page) {
+        $this->authorize('edit', $link);
         list($pages, $links) = $this->loadResources($menu, $page);
         $languages = Language::all();
 
@@ -132,7 +133,7 @@ class LinksController extends Controller
      * @throws \Anacreation\Cms\Exceptions\IncorrectContentTypeException
      */
     public function update(UpdateRequest $request, Menu $menu, Link $link) {
-
+        $this->authorize('edit', $link);
         $this->updateLink($link, $request->validated());
 
         event(new MenuSaved($link->menu));
@@ -151,7 +152,7 @@ class LinksController extends Controller
      */
     public function destroy(Menu $menu, Link $link) {
 
-        $this->authorize('update', $link);
+        $this->authorize('delete', $link);
 
         $menu->links()->find($link->id)->delete();
 

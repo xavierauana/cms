@@ -23,12 +23,16 @@ class CmsSettingsController extends Controller
 
     public function index() {
 
+        $this->authorize('index', 'CmsSettings');
+
         $settings = $this->service->all();
 
         return view('cms::admin.settings.index', compact('settings'));
     }
 
     public function edit(int $settingId) {
+
+        $this->authorize('edit', 'CmsSettings');
 
         $setting = $this->service->find($settingId);
 
@@ -37,9 +41,11 @@ class CmsSettingsController extends Controller
 
     public function update(Request $request, int $settingId) {
 
+        $this->authorize('update', 'CmsSettings');
+
         $validatedData = $this->validate($request, [
             'label' => 'required',
-            'value' => 'required',
+            'value' => 'nullable',
         ]);
 
         $this->service->update($settingId, $validatedData);

@@ -6,9 +6,6 @@ window.Vue = window.Vue || require('vue')
 
 
 import vBootstrap from "bootstrap-vue"
-
-Vue.use(vBootstrap)
-
 import CodeEditor from "./components/CodeEditor"
 import SortableList from "./components/SortableList"
 import ContentBlocks from "./components/ContentBlocks"
@@ -31,6 +28,7 @@ import DatetimeContentBlock from "./components/DatetimeContentBlock"
 import DateContentBlock from "./components/DateContentBlock"
 import EncodedVideoContentBlock from "./components/EncodedVideoContentBlock"
 
+Vue.use(vBootstrap)
 
 
 export default {

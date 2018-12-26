@@ -52,13 +52,10 @@
                 </span>
 			@endif
 		</div>
-		
 		<div class="form-group">
 			{{Form::submit('Update', ['class'=>'btn btn-success'])}}
 			<a href='{{route('languages.index')}}' class="btn btn-info">Back</a>
 		</div>
-		
-		
 		{{Form::close()}}
 	@endcomponent
 

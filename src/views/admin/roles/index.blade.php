@@ -3,8 +3,12 @@
 @section("content")
 	
 	@component('cms::components.container')
-		@slot('title')All Roles <a href="{{route('roles.create')}}"
-		                           class="btn btn-sm btn-success pull-right">Create Role</a> @endslot
+		@slot('title')All Roles
+		@if(Auth::guard('admin')->users()->hasPermission('create_role'))
+			<a href="{{route('roles.create')}}"
+			   class="btn btn-sm btn-success pull-right">Create Role</a>
+		@endif
+		@endslot
 		
 		<div class="table-responsive">
 			<delete-item url="/admin/roles/"
@@ -24,11 +28,14 @@
 							<td>{{$role->code}}</td>
 							<td>
 								<div class="btn-group btn-group-sm">
-									
-									<a href="{{route('roles.edit', $role->id)}}"
-									   class="btn btn-info">Edit</a>
-									<button class="btn btn-danger"
-									        @click.prevent="deleteItem({{$role->id}})">Delete</button>
+									@if(Auth::guard('admin')->users()->hasPermission('edit_role'))
+										<a href="{{route('roles.edit', $role->id)}}"
+										   class="btn btn-info">Edit</a>
+									@endif
+									@if(Auth::guard('admin')->users()->hasPermission('delete_role'))
+										<button class="btn btn-danger"
+										        @click.prevent="deleteItem({{$role->id}})">Delete</button>
+									@endif
 								</div>
 							</td>
 						</tr>

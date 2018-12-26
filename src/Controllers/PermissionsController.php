@@ -64,7 +64,7 @@ class PermissionsController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function show(Permission $permission) {
-        //
+        $this->authorize('show', $permission);
     }
 
     /**
@@ -87,7 +87,7 @@ class PermissionsController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, Permission $permission) {
-        $this->authorize('update', $permission);
+        $this->authorize('edit', $permission);
 
         $validatedData = $this->validate($request, [
             'label' => 'required',

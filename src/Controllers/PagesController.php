@@ -19,6 +19,7 @@ class PagesController extends Controller
      * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function index(Page $page) {
+
         $this->authorize('index', $page);
         $pages = $page->whereParentId(0)
                       ->orderBy('order')
@@ -62,7 +63,7 @@ class PagesController extends Controller
      * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function store(Request $request, Page $page) {
-        $this->authorize('store', $page);
+        $this->authorize('create', $page);
 
         $layouts = getLayoutFiles()['layouts'];
 
@@ -90,6 +91,7 @@ class PagesController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function show(Page $page) {
+        $this->authorize('show', $page);
     }
 
     /**
@@ -123,7 +125,7 @@ class PagesController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, Page $page) {
-        $this->authorize('store', $page);
+        $this->authorize('edit', $page);
 
         $layouts = getLayoutFiles()['layouts'];
 
@@ -149,14 +151,19 @@ class PagesController extends Controller
      * @param Page $page
      *
      * @return \Illuminate\Http\Response
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function destroy(Page $page) {
+        $this->authorize('delete', $page);
+
         $page->delete();
 
         return response()->json("Page: {$page->id} deleted!");
     }
 
     public function postOrder(Request $request, Page $pageRepo) {
+        $this->authorize('edit', $pageRepo);
+
         foreach ($request->all() as $data) {
             optional($pageRepo->find($data['id']))->update(['order' => $data['order']]);
         }

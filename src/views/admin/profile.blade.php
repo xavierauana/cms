@@ -3,7 +3,7 @@
 @section("content")
 	<div class="container">
 		
-		{{Form::model($user, ['route'=>['update.profile', $user], 'method'=>'PUT'])}}
+		{{Form::model($user, ['route'=>['profile.update', $user], 'method'=>'PUT'])}}
 		
 		{{csrf_field()}}
 		
@@ -15,6 +15,15 @@
 				@if ($errors->has('name'))
 					<span class="help-block">
                                         <strong>{{ $errors->first('name') }}</strong>
+                                    </span>
+				@endif
+			</div>
+			<div class="form-group">
+				{{Form::label('email', 'Email')}}
+				{{Form::text('email', $user->email, ['class'=>'form-control'])}}
+				@if ($errors->has('email'))
+					<span class="help-block">
+                                        <strong>{{ $errors->first('email') }}</strong>
                                     </span>
 				@endif
 			</div>
