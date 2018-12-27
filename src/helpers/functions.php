@@ -7,9 +7,13 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 if (!function_exists("getActiveThemePath")) {
-
     function getActiveThemePath(): string {
         return resource_path("views/themes/" . config("cms.active_theme"));
+    }
+}
+if (!function_exists("getPartialKeyPath")) {
+    function getPartialKeyPath($partialName): string {
+        return "themes." . config("cms.active_theme") . '.partials.' . $partialName;
     }
 }
 

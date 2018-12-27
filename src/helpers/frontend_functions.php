@@ -165,18 +165,35 @@ if (!function_exists('getPartialFiles')) {
 
     }
 }
+if (!function_exists('getPartialFile')) {
+    function getPartialFile($partialFileName) {
+
+        $partials = scandir(getActiveThemePath() . "/partials");
+
+        return sanitizeFileNames(compact("partials"));
+
+    }
+}
 
 if (!function_exists('getDesignFiles')) {
     function getDesignFiles() {
         return [
-            'layouts'  => getLayoutFiles()['layouts'],
-            'partials' => getPartialFiles()['partials']
+            'layouts'     => getLayoutFiles()['layouts'],
+            'partials'    => getPartialFiles()['partials'],
+            'definitions' => getDefinitionFiles()['definitions']
         ];
+    }
+}
+if (!function_exists('getDefinitionFiles')) {
+    function getDefinitionFiles() {
+        $definitions = scandir(getActiveThemePath() . "/definition");
+
+        return sanitizeFileNames(compact("definitions"));
     }
 }
 
 if (!function_exists('sanitizeFileNames')) {
-    function sanitizeFileNames(array $items) {
+    function sanitizeFileNames(array $items, array $excludeExtension = []) {
         foreach ($items as $key => $rawNameArray) {
             $rawNameArray = array_slice($rawNameArray, 2);
 

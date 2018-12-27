@@ -11,7 +11,9 @@ class MenusController extends Controller
     /**
      * Display a listing of the resource.
      *
+     * @param \Anacreation\Cms\Models\Menu $menu
      * @return \Illuminate\Http\Response
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function index(Menu $menu) {
         $this->authorize('index', $menu);
@@ -29,7 +31,9 @@ class MenusController extends Controller
     /**
      * Show the form for creating a new resource.
      *
+     * @param \Anacreation\Cms\Models\Menu $menu
      * @return \Illuminate\Http\Response
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function create(Menu $menu) {
         $this->authorize('create', $menu);
@@ -40,11 +44,13 @@ class MenusController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request $request
+     * @param  \Illuminate\Http\Request    $request
+     * @param \Anacreation\Cms\Models\Menu $menuRepo
      * @return \Illuminate\Http\Response
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function store(Request $request, Menu $menuRepo) {
-        $this->authorize('store', $menuRepo);
+        $this->authorize('create', $menuRepo);
         $validatedData = $this->validate($request, [
             'name' => 'required',
             'code' => 'required|unique:menus',
@@ -62,7 +68,7 @@ class MenusController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function show(Menu $menu) {
-        //
+        $this->authorize('show', $menu);
     }
 
     /**
@@ -72,7 +78,7 @@ class MenusController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function edit(Menu $menu) {
-        //
+        $this->authorize('edit', $menu);
     }
 
     /**
@@ -84,7 +90,7 @@ class MenusController extends Controller
      */
     public function update(Request $request, Menu $menu) {
 
-        $this->authorize('update', $menu);
+        $this->authorize('edit', $menu);
         $validatedData = $this->validate($request, [
             'name' => 'required',
             'code' => 'required|unique:menus,code,' . $menu->id,
@@ -114,7 +120,7 @@ class MenusController extends Controller
     }
 
     public function updateOrder(Request $request, Menu $menu) {
-
+        $this->authorize('edit', $menu);
         $inputs = $request->all();
         foreach ($inputs as $data) {
             $link = $menu->links()->find($data['id']);

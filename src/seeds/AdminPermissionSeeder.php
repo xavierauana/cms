@@ -18,9 +18,10 @@ class AdminPermissionSeeder extends Seeder
      */
     public function run() {
         $objects = [
+            'layout',
+            'definition',
             'menu',
             'link',
-            'design',
             'page',
             'content',
             'group',
@@ -30,17 +31,17 @@ class AdminPermissionSeeder extends Seeder
             'language',
             'admin',
             'admin_role',
-            'admin_permission',
+            'setting',
         ];
         $actions = [
             'index',
             'show',
             'create',
-            'store',
             'edit',
-            'update',
             'delete'
         ];
+
+        $others = [];
 
         foreach ($objects as $object) {
             foreach ($actions as $action) {
@@ -50,6 +51,13 @@ class AdminPermissionSeeder extends Seeder
                 if (!AdminPermission::whereCode($code)->count()) {
                     AdminPermission::create(compact('code', 'label'));
                 }
+            }
+        }
+
+        foreach ($others as $code) {
+            $label = ucwords(str_replace('_', ' ', $code));
+            if (!AdminPermission::whereCode($code)->count()) {
+                AdminPermission::create(compact('code', 'label'));
             }
         }
     }

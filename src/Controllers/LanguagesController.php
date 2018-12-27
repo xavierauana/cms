@@ -13,7 +13,9 @@ class LanguagesController extends Controller
     /**
      * Display a listing of the resource.
      *
+     * @param \Anacreation\Cms\Models\Language $language
      * @return Response
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function index(Language $language) {
         $this->authorize('index', $language);
@@ -26,7 +28,9 @@ class LanguagesController extends Controller
     /**
      * Show the form for creating a new resource.
      *
+     * @param \Anacreation\Cms\Models\Language $language
      * @return Response
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function create(Language $language) {
         $this->authorize('create', $language);
@@ -47,7 +51,7 @@ class LanguagesController extends Controller
      * @return Response
      */
     public function store(Request $request, Language $language) {
-        $this->authorize('store', $language);
+        $this->authorize('create', $language);
 
         $validateData = $this->validate($request, [
             'label'                => 'required',
@@ -77,7 +81,7 @@ class LanguagesController extends Controller
      * @return Response
      */
     public function show(Language $language) {
-        //
+        $this->authorize('show', $language);
     }
 
     /**
@@ -85,6 +89,7 @@ class LanguagesController extends Controller
      *
      * @param  Language $language
      * @return Response
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function edit(Language $language) {
         $this->authorize('edit', $language);
@@ -105,7 +110,7 @@ class LanguagesController extends Controller
      * @return Response
      */
     public function update(Request $request, Language $language) {
-        $this->authorize('update', $language);
+        $this->authorize('edit', $language);
 
         $validateData = $this->validate($request, [
             'label'                => 'required',
@@ -118,7 +123,6 @@ class LanguagesController extends Controller
             'fallback_language_id' => 'required|in:0,' . implode(',',
                     Language::pluck('id')->toArray()),
         ]);
-
 
 
         if ($validateData['is_default'] == "1") {

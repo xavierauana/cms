@@ -16,6 +16,7 @@ class RolesController extends Controller
      *
      * @param \Anacreation\Cms\Models\Role $role
      * @return void
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function index(Role $role) {
         $this->authorize('index', $role);
@@ -51,7 +52,7 @@ class RolesController extends Controller
      * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function store(Request $request, Role $role) {
-        $this->authorize('store', $role);
+        $this->authorize('create', $role);
         $validatedData = $this->validate($request, [
             'label'         => 'required',
             'code'          => 'required|unique:roles',
@@ -75,7 +76,7 @@ class RolesController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function show(Role $role) {
-        //
+        $this->authorize('create', $role);
     }
 
     /**
@@ -103,7 +104,7 @@ class RolesController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, Role $role) {
-        $this->authorize('update', $role);
+        $this->authorize('edit', $role);
 
         $validatedData = $this->validate($request, [
             'label'         => 'required',

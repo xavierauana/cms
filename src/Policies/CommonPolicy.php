@@ -21,7 +21,7 @@ abstract class CommonPolicy
         //
     }
 
-    public function index(Admin $admin, Model $model): bool {
+    public function index(Admin $admin): bool {
 
         return $admin->hasPermission("index_" . strtolower($this->shortName));
     }
@@ -30,7 +30,7 @@ abstract class CommonPolicy
         return $admin->hasPermission("edit_" . strtolower($this->shortName));
     }
 
-    public function create(Admin $admin, Model $model): bool {
+    public function create(Admin $admin): bool {
         return $admin->hasPermission("create_" . strtolower($this->shortName));
     }
 
