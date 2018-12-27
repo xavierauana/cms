@@ -127,6 +127,5 @@ class Link extends Model
             $p->uri;
 
         return $uri;
-
     }
 }
