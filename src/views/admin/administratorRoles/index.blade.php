@@ -4,7 +4,7 @@
 	
 	@component('cms::components.container')
 		@slot('title')All Admin Roles
-		@if(Auth::guard('admin')->users()->hasPermission('create_admin_role'))
+		@if(Auth::guard('admin')->user()->hasPermission('create_admin_role'))
 			<a href="{{route('admin_roles.create')}}"
 			   class="btn btn-sm btn-success pull-right">Create Admin</a>
 		@endif
@@ -25,11 +25,11 @@
 						
 						<td>
 							<div class="btn-group btn-group-sm">
-								@if(Auth::guard('admin')->users()->hasPermission('edit_admin_role'))
+								@if(Auth::guard('admin')->user()->hasPermission('edit_admin_role'))
 									<a href="{{route('admin_roles.edit', $role->id)}}"
 									   class="btn btn-info">Edit</a>
 								@endif
-								@if(Auth::guard('admin')->users()->hasPermission('delete_admin_role'))
+								@if(Auth::guard('admin')->user()->hasPermission('delete_admin_role'))
 									<delete-item
 											url="{{route('admin_roles.destroy', $role->id)}}"
 											inline-template>
