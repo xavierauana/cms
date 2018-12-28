@@ -10,9 +10,9 @@
   ],
   "require": {
 	"php": ">=7.1.0",
-	"laravel/framework": "5.5.*",
+	"laravel/framework": "5.7.*",
 	"xavierau/multi-auth": "2.*",
-	"laravelcollective/html": "^5.5",
+	"laravelcollective/html": "^5.7",
 	"lavary/laravel-menu": "^1.7",
 	"tymon/jwt-auth": "^0.5.12",
 	"maatwebsite/excel": "^3.0",
