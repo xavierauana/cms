@@ -22,9 +22,6 @@ class CmsServiceProvider extends ServiceProvider
             $this->registerFrontendViewComposers();
         }
 
-
-        Blade::doubleEncode();
-
         $this->loadMigrationsFrom(__DIR__ . '/migrations');
 
         $this->views();
@@ -112,7 +109,7 @@ class CmsServiceProvider extends ServiceProvider
     }
 
     private function registerFrontendViewComposers() {
-        foreach (config('cms.view_composer') as $view => $composer) {
+        foreach (config('cms.view_composer',[]) as $view => $composer) {
             View::composer($view, $composer);
         }
     }
