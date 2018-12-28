@@ -4,7 +4,7 @@
 	
 	@component('cms::components.container')
 		@slot('title')All Administrators
-		@if(Auth::guard('admin')->users()->hasPermission('create_admin'))
+		@if(Auth::guard('admin')->user()->hasPermission('create_admin'))
 			<a href="{{route('administrators.create')}}"
 			   class="btn btn-sm btn-success pull-right">Create Admin</a>
 		@endif
@@ -33,11 +33,11 @@
 						</td>
 						<td>
 							<div class="btn-group btn-group-sm">
-								@if(Auth::guard('admin')->users()->hasPermission('edit_admin'))
+								@if(Auth::guard('admin')->user()->hasPermission('edit_admin'))
 									<a href="{{route('administrators.edit', $admin->id)}}"
 									   class="btn btn-info">Edit</a>
 								@endif
-								@if(Auth::guard('admin')->users()->hasPermission('delete_admin'))
+								@if(Auth::guard('admin')->user()->hasPermission('delete_admin'))
 									<delete-item
 											url="{{route('administrators.destroy', $admin->id)}}"
 											inline-template>
