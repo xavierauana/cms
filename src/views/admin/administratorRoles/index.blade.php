@@ -6,7 +6,7 @@
 		@slot('title')All Admin Roles
 		@if(Auth::guard('admin')->user()->hasPermission('create_admin_role'))
 			<a href="{{route('admin_roles.create')}}"
-			   class="btn btn-sm btn-success pull-right">Create Admin</a>
+			   class="btn btn-sm btn-success pull-right">Create Admin Role</a>
 		@endif
 		@endslot
 		

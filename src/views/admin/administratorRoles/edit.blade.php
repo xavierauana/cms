@@ -3,7 +3,7 @@
 @section("content")
 	
 	@component('cms::components.container')
-		@slot('title')Edit Admin Role: {{$role->name}} @endslot
+		@slot('title')Edit Admin Role: {{$role->label}} @endslot
 		
 		{{Form::model($role, ['route'=>["admin_roles.update", $role], 'method'=>'PUT'])}}
 		

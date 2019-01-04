@@ -14,13 +14,13 @@
 				{{Form::text('name', $user->name, ['class'=>'form-control'])}}
 				@if ($errors->has('name'))
 					<span class="help-block">
-                                        <strong>{{ $errors->first('name') }}</strong>
-                                    </span>
+                        <strong>{{ $errors->first('name') }}</strong>
+                    </span>
 				@endif
 			</div>
 			<div class="form-group">
 				{{Form::label('email', 'Email')}}
-				{{Form::text('email', $user->email, ['class'=>'form-control'])}}
+				{{Form::email('email', $user->email, ['class'=>'form-control'])}}
 				@if ($errors->has('email'))
 					<span class="help-block">
                         <strong>{{ $errors->first('email') }}</strong>
