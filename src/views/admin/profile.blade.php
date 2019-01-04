@@ -23,8 +23,8 @@
 				{{Form::text('email', $user->email, ['class'=>'form-control'])}}
 				@if ($errors->has('email'))
 					<span class="help-block">
-                                        <strong>{{ $errors->first('email') }}</strong>
-                                    </span>
+                        <strong>{{ $errors->first('email') }}</strong>
+                    </span>
 				@endif
 			</div>
 		
@@ -33,8 +33,8 @@
 				{{Form::password('password', ['class'=>'form-control', 'placeholder'=>'Only if you want to change password'])}}
 				@if ($errors->has('password'))
 					<span class="help-block">
-                                        <strong>{{ $errors->first('password') }}</strong>
-                                    </span>
+                        <strong>{{ $errors->first('password') }}</strong>
+                    </span>
 				@endif
 			</div>
 		
