@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 
 class HomeController extends Controller
 {
-    public function getProfile(Request $request, Admin $admin) {
+    public function getProfile(Request $request) {
         return view('cms::admin.profile', ['user' => $request->user()]);
     }
 
