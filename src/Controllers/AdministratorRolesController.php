@@ -23,7 +23,7 @@ class AdministratorRolesController extends Controller
         $adminRole->load('permissions');
         $permissions = AdminPermission::all();
 
-        return view("cms::admin.administratorROles.edit",
+        return view("cms::admin.administratorRoles.edit",
             [
                 'role'        => $adminRole,
                 'permissions' => $permissions,
