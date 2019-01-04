@@ -5,7 +5,7 @@
 		@slot('title') All Design Layouts @endslot
 		
 		@component('cms::elements.accordion_container',['id'=>'design_accordion'])
-			@if(auth('admin')->user()->hasPermission('update_definition'))
+			@if(auth('admin')->user()->hasPermission('index_definition'))
 				@component('cms::elements.accordion_item')
 					@slot('parentId')design_accordion @endslot
 					@slot('id')definition_panel @endslot
@@ -45,7 +45,7 @@
 				@endcomponent
 			@endif
 			
-			@if(auth('admin')->user()->hasPermission('update_layout'))
+			@if(auth('admin')->user()->hasPermission('index_layout'))
 				@component('cms::elements.accordion_item')
 					@slot('parentId')design_accordion @endslot
 					@slot('id')layouts_panel @endslot
@@ -74,7 +74,7 @@
 										        @if(isset($pages[$layout]))
 											        @foreach($pages[$layout] as $page)
 												        <a href="{{route('contents.index', $page->id)}}"
-												           class="btn btn-xs btn-primary">{{$page->uri}}</a>
+												           class="btn btn-sm my-2 btn-primary">{{$page->uri}}</a>
 											        @endforeach
 										        @endif
 							            </td>

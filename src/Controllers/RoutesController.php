@@ -110,7 +110,7 @@ class RoutesController extends Controller
         }
 
 
-        return $this->constructView($page, $vars);
+        throw new PageNotFoundHttpException();
 
     }
 
