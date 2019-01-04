@@ -13,10 +13,6 @@ class AdministratorPolicy extends CommonPolicy
         return $this->isSamePerson($admin, $administrator);
     }
 
-    public function profile(Admin $admin, Admin $administrator): bool {
-        return $this->isSamePerson($admin, $administrator);
-    }
-
     /**
      * @param \Anacreation\MultiAuth\Model\Admin $admin
      * @param \Anacreation\MultiAuth\Model\Admin $administrator
