@@ -41,7 +41,7 @@ class CmsSettingsController extends Controller
 
     public function update(Request $request, int $settingId) {
 
-        $this->authorize('update', 'CmsSettings');
+        $this->authorize('edit', 'CmsSettings');
 
         $validatedData = $this->validate($request, [
             'label' => 'required',
