@@ -74,7 +74,7 @@
 										        @if(isset($pages[$layout]))
 											        @foreach($pages[$layout] as $page)
 												        <a href="{{route('contents.index', $page->id)}}"
-												           class="btn btn-xs btn-primary">{{$page->uri}}</a>
+												           class="btn btn-sm my-2 btn-primary">{{$page->uri}}</a>
 											        @endforeach
 										        @endif
 							            </td>
