@@ -72,12 +72,12 @@ class DesignsController extends Controller
      */
     public function store(Request $request, string $type) {
         if ($type === 'definition') {
-            if (!$request->user()->hasPermission('store_definition')) {
+            if (!$request->user()->hasPermission('create_definition')) {
                 throw new UnAuthorizedException();
             }
             $path = $this->getDefinitionFilePath($request, $type);
         } else {
-            if (!$request->user()->hasPermission('store_layout')) {
+            if (!$request->user()->hasPermission('create_layout')) {
                 throw new UnAuthorizedException();
             }
             $path = $this->getFilePath($request, $type);
