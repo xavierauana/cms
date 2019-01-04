@@ -9,7 +9,7 @@
 				@component('cms::elements.accordion_item')
 					@slot('parentId')design_accordion @endslot
 					@slot('id')definition_panel @endslot
-					@slot('title')Layout Definition @endslot
+					@slot('title')Content Definition @endslot
 					@if(Auth::guard('admin')->user()->hasPermission('create_definition'))
 						@slot('panelActions') <a
 								class=" mt-1 btn btn-sm text-light btn-success float-right"
@@ -72,9 +72,16 @@
 								        @if(auth('admin')->user()->hasPermission('edit_content'))
 									        <td>
 										        @if(isset($pages[$layout]))
-											        @foreach($pages[$layout] as $page)
-												        <a href="{{route('contents.index', $page->id)}}"
-												           class="btn btn-sm my-2 btn-primary">{{$page->uri}}</a>
+											        @foreach($pages[$layout] as $index => $page)
+												        @if($index < 10)
+													        <a href="{{route('contents.index', $page->id)}}"
+													           class="btn btn-sm my-2 btn-primary">{{$page->uri}}</a>
+												        @else
+													        <a href="#"
+													           class="btn btn-sm my-2 btn-outline-primary">{{count($pages[$layout]) - 10}}
+														        more pages</a>
+													        @break
+												        @endif
 											        @endforeach
 										        @endif
 							            </td>

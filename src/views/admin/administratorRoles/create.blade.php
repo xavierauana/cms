@@ -17,7 +17,7 @@
 			@endif
 		</div>
 		<div class="form-group">
-			{{Form::label('code','Role Code',['class'=>'form-label'])}}
+			{{Form::label('code','Admin Role Code',['class'=>'form-label'])}}
 			{{Form::text('code',null,['class'=>$errors->has('code')?"form-control is-invalid":"form-control"])}}
 			<p><small><em>This for system only and cannot be changed in future.</em></small></p>
 			@if ($errors->has('code'))
@@ -46,7 +46,7 @@
 		</fieldset>
 		
 		<div class="form-group">
-			{{Form::submit('Update', ['class'=>'btn btn-success'])}}
+			{{Form::submit('Create', ['class'=>'btn btn-success'])}}
 			<a href='{{route('administrators.index')}}' class="btn btn-info">Back</a>
 		</div>
 		
