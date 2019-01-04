@@ -55,7 +55,7 @@ class DesignsController extends Controller
                 throw new UnAuthorizedException();
             }
         } else {
-            if (!$request->user()->hasPermission('update_layout')) {
+            if (!$request->user()->hasPermission('create_layout')) {
                 throw new UnAuthorizedException();
             }
         }
@@ -145,12 +145,12 @@ class DesignsController extends Controller
     public function update(Request $request, string $type) {
 
         if ($type === 'definition') {
-            if (!$request->user()->hasPermission('update_definition')) {
+            if (!$request->user()->hasPermission('edit_definition')) {
                 throw new UnAuthorizedException();
             }
             $path = $this->getDefinitionFilePath($request, $type);
         } else {
-            if (!$request->user()->hasPermission('update_layout')) {
+            if (!$request->user()->hasPermission('edit_layout')) {
                 throw new UnAuthorizedException();
             }
             $path = $this->getFilePath($request, $type);
