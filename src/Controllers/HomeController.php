@@ -3,31 +3,23 @@
 namespace Anacreation\Cms\Controllers;
 
 use Anacreation\MultiAuth\Model\Admin;
-use Anacreation\MultiAuth\Model\AdminPermission;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
 {
-    public function getProfile(Request $request, Admin $admin) {
+    public function getProfile(Request $request) {
         return view('cms::admin.profile', ['user' => $request->user()]);
     }
 
     public function putProfile(Request $request, Admin $admin) {
         $this->authorize('updatePassword', $admin);
 
-        $request->user()->permissions->each(function (
-            AdminPermission $permission
-        ) {
-            dump($permission->code);
-        });
-
-
         $validatedData = $this->validate($request, [
             'name'     => 'required',
             'email'    => 'nullable|unique:administrators,email,' .
                           $request->user()->id,
-            'password' => 'nullable|confirmed',
+            'password' => 'nullable|min:6|confirmed',
         ]);
 
         if (empty($validatedData['password'])) {
@@ -38,6 +30,6 @@ class HomeController extends Controller
 
         $admin->update($validatedData);
 
-        return redirect("/admin");
+        return redirect("/admin")->withStatus('Profile updated!');
     }
 }
