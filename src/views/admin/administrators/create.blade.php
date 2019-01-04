@@ -27,7 +27,7 @@
 		</div>
 		<div class="form-group">
 			{{Form::label('password', 'Password')}}
-			{{Form::password('password', ['class'=>'form-control', 'placeholder'=>'Email'])}}
+			{{Form::password('password', ['class'=>'form-control', 'placeholder'=>'Password'])}}
 			@if ($errors->has('password'))
 				<span class="help-block">
                     <strong>{{ $errors->first('password') }}</strong>
@@ -36,7 +36,7 @@
 		</div>
 		<div class="form-group">
 			{{Form::label('password_confirmation', 'Password Confirmation')}}
-			{{Form::password('password_confirmation', ['class'=>'form-control', 'placeholder'=>'Email'])}}
+			{{Form::password('password_confirmation', ['class'=>'form-control', 'placeholder'=>'Confirm password'])}}
 			@if ($errors->has('password_confirmation'))
 				<span class="help-block">
                     <strong>{{ $errors->first('password_confirmation') }}</strong>
@@ -53,7 +53,7 @@
 			@endif
 		</div>
 		<div class="form-group">
-			{{Form::submit('Update', ['class'=>'btn btn-success'])}}
+			{{Form::submit('Create', ['class'=>'btn btn-success'])}}
 			<a href='{{route('administrators.index')}}' class="btn btn-info">Back</a>
 		</div>
 		
