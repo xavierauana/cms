@@ -21,5 +21,4 @@ class CmsSettingsPolicy
         return $admin->hasPermission('update_setting');
     }
 
-
 }

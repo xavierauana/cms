@@ -103,7 +103,7 @@ class LinkSeeder extends Seeder
                 foreach ($link['name'] as $data) {
                     $contentObject = new ContentObject('link', $data['lang_id'],
                         $data['content'], 'string');
-                    $service->updateOrCreateContentIndex($newLink,
+                    $service->updateOrCreateContentIndexWithContentObject($newLink,
                         $contentObject);
                 }
 

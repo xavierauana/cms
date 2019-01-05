@@ -169,9 +169,6 @@ class Cms
         ],
             function () {
 
-                Route::get("page/{page?}",
-                    "RoutesController@resolve");
-
                 Route::post('authenticate', "AuthController@authenticate");
 
                 Route::get('user', function (Request $request) {

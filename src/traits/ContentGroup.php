@@ -144,7 +144,6 @@ trait ContentGroup
                       ->fetchIndex($identifier, $language->id)
                       ->first();
 
-
         return $index;
     }
 

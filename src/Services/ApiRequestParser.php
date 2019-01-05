@@ -13,16 +13,14 @@ use Anacreation\Cms\Models\Page;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 
-class RequestParser implements RequestParserInterface
+class ApiRequestParser implements RequestParserInterface
 {
+
     private $segments = [];
 
-    /**
-     * RequestParser constructor.
-     * @param array $segments
-     */
     public function __construct() {
         $this->segments = request()->segments();
+        $this->updateRequestSegments();
     }
 
     public function parse(Request $request, array $vars = null): ?array {
@@ -49,16 +47,13 @@ class RequestParser implements RequestParserInterface
         };
 
         return null;
-
     }
 
-    private function requestIsHome(Request $request): bool {
-        return !isset($request->segments()[0]) or $request->segments()[0] == "" or $request->segments()[0] == "/";
-
+    private function requestIsHome(): bool {
+        return !isset($this->segments[0]) or $this->segments[0] == "" or $this->segments[0] == "/";
     }
 
     private function createData($page) {
-        $data = $page->injectLayoutModels(null, $page->template);
         $data['page'] = $page;
         $data['language'] = new \Anacreation\Cms\Models\Language;
 
@@ -93,4 +88,5 @@ class RequestParser implements RequestParserInterface
 
         return $this->createData($page);
     }
+
 }
