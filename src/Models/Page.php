@@ -68,7 +68,6 @@ class Page extends Model
     }
 
     public function getAbsoluteUrl(): string {
-
         if ($parent = $this->parent) {
 
             $parentUrl = $parent->getAbsoluteUrl();
@@ -76,7 +75,7 @@ class Page extends Model
             return $parentUrl . "/{$this->uri}";
         }
 
-        return url($this->uri ?? "/");
+        return url((request()->segments()[0] === 'api' ? "api/" : '/') . ($this->uri ?? '/'));
 
     }
 
