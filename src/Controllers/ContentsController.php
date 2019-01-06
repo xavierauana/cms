@@ -69,6 +69,7 @@ class ContentsController extends Controller
     public function store(Request $request, Page $page) {
         $layouts = getLayoutFiles()['layouts'];
 
+        // TODO:refine uri rule combine both value and parent_id
         $validatedInputs = $this->validate($request, [
             'uri'           => 'required|unique:pages',
             'template'      => 'required|in:' . implode(',', $layouts),

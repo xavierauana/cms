@@ -6,6 +6,7 @@ use Anacreation\Cms\Contracts\CmsPageInterface as Page;
 use Anacreation\Cms\Models\Permission;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class PagesController extends Controller
 {
@@ -68,7 +69,12 @@ class PagesController extends Controller
         $layouts = getLayoutFiles()['layouts'];
 
         $validatedInputs = $this->validate($request, [
-            'uri'           => 'required|unique:pages',
+            'uri'           => [
+                'required',
+                Rule::unique('pages')->where(function ($query) {
+                    return $query->where('parent_id', 0);
+                })
+            ],
             'template'      => 'required|in:' . implode(',', $layouts),
             'has_children'  => 'required|boolean',
             'is_active'     => 'required|boolean',
@@ -123,6 +129,7 @@ class PagesController extends Controller
      * @param Page                     $page
      *
      * @return \Illuminate\Http\Response
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function update(Request $request, Page $page) {
         $this->authorize('edit', $page);
@@ -130,7 +137,14 @@ class PagesController extends Controller
         $layouts = getLayoutFiles()['layouts'];
 
         $validatedInputs = $this->validate($request, [
-            'uri'           => 'required|unique:pages,uri,' . $page->id,
+            'uri'           => [
+                'required',
+                Rule::unique('pages')
+                    ->where(function ($query) use ($page) {
+                        return $query->where('parent_id',
+                            $page->parent_id);
+                    })
+            ],
             'template'      => 'required|in:' . implode(',', $layouts),
             'has_children'  => 'required|boolean',
             'is_active'     => 'required|boolean',

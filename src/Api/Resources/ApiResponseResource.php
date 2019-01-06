@@ -2,6 +2,7 @@
 
 namespace Anacreation\Cms\Api\Resources;
 
+use Anacreation\Cms\Services\ApiEncoder;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\Resource;
 
@@ -26,10 +27,14 @@ class ApiResponseResource extends Resource
      * @return array
      */
     public function toArray($request) {
+
+        $endcoder = new ApiEncoder();
+
         $locale = $request->get('locale', app()->getLocale());
         $hasChildren = $this->hasChildren();
 
         $data = [
+            'id'          => $endcoder->encode(['id' => $this->id]),
             'locale'      => $locale,
             'hasChildren' => $hasChildren,
             'url'         => $this->getAbsoluteUrl(),
