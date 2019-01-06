@@ -14,7 +14,7 @@ class CreatePagesTable extends Migration
     public function up() {
         Schema::create('pages', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('uri')->unique();
+            $table->string('uri');
             $table->text('template');
             $table->boolean('has_children')->default(false);
             $table->boolean('is_active')->default(true);
@@ -22,6 +22,9 @@ class CreatePagesTable extends Migration
             $table->unsignedInteger('permission_id')->default(0);
             $table->unsignedInteger('parent_id')->default(0);
             $table->unsignedInteger('order')->default(0);
+
+            $table->unique(['uri', 'parent_id']);
+
             $table->timestamps();
         });
     }
