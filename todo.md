@@ -6,3 +6,5 @@
 4.  Create App Push notification plugin for cms
 
 5.  (optional) Update scss, less and server side compilation
+
+6.  Separate definition and view template (for create api content only)
