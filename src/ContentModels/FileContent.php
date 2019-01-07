@@ -40,6 +40,10 @@ class FileContent extends Model implements ContentTypeInterface
         return url($this->link);
     }
 
+    public function showBackEnd() {
+        return $this->link;
+    }
+
     public function deleteContent(array $query = null) {
         $path = $this->link = public_path(substr($this->link, 1));
         File::delete($path);
