@@ -37,7 +37,7 @@ class FileContent extends Model implements ContentTypeInterface
     }
 
     public function show(array $params = []) {
-        return $this->link;
+        return url($this->link);
     }
 
     public function deleteContent(array $query = null) {
