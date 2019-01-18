@@ -52,7 +52,6 @@ class RoutesController extends CmsBaseController
         }
 
         throw new UnAuthorizedException("You are not allowed to visit the page!");
-
     }
 
 

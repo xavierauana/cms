@@ -71,6 +71,7 @@ class PagesController extends Controller
         $validatedInputs = $this->validate($request, [
             'uri'           => [
                 'required',
+                'not_in:api,modules',
                 Rule::unique('pages')->where(function ($query) {
                     return $query->where('parent_id', 0);
                 })
@@ -106,6 +107,7 @@ class PagesController extends Controller
      * @param Page $page
      *
      * @return \Illuminate\Http\Response
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function edit(Page $page) {
         $this->authorize('edit', $page);
@@ -139,6 +141,7 @@ class PagesController extends Controller
         $validatedInputs = $this->validate($request, [
             'uri'           => [
                 'required',
+                'not_in:api,modules',
                 Rule::unique('pages')
                     ->where(function ($query) use ($page) {
                         return $query->where('parent_id',
