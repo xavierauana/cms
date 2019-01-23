@@ -23,9 +23,9 @@ class PagesController extends Controller
 
         $this->authorize('index', $page);
         $pages = $page->whereParentId(0)
-                      ->orderBy('order')
-                      ->orderBy('created_at')
-                      ->get();
+                      ->sortable()
+                      ->latest()
+                      ->paginate();
 
         return view('cms::admin.pages.index', compact('pages'));
     }

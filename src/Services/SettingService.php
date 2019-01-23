@@ -92,4 +92,35 @@ class SettingService
 
         cache()->forget(CacheKey::CMS_SETTINGS);
     }
+
+    public function create(array $data = null): bool {
+        $result = DB::table(SettingService::tableName)->insert($data);
+        if ($result) {
+            cache()->forget(CacheKey::CMS_SETTINGS);
+        }
+
+        return $result;
+
+    }
+
+    public function delete(int $settingId) {
+        $record = DB::table(SettingService::tableName)
+                    ->whereId($settingId)
+                    ->first();
+
+        if ($record) {
+
+            $cacheKey = $this->getCacheKey($record->key);
+
+            cache()->forget($cacheKey);
+
+            cache()->forget(CacheKey::CMS_SETTINGS);
+
+            DB::table(SettingService::tableName)
+              ->whereId($settingId)
+              ->delete();
+
+        }
+
+    }
 }

@@ -3,14 +3,14 @@
 @section("content")
 	
 	@component('cms::components.container')
-		@slot('title')Update {{$setting->label}} @endslot
+		@slot('title')Create new setting @endslot
 		
-		{{Form::model($setting, ['route'=>["settings.update", $setting->id], 'method'=>'PUT'])}}
+		{{Form::open(['route'=>["settings.store"], 'method'=>'POST'])}}
 		
 		@include('cms::admin.settings._partials.form')
 		
 		<div class="form-group">
-			{{Form::submit('Update', ['class'=>'btn btn-success'])}}
+			{{Form::submit('Create', ['class'=>'btn btn-success'])}}
 			<a href='{{route('settings.index')}}' class="btn btn-info">Back</a>
 		</div>
 		
