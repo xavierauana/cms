@@ -12,8 +12,11 @@ use Anacreation\Cms\Exceptions\NoAuthenticationException;
 use Anacreation\Cms\Exceptions\NoModuleException;
 use Anacreation\Cms\Exceptions\PageNotFoundHttpException;
 use Anacreation\Cms\Exceptions\UnAuthorizedException;
+use Anacreation\Cms\Models\Page;
+use Anacreation\Cms\Services\TemplateParser;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ModulesController extends Controller
 {
@@ -42,7 +45,7 @@ class ModulesController extends Controller
             throw new UnAuthorizedException("You are not allowed to visit the page!");
         }
 
-        $parser = new \Anacreation\Cms\Services\TemplateParser();
+        $parser = new TemplateParser();
         $definitions = $parser->loadTemplateDefinition("", $page->template);
 
         $targetNode = null;
