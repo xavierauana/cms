@@ -24,32 +24,42 @@ class SettingService
 
     }
 
-    public function set(string $key, string $value) {
+    /**
+     * @param string $key
+     * @param string $value
+     * @throws \Exception
+     */
+//    public function set(string $key, string $value) {
+    //
+    //        $cacheKey = $this->getCacheKey($key);
+    //
+    //        if (DB::table(SettingService::tableName)->whereKey($key)->count()) {
+    //            DB::table(SettingService::tableName)->whereKey($key)
+    //              ->update(compact('value'));
+    //
+    //            cache()->forget($cacheKey);
+    //            cache()->forever($cacheKey, $value);
+    //        } else {
+    //            $label = ucwords($key);
+    //            DB::table(SettingService::tableName)->insert(compact('label', 'key',
+    //                'value'));
+    //
+    //            cache()->forever($cacheKey, $value);
+    //        }
+    //    }
 
-        $cacheKey = $this->getCacheKey($key);
-
-        if (DB::table(SettingService::tableName)->whereKey($key)->count()) {
-            DB::table(SettingService::tableName)->whereKey($key)
-              ->update(compact('value'));
-
-            cache()->forget($cacheKey);
-            cache()->forever($cacheKey, $value);
-        } else {
-            $label = ucwords($key);
-            DB::table(SettingService::tableName)->insert(compact('label', 'key',
-                'value'));
-
-            cache()->forever($cacheKey, $value);
-        }
-    }
-
+    /**
+     * @param string      $key
+     * @param string|null $default
+     * @return \Illuminate\Cache\CacheManager|mixed|string
+     * @throws \Exception
+     */
     public function get(string $key, string $default = null) {
         $cacheKey = $this->getCacheKey($key);
         if (cache()->has($cacheKey)) {
             $value = cache($cacheKey);
         } else {
-            $record = DB::table(SettingService::tableName)->whereKey($key)
-                        ->first();
+            $record = $this->findByKey($key);
             if ($record) {
                 cache()->forever($cacheKey, $record->value);
             }
@@ -70,6 +80,10 @@ class SettingService
         return $cacheKey;
     }
 
+    /**
+     * @return \Illuminate\Cache\CacheManager|mixed
+     * @throws \Exception
+     */
     public function all() {
         $settings = cache(CacheKey::CMS_SETTINGS);
 
@@ -82,15 +96,18 @@ class SettingService
         return $settings;
     }
 
-    public function find(int $settingId) {
-        return DB::table(SettingService::tableName)->find($settingId);
-    }
-
     public function update(int $settingId, array $data) {
-        DB::table(SettingService::tableName)->whereId($settingId)
-          ->update($data);
+        $record = $this->find($settingId);
+        if ($record) {
+            DB::table(SettingService::tableName)->whereId($settingId)
+              ->update($data);
 
-        cache()->forget(CacheKey::CMS_SETTINGS);
+            $this->invalidateSpecificCacheKey($record);
+
+            cache()->forget(CacheKey::CMS_SETTINGS);
+
+        }
+
     }
 
     public function create(array $data = null): bool {
@@ -104,15 +121,11 @@ class SettingService
     }
 
     public function delete(int $settingId) {
-        $record = DB::table(SettingService::tableName)
-                    ->whereId($settingId)
-                    ->first();
+        $record = $this->find($settingId);
 
         if ($record) {
 
-            $cacheKey = $this->getCacheKey($record->key);
-
-            cache()->forget($cacheKey);
+            $this->invalidateSpecificCacheKey($record);
 
             cache()->forget(CacheKey::CMS_SETTINGS);
 
@@ -122,5 +135,36 @@ class SettingService
 
         }
 
+    }
+
+    public function find(int $settingId) {
+        return DB::table(SettingService::tableName)->find($settingId);
+    }
+
+    /**
+     * @param int   $settingId
+     * @param array $data
+     * @param       $record
+     * @return string
+     * @throws \Exception
+     */
+    private function invalidateSpecificCacheKey($record) {
+
+        $cacheKey = $this->getCacheKey($record->key);
+
+        cache()->forget($cacheKey);
+
+    }
+
+    /**
+     * @param string $key
+     * @return mixed
+     */
+    private function findByKey(string $key) {
+        $record = DB::table(SettingService::tableName)
+                    ->whereKey($key)
+                    ->first();
+
+        return $record;
     }
 }

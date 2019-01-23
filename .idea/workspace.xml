@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="49c0659f-8551-4476-ba1f-1e75e8595f61" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/src/views/admin/designs/index.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/views/admin/designs/index.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Services/SettingService.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Services/SettingService.php" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -14,7 +14,25 @@
     <pharConfigPath>$PROJECT_DIR$/composer.json</pharConfigPath>
   </component>
   <component name="FileEditorManager">
-    <leaf />
+    <leaf>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/Controllers/CmsSettingsController.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="308">
+              <caret line="11" column="29" selection-start-line="11" selection-start-column="29" selection-end-line="11" selection-end-column="29" />
+              <folding>
+                <element signature="e#47#91#0#PHP" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+    </leaf>
+  </component>
+  <component name="FindInProjectRecents">
+    <findStrings>
+      <find>setting</find>
+    </findStrings>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -33,6 +51,7 @@
         <option value="$PROJECT_DIR$/src/views/admin/administratorRoles/index.blade.php" />
         <option value="$PROJECT_DIR$/src/views/admin/administrators/index.blade.php" />
         <option value="$PROJECT_DIR$/src/seeds/CmsDatabaseSeeder.php" />
+        <option value="$PROJECT_DIR$/src/Services/SettingService.php" />
       </list>
     </option>
   </component>
@@ -99,7 +118,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -115,12 +133,19 @@
             <path>
               <item name="cms" type="b2602c69:ProjectViewProjectNode" />
               <item name="cms" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="helpers" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="cms" type="b2602c69:ProjectViewProjectNode" />
+              <item name="cms" type="462c0819:PsiDirectoryNode" />
               <item name="tests" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
         </subPane>
       </pane>
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -168,16 +193,18 @@
       <workItem from="1545983119755" duration="1848000" />
       <workItem from="1545994329737" duration="10000" />
       <workItem from="1546585135133" duration="11000" />
+      <workItem from="1548204959135" duration="644000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="3823000" />
+    <option name="totallyTimeSpent" value="4467000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="0" width="1280" height="800" extended-state="6" />
+    <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.2003231" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.20355412" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" weight="0.1875" />
       <window_info id="npm" order="3" side_tool="true" />
@@ -309,6 +336,43 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="392">
           <caret line="18" column="39" selection-start-line="18" selection-start-column="39" selection-end-line="18" selection-end-column="39" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/helpers/functions.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="421">
+          <caret line="51" column="5" lean-forward="true" selection-start-line="51" selection-start-column="5" selection-end-line="51" selection-end-column="5" />
+          <folding>
+            <element signature="e#1323#1540#0#PHP" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Services/SettingService.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="144">
+          <caret line="132" lean-forward="true" selection-start-line="132" selection-end-line="132" />
+          <folding>
+            <element signature="e#111#140#0#PHP" expanded="true" />
+            <element signature="e#343#381#0#PHP" expanded="true" />
+            <element signature="e#387#985#0#PHP" expanded="true" />
+            <element signature="e#991#1501#0#PHP" expanded="true" />
+            <element signature="e#2126#2456#0#PHP" expanded="true" />
+            <element signature="e#2334#2573#0#PHP" expanded="true" />
+            <element signature="e#2579#3055#0#PHP" expanded="true" />
+            <element signature="e#3361#3650#0#PHP" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Controllers/CmsSettingsController.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="308">
+          <caret line="11" column="29" selection-start-line="11" selection-start-column="29" selection-end-line="11" selection-end-column="29" />
+          <folding>
+            <element signature="e#47#91#0#PHP" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
