@@ -15,9 +15,9 @@
 			<table class="table table-hover">
 				<thead>
 					<tr>
-						<th>Uri</th>
-						<th>Template</th>
-						<th>Active</th>
+						<th><a href="{{sortableLink('uri')}}">Uri</a> </th>
+						<th><a href="{{sortableLink('template')}}">Template</a> </th>
+						<th><a href="{{sortableLink('is_active')}}">Active</a></th>
 						<th>Is Restricted</th>
 						<th>Actions</th>
 					</tr>
@@ -26,6 +26,7 @@
 					@each('cms::admin.pages.tableRow', $pages, 'page')
 				</tbody>
 			</table>
+			{{$pages->links()}}
 		</div>
 	@endcomponent
 @endsection

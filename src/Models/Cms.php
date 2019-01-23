@@ -153,6 +153,8 @@ class Cms
         ],
             function () {
 
+                Route::get("modules", "ModulesController@resolve");
+                Route::post("modules", "ModulesController@resolve");
                 Route::get("{segment1?}/{segment2?}/{segment3?}/{segment4?}/{segment5?}",
                     "RoutesController@resolve");
 

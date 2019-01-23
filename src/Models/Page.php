@@ -9,6 +9,7 @@ use Anacreation\Cms\Contracts\ContentGroupInterface;
 use Anacreation\Cms\Events\PageDeleted;
 use Anacreation\Cms\Events\PageSaved;
 use Anacreation\Cms\traits\ContentGroup;
+use Anacreation\Cms\traits\SortableTrait;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation;
@@ -17,7 +18,7 @@ use Illuminate\Support\Collection;
 class Page extends Model
     implements ContentGroupInterface, CacheManageableInterface, CmsPageInterface
 {
-    use ContentGroup;
+    use ContentGroup, SortableTrait;
 
     protected $dispatchesEvents = [
         'saved'   => PageSaved::class,
@@ -37,6 +38,12 @@ class Page extends Model
         'is_active'     => 'Boolean',
         'has_children'  => 'Boolean',
         'is_restricted' => 'Boolean',
+    ];
+
+    protected $sortableColumns = [
+        'uri',
+        'template',
+        'is_active',
     ];
 
     // region Relation

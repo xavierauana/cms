@@ -30,6 +30,29 @@ class CmsSettingsController extends Controller
         return view('cms::admin.settings.index', compact('settings'));
     }
 
+    public function create() {
+
+        $this->authorize('create', 'CmsSettings');
+
+        return view('cms::admin.settings.create');
+    }
+
+    public function store(Request $request) {
+
+        $this->authorize('create', 'CmsSettings');
+
+        $validatedData = $this->validate($request, [
+            'label' => 'required',
+            'key'   => 'required|unique:cms_settings',
+            'value' => 'nullable',
+        ]);
+
+        $this->service->create($validatedData);
+
+        return redirect()->route('settings.index')
+                         ->withStatus('New setting created.');
+    }
+
     public function edit(int $settingId) {
 
         $this->authorize('edit', 'CmsSettings');
@@ -52,5 +75,15 @@ class CmsSettingsController extends Controller
 
         return redirect()->route('settings.index')
                          ->withStatus('Setting updated');
+    }
+
+    public function destroy(Request $request, int $settingId) {
+
+        $this->authorize('delete', 'CmsSettings');
+
+        $this->service->delete($settingId);
+
+        return redirect()->route('settings.index')
+                         ->withStatus('Setting is deleted!');
     }
 }

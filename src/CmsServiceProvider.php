@@ -41,6 +41,7 @@ class CmsServiceProvider extends ServiceProvider
 
             app()->make('CmsScheduler');
         }
+        $this->registerBladeDirectives();
     }
 
     /**
@@ -109,8 +110,12 @@ class CmsServiceProvider extends ServiceProvider
     }
 
     private function registerFrontendViewComposers() {
-        foreach (config('cms.view_composer',[]) as $view => $composer) {
+        foreach (config('cms.view_composer', []) as $view => $composer) {
             View::composer($view, $composer);
         }
+    }
+
+    private function registerBladeDirectives() {
+
     }
 }
