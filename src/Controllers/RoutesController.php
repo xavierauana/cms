@@ -24,6 +24,9 @@ class RoutesController extends CmsBaseController
             $this->checkUserSessions($request);
         }
 
+        $this->setLocale($request);
+
+
         return $this->toResponse($request, new RequestParser);
 
     }
