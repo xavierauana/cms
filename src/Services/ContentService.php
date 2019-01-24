@@ -127,7 +127,6 @@ class ContentService
 
         $contentObject = $this->createContentObject($request);
 
-
         $this->updateOrCreateContentIndexWithContentObject($contentOwner,
             $contentObject);
 
