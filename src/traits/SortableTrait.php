@@ -14,9 +14,11 @@ trait SortableTrait
 {
     public function scopeSortable(Builder $query): Builder {
         $columns = $this->sortableColumns ?? [];
-        if ($sortBy = request()->query('sortable') and in_array($sortBy,
-                $columns)) {
-            $order = request()->query('sortableOrder') == 'asc' ? 'asc' : 'desc';
+        if ($sortBy = request()->query('sortable') and
+            in_array($sortBy, $columns)) {
+            $order = request()->query('sortableOrder') == 'asc' ?
+                'asc' :
+                'desc';
 
             $query->orderBy($sortBy, $order);
         }

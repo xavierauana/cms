@@ -19,10 +19,11 @@ class PagesController extends Controller
      *
      * @throws \Illuminate\Auth\Access\AuthorizationException
      */
-    public function index(Page $page) {
+    public function index(Page $page, Request $request) {
 
         $this->authorize('index', $page);
         $pages = $page->whereParentId(0)
+                      ->searchable($request->query('keyword'))
                       ->sortable()
                       ->latest()
                       ->paginate();
