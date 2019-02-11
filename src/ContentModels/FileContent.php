@@ -60,6 +60,7 @@ class FileContent extends Model implements ContentTypeInterface
      * @param \Anacreation\CMS\Entities\ContentObject $contentObject
      */
     private function MoveFile(ContentObject $contentObject): void {
+
         $path = Storage::putFileAs('public/files',
             $contentObject->file,
             $contentObject->file->getClientOriginalName());
