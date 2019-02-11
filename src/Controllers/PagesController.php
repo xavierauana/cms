@@ -144,6 +144,7 @@ class PagesController extends Controller
                 'required',
                 'not_in:api,modules',
                 Rule::unique('pages')
+                    ->ignore($page->id)
                     ->where(function ($query) use ($page) {
                         return $query->where('parent_id',
                             $page->parent_id);
