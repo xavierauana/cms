@@ -25,7 +25,6 @@
 	"symfony/thanks": "^1.0",
 	"barryvdh/laravel-debugbar": "^3.1"
   },
-  "minimum-stability": "dev",
   "autoload": {
 	"psr-4": {
 	  "Anacreation\\Cms\\": "src/"
