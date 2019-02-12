@@ -47,6 +47,15 @@ class RoutesController extends CmsBaseController
         $page = $this->getPage($vars);
 
         if (!$page) {
+            $redirect = config('cms.custom_redirect', []);
+
+            if (in_array($request->path(), array_keys($redirect))) {
+                return redirect($redirect[$request->path()]);
+            }
+        }
+
+
+        if (!$page) {
             throw new PageNotFoundHttpException();
         }
 
@@ -59,6 +68,7 @@ class RoutesController extends CmsBaseController
 
 
     private function constructView(Page $page, $vars): View {
+        //        dd($page);
         return view("themes." . config('cms.active_theme') . ".layouts." . ".{$page->template}",
             $vars);
     }
@@ -75,5 +85,4 @@ class RoutesController extends CmsBaseController
 
         return $page = $vars['page'] ?? null;
     }
-
 }

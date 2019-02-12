@@ -17,4 +17,7 @@ return [
     ],
     'single_login_session'   => false,
     'content_type'           => [],
+    'custom_redirect'        => [
+        //from_uri => to_uri
+    ]
 ];

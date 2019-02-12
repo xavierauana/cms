@@ -32,7 +32,6 @@ class RequestParser implements RequestParserInterface
         $activePages = $pageRepo->getActivePages();
 
         if ($this->requestIsHome($request)) {
-
             if ($page = $activePages->first(function (Page $page) {
                 return $page->uri == "/";
             })) {
@@ -66,6 +65,8 @@ class RequestParser implements RequestParserInterface
     }
 
     private function getPage(Collection $activePages): ?Page {
+
+
         return $activePages->first(function (Page $page) {
             $clearUri = $page->removeUrlStartSlash();
             $uri = $this->segments[0];
