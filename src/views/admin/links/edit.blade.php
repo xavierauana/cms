@@ -4,7 +4,7 @@
 	@component('cms::components.container')
 		@slot('title')Edit Link: {{$link->name}} @endslot
 		
-		{{Form::model($link, ['url'=>route("menus.links.update", [$menu->id, $link->id]), 'method'=>'PUT'])}}
+		{{Form::model($link, ['url'=>route("menus.links.update", [$menu->id, $link->id]), 'method'=>'PUT','files'=>true])}}
 		
 		<div class="form-group">
 			{{Form::label('external_uri', 'External Link')}}
@@ -43,14 +43,41 @@
 					'isActive'=>$language->is_default,
 					'tabPanelId'=>$language->code
 					])
-						{{Form::label("name[$index][content]", 'Name')}}
-						{{Form::text("name[$index][content]", $link->getNameAttribute($language->code), ['class'=>'form-control', 'placeholder'=>'Link Name'])}}
-						{{Form::hidden("name[$index][lang_id]", $language->id)}}
-						@if ($errors->has("name.{$index}.content"))
-							<span class="help-block">
+						@if($url = $link->getImage($language->code))
+							<div>
+								<div class="col py-3">
+									<img class="img-fluid" style="height: 100px"
+									     src="{{$url}}">
+								</div>
+									<span onclick="deleteImage(event, '{{route('menus.links.image.delete',[$menu, $link,$language->code])}}')"
+									      class="btn btn-danger">Delete Image</span>
+								
+							</div>
+						@endif
+						<div class="form-group">
+							{{Form::label("name[$index][content]", 'Name')}}
+							{{Form::text("name[$index][content]", $link->getNameAttribute($language->code), ['class'=>'form-control', 'placeholder'=>'Link Name'])}}
+							{{Form::hidden("name[$index][lang_id]", $language->id)}}
+							@if ($errors->has("name.{$index}.content"))
+								<span class="help-block">
                                 <strong>{{ $errors->first("name.{$index}.content") }}</strong>
                             </span>
-						@endif
+							@endif
+						</div>
+						
+						
+						<div class="form-group">
+							<div class="form-group">
+								{{Form::label("files[$index][file]", 'Image')}}
+								{{Form::file("files[$index][file]", ['class'=>'form-control', 'placeholder'=>"{$language->label} Link Name"])}}
+								{{Form::hidden("files[$index][lang_id]", $language->id)}}
+								@if ($errors->has("name.{$index}.content"))
+									<span class="help-block">
+		                                <strong>{{ $errors->first("name.{$index}.content") }}</strong>
+		                            </span>
+								@endif
+							</div>
+						</div>
 					@endcomponent
 				@endforeach
 			  </div>
@@ -81,4 +108,33 @@
 	@endcomponent
 
 
+@endsection
+
+
+@section('scripts')
+	<script>
+				function deleteImage(e, uri) {
+                  e.preventDefault()
+                  var form = document.createElement("form")
+                  form.action = uri
+                  form.method = "POST"
+                  var methodField = document.createElement("input")
+                  methodField.name = '_method'
+                  methodField.type = 'hidden'
+                  methodField.value = "DELETE"
+                  var csrfField = document.createElement("input")
+                  csrfField.name = '_token'
+                  csrfField.type = 'hidden'
+                  csrfField.value = "{{csrf_token()}}"
+
+                  form.appendChild(methodField)
+                  form.appendChild(csrfField)
+
+                  document.getElementsByTagName('body')[0].appendChild(form)
+
+                  form.submit()
+
+
+                }
+			</script>
 @endsection

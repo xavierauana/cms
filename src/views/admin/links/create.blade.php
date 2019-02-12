@@ -5,7 +5,7 @@
 	@component('cms::components.container')
 		@slot('title')Create New Link for Menu: {{$menu->name}} @endslot
 		
-		{{Form::open(['url'=>route('menus.links.store', $menu->id), 'method'=>'POST'])}}
+		{{Form::open(['url'=>route('menus.links.store', $menu->id), 'method'=>'POST','files'=>true])}}
 		
 		<div class="form-group">
 			{{Form::label('external_uri', 'External Link')}}
@@ -46,14 +46,26 @@
 						'isActive'=>$language->is_default,
 						'tabPanelId'=>$language->code
 						])
-							{{Form::label("name[$index][content]", 'Name')}}
-							{{Form::text("name[$index][content]", '', ['class'=>'form-control', 'placeholder'=>"{$language->label} Link Name"])}}
-							{{Form::hidden("name[$index][lang_id]", $language->id)}}
-							@if ($errors->has("name.{$index}.content"))
-								<span class="help-block">
-                                <strong>{{ $errors->first("name.{$index}.content") }}</strong>
-                            </span>
-							@endif
+							<div class="form-group">
+								{{Form::label("name[$index][content]", 'Name')}}
+								{{Form::text("name[$index][content]", '', ['class'=>'form-control', 'placeholder'=>"{$language->label} Link Name"])}}
+								{{Form::hidden("name[$index][lang_id]", $language->id)}}
+								@if ($errors->has("name.{$index}.content"))
+									<span class="help-block">
+		                                <strong>{{ $errors->first("name.{$index}.content") }}</strong>
+		                            </span>
+								@endif
+							</div>
+							<div class="form-group">
+								{{Form::label("files[$index][file]", 'Image')}}
+								{{Form::file("files[$index][file]", ['class'=>'form-control', 'placeholder'=>"{$language->label} Link Name"])}}
+								{{Form::hidden("files[$index][lang_id]", $language->id)}}
+								@if ($errors->has("name.{$index}.content"))
+									<span class="help-block">
+		                                <strong>{{ $errors->first("name.{$index}.content") }}</strong>
+		                            </span>
+								@endif
+							</div>
 						@endcomponent
 					@endforeach
 			  </div>
@@ -61,7 +73,7 @@
 			</div>
 			
 		</div>
-	
+		
 		<div class="form-group">
 			{{Form::label('is_active', 'Is Active')}}
 			{{Form::select('is_active', [0=>'No', 1=>'Yes'],0,['class'=>'form-control'])}}

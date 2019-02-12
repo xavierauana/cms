@@ -4,6 +4,7 @@ namespace Anacreation\Cms\Models;
 
 use Anacreation\Cms\Contracts\CacheManageableInterface;
 use Anacreation\Cms\Contracts\ContentGroupInterface;
+use Anacreation\Cms\Enums\LinkMediaCollections;
 use Anacreation\Cms\Events\LinkDeleted;
 use Anacreation\Cms\Events\LinkSaved;
 use Anacreation\CMS\Services\LanguageService;
@@ -11,12 +12,17 @@ use Anacreation\Cms\traits\ContentGroup;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Collection;
+use Spatie\MediaLibrary\HasMedia\HasMedia;
+use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
+use Spatie\MediaLibrary\Models\Media;
 
 class Link extends Model
-    implements ContentGroupInterface, CacheManageableInterface
+    implements ContentGroupInterface, CacheManageableInterface, HasMedia
 {
-    use ContentGroup;
+
+    use ContentGroup, HasMediaTrait;
 
     protected $dispatchesEvents = [
         'saved'   => LinkSaved::class,
@@ -37,6 +43,10 @@ class Link extends Model
     ];
 
     public const Identifier = "link";
+
+    public function registerMediaCollections() {
+        $this->addMediaCollection(LinkMediaCollections::IMAGES);
+    }
 
     // Relation
     public function menu(): Relation {
@@ -90,6 +100,50 @@ class Link extends Model
 
     public function getChildren(): Collection {
         return $this->children()->active()->orderBy('order')->get();
+    }
+
+    public function addImage(UploadedFile $file, string $languageCode) {
+
+        $this->deleteImage($languageCode);
+
+        $this->addMedia($file->path())
+             ->usingName($languageCode)
+             ->toMediaCollection(LinkMediaCollections::IMAGES);
+
+    }
+
+    public function getImage(string $languageCode = null): ?string {
+
+        $languageCode = $languageCode ?? app()->getLocale();
+
+        $mediaItems = $this->getMedia(LinkMediaCollections::IMAGES);
+
+        return optional($mediaItems->first(function (Media $item) use (
+            $languageCode
+        ) {
+            return $item->name === $languageCode;
+        }))->getFullUrl();
+    }
+
+    public function getImagePath(string $languageCode = null): ?string {
+        $languageCode = $languageCode ?? app()->getLocale();
+
+        $mediaItems = $this->getMedia(LinkMediaCollections::IMAGES);
+
+        return optional($mediaItems->first(function (Media $item) use (
+            $languageCode
+        ) {
+            return $item->name === $languageCode;
+        }))->getPath();
+    }
+
+    public function deleteImage(string $languageCode) {
+        $mediaItems = $this->getMedia(LinkMediaCollections::IMAGES);
+        optional($mediaItems->first(function (Media $item) use (
+            $languageCode
+        ) {
+            return $item->name === $languageCode;
+        }))->delete();
     }
 
     // Scope

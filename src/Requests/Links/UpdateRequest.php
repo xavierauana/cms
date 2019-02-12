@@ -8,7 +8,6 @@
 namespace Anacreation\Cms\Requests\Links;
 
 
-use Anacreation\Cms\Models\Language;
 use Anacreation\Cms\Models\Page;
 use Illuminate\Foundation\Http\FormRequest;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -42,18 +41,19 @@ class UpdateRequest extends FormRequest
         list($menu, $link) = $this->getMenuAndLink();
 
         $this->sanitizeInputs();
-
-        $pageIds = implode(",", Page::pluck('id')->toArray());
         $parentIds = implode(",", $menu->links()->pluck('id')->toArray());
-        $languageIds = implode(",", Language::pluck('id')->toArray());
+        $pageIds = implode(',', Page::pluck('id')->toArray()).",0";
 
         return [
-            'name.*.lang_id' => 'required:in:' . $languageIds,
-            'name.*.content' => 'required',
-            'is_active'      => 'required|boolean',
-            'parent_id'      => 'required|in:0,' . $parentIds,
-            'page_id'        => 'required_without:external_uri|in:0,' . $pageIds,
-            'external_uri'   => 'required_without:page_id',
+            'name.*.lang_id'  => 'required|exists:languages,id',
+            'name.*.content'  => 'required',
+            'is_active'       => 'required|boolean',
+            'parent_id'       => 'required|in:0,' . $parentIds,
+            'page_id'         => 'required_without:external_uri|in:' . $pageIds,
+            'external_uri'    => 'required_without:page_id',
+            'files'           => "nullable",
+            'files.*.lang_id' => 'sometimes|exists:languages,id',
+            'files.*.file'    => 'sometimes|file',
         ];
     }
 

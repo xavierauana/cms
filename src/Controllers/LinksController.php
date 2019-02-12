@@ -78,17 +78,28 @@ class LinksController extends Controller
         $ids = implode(",", $standard);
 
         $validatedData = $this->validate($request, [
-            'name.*.lang_id' => 'required:in:' . implode(",",
+            'name.*.lang_id'  => 'required:in:' . implode(",",
                     Language::pluck('id')->toArray()),
-            'name.*.content' => 'required',
-            'is_active'      => 'required|boolean',
-            'parent_id'      => 'required|in:0,' . implode(",",
+            'name.*.content'  => 'required',
+            'is_active'       => 'required|boolean',
+            'parent_id'       => 'required|in:0,' . implode(",",
                     $menu->links()->pluck('id')->toArray()),
-            'page_id'        => 'required_without:external_uri|in:' . $ids,
-            'external_uri'   => 'required_without:page_id',
+            'page_id'         => 'required_without:external_uri|in:' . $ids,
+            'external_uri'    => 'required_without:page_id',
+            'files'           => 'nullable',
+            'files.*.lang_id' => 'sometimes:exists:languages.id',
+            'files.*.file'    => 'sometimes'
         ]);
 
         $newLink = $this->createLink($menu, $validatedData);
+        if (isset($validatedData['files']) and $validatedData['files']) {
+            foreach ($validatedData['files'] as $data) {
+                if (isset($data['file'])) {
+                    $newLink->addImage($data['file'],
+                        Language::find($data['lang_id'])->code);
+                }
+            }
+        }
 
         event(new MenuSaved($newLink->menu));
         event(new LinkSaved($newLink));
@@ -116,6 +127,8 @@ class LinksController extends Controller
      */
     public function edit(Menu $menu, Link $link, Page $page) {
         $this->authorize('edit', $link);
+        $this->matchMenuLinkRelation($menu, $link);
+
         list($pages, $links) = $this->loadResources($menu, $page);
         $languages = Language::all();
 
@@ -134,12 +147,23 @@ class LinksController extends Controller
      */
     public function update(UpdateRequest $request, Menu $menu, Link $link) {
         $this->authorize('edit', $link);
-        $this->updateLink($link, $request->validated());
+        $this->matchMenuLinkRelation($menu, $link);
 
-        event(new MenuSaved($link->menu));
-        event(new LinkSaved($link));
+        $validatedData = $request->validated();
+        $this->updateLink($link, $validatedData);
 
-        return redirect('/admin/menus');
+        if (isset($validatedData['files']) and $validatedData['files']) {
+            foreach ($validatedData['files'] as $data) {
+                if (isset($data['file'])) {
+                    $link->addImage($data['file'],
+                        Language::find($data['lang_id'])->code);
+                }
+            }
+        }
+
+        $this->dispatchChangedEvents($link);
+
+        return redirect('/admin/menus')->withStatus('Link updated!');
     }
 
     /**
@@ -151,8 +175,8 @@ class LinksController extends Controller
      * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function destroy(Menu $menu, Link $link) {
-
         $this->authorize('delete', $link);
+        $this->matchMenuLinkRelation($menu, $link);
 
         $menu->links()->find($link->id)->delete();
 
@@ -160,6 +184,18 @@ class LinksController extends Controller
         event(new LinkDeleted($link));
 
         return redirect('admin/menus');
+    }
+
+    public function deleteImage(Menu $menu, Link $link, string $langCode) {
+        $this->authorize('edit', $link);
+        $this->matchMenuLinkRelation($menu, $link);
+
+        $link->deleteImage($langCode);
+
+        $this->dispatchChangedEvents($link);
+
+        return redirect()->back()->withStatus('Link image deleted!');
+
     }
 
     /**
@@ -212,7 +248,6 @@ class LinksController extends Controller
      * @throws \Anacreation\Cms\Exceptions\IncorrectContentTypeException
      */
     private function updateLink($link, $validatedData) {
-
         $service = new ContentService();
 
         if (!isset($validatedData['page_id'])) {
@@ -246,5 +281,23 @@ class LinksController extends Controller
         $request->replace($inputs);
 
         return $request;
+    }
+
+    /**
+     * @param \Anacreation\Cms\Models\Link $link
+     */
+    private function dispatchChangedEvents(Link $link): void {
+        event(new MenuSaved($link->menu));
+        event(new LinkSaved($link));
+    }
+
+    /**
+     * @param \Anacreation\Cms\Models\Menu $menu
+     * @param \Anacreation\Cms\Models\Link $link
+     */
+    private function matchMenuLinkRelation(Menu $menu, Link $link): void {
+        if ($menu->isNot($link->menu)) {
+            abort(403);
+        }
     }
 }
