@@ -10,9 +10,12 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
+use Spatie\MediaLibrary\HasMedia\HasMedia;
+use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
 
 class Menu extends Model implements CacheManageableInterface
 {
+
     // Relation
     protected $dispatchesEvents = [
         'saved'   => MenuSaved::class,

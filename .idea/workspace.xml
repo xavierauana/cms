@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="49c0659f-8551-4476-ba1f-1e75e8595f61" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/src/Controllers/PagesController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controllers/PagesController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -18,8 +18,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/Controllers/PagesController.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="335">
-              <caret line="146" column="38" selection-start-line="146" selection-start-column="38" selection-end-line="146" selection-end-column="38" />
+            <state relative-caret-position="269">
+              <caret line="146" column="39" selection-start-line="146" selection-start-column="39" selection-end-line="146" selection-end-column="39" />
               <folding>
                 <element signature="e#3314#3758#0#PHP" expanded="true" />
                 <element signature="e#4405#4563#2#PHP" expanded="true" />
@@ -80,7 +80,7 @@
     <servers />
   </component>
   <component name="PhpWorkspaceProjectConfiguration" interpreter_name="PHP 7.1.3" />
-  <component name="ProjectFrameBounds" fullScreen="true">
+  <component name="ProjectFrameBounds" extendedState="6" fullScreen="true">
     <option name="width" value="1280" />
     <option name="height" value="800" />
   </component>
@@ -190,12 +190,12 @@
       <workItem from="1546585135133" duration="11000" />
       <workItem from="1548204959135" duration="795000" />
       <workItem from="1548908311746" duration="21000" />
-      <workItem from="1549903119257" duration="159000" />
+      <workItem from="1549903119257" duration="461000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="4798000" />
+    <option name="totallyTimeSpent" value="5100000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="0" width="1280" height="800" extended-state="6" />
@@ -375,8 +375,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/Controllers/PagesController.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="335">
-          <caret line="146" column="38" selection-start-line="146" selection-start-column="38" selection-end-line="146" selection-end-column="38" />
+        <state relative-caret-position="269">
+          <caret line="146" column="39" selection-start-line="146" selection-start-column="39" selection-end-line="146" selection-end-column="39" />
           <folding>
             <element signature="e#3314#3758#0#PHP" expanded="true" />
             <element signature="e#4405#4563#2#PHP" expanded="true" />

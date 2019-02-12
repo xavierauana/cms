@@ -97,8 +97,13 @@ class Cms
                                 Route::resource('pages', 'PagesController');
 
 
+                                Route::delete('menus/{menu}/links/{link}/images/{langCode}',
+                                    'LinksController@deleteImage')
+                                     ->name('menus.links.image.delete');
+
                                 Route::resource('menus.links',
                                     'LinksController');
+
                                 Route::resource('roles', 'RolesController');
                                 Route::resource('permissions',
                                     'PermissionsController');
