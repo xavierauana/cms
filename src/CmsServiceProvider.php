@@ -18,6 +18,8 @@ class CmsServiceProvider extends ServiceProvider
      */
     public function boot() {
 
+        Blade::doubleEncode();
+
         if ($this->requestFrontend()) {
             $this->registerFrontendViewComposers();
         }
