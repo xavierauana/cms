@@ -12,6 +12,7 @@
 		@endslot
 		
 		@include("cms::admin.contents.content_blocks",['contentOwner'=>$page])
+		
 		<page-children v-if="{{json_encode($page->has_children)}} "
 		               base-url="{{route('pages.index')}}"
 		               :page="{{$page}}"

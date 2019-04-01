@@ -15,37 +15,14 @@ class ContentIndex extends Model
         'identifier',
     ];
 
+    public function scopeFetchIndex(
+        Builder $q, string $identifier, int $languageId
+    ): Builder {
+        return $q->whereIdentifier($identifier)
+                 ->whereLangId($languageId);
+    }
+
     public function content(): Relation {
         return $this->morphTo();
     }
-
-    public function contentOwner(): Relation {
-        return $this->morphTo();
-    }
-
-    public function group(): Relation {
-        return $this->morphTo();
-    }
-
-    public function scopePage(): Builder {
-        return $this->whereGroupType(Page::class);
-    }
-
-    public function getPageAttribute(): ?Page {
-        if ($this->group_type === Page::class) {
-            return app()->make(Page::class)->find($this->group_id);
-        }
-
-        return null;
-    }
-
-    public function scopeFetchIndex(
-        Builder $query, string $identifier, int $langId
-    ): Builder {
-        return $query->whereIdentifier($identifier)
-                     ->whereLangId($langId)
-                     ->orderBy('created_at')
-                     ->orderBy('order');
-    }
-
 }
