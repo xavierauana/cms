@@ -88,7 +88,9 @@ class Page extends Model
             return $parentUrl . "/{$this->uri}";
         }
 
-        return url((request()->segments()[0] === 'api' ? "api/" : '/') . ($this->uri ?? '/'));
+        $segment = request()->segments()[0] ?? "/";
+
+        return url(($segment === 'api' ? "api/" : '/') . ($this->uri !== '/' ? $this->uri : ""));
 
     }
 
