@@ -13,7 +13,12 @@ use Illuminate\Support\Facades\File;
 class TemplateParser
 {
 
-    public function loadTemplateDefinition(string $path = null, string $template
+    /**
+     * @param string      $template
+     * @param string|null $path
+     * @return \SimpleXMLElement|null
+     */
+    public function loadTemplateDefinition(string $template, string $path = null
     ) {
 
         $path = $path ?: getActiveThemePath();
@@ -23,9 +28,13 @@ class TemplateParser
 
             $filePath = $path . "/definition/" . $layoutDefinition;
 
-            $xml = simplexml_load_file($filePath);
+            try {
+                $xml = simplexml_load_file($filePath);
 
-            return $xml;
+                return $xml;
+            } catch (\Exception $e) {
+                return null;
+            }
         }
 
         return null;
@@ -34,6 +43,11 @@ class TemplateParser
     private function fetchLayoutDefinition(string $path, string $template
     ): ?string {
         $path = $path . "/definition";
+
+        if (!File::isDirectory($path)) {
+            throw new \Exception("No definition directory for theme '{$template}' ");
+        }
+
         $files = File::files($path);
         $layoutDefinition = null;
         foreach ($files as $file) {
@@ -51,7 +65,7 @@ class TemplateParser
     ): array {
         $contents = [];
 
-        $xml = $this->loadTemplateDefinition($path, $template);
+        $xml = $this->loadTemplateDefinition($template, $path);
         foreach ($xml->content as $content) {
             if ($this->notYetParsed($content, $contents)) {
                 $this->constructContentDefinitionArray($contents, $content);

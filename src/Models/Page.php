@@ -127,13 +127,12 @@ class Page extends Model
     public function getActivePages(): Collection {
 
         if ($this->id) {
-            $pages = cache($this->getCacheKey());
 
-            if ($pages) {
+            if ($pages = cache($this->getCacheKey())) {
                 return $pages;
             }
 
-            $pages = $this->children()->sorted()->get();
+            $pages = $this->children()->active()->sorted()->get();
 
             cache()->forever($this->getCacheKey(), $pages);
 
@@ -145,7 +144,16 @@ class Page extends Model
                 return $pages;
             }
 
-            $pages = $this->with('children')->topLevel()->sorted()->get();
+            $pages = $this
+                ->topLevel()
+                ->active()
+                ->with([
+                    'children' => function ($query) {
+                        $query->active();
+                    }
+                ])
+                ->sorted()
+                ->get();
 
             cache()->forever(CacheKey::TOP_LEVEL_ACTIVE_PAGES, $pages);
 

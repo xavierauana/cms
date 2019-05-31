@@ -2,12 +2,15 @@
 
 namespace Anacreation\Cms\Controllers;
 
+use Anacreation\Cms\Enums\AdminPermissionAction;
 use Anacreation\Cms\Exceptions\UnAuthorizedException;
 use Anacreation\Cms\Models\Design;
 use Anacreation\Cms\Models\Page;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Validator;
 
 class DesignsController extends Controller
 {
@@ -33,10 +36,9 @@ class DesignsController extends Controller
 
     public function index(Design $design, Page $page) {
 
-        //        $this->authorize('index', $design);
         $design = getDesignFiles();
-        $pages = $page->get()->groupBy('template');
 
+        $pages = $page->get()->groupBy('template');
 
         return view('cms::admin.designs.index', compact('design', 'pages'));
     }
@@ -67,7 +69,7 @@ class DesignsController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request $request
+     * @param \Illuminate\Http\Request $request
      * @return void
      */
     public function store(Request $request, string $type) {
@@ -100,7 +102,7 @@ class DesignsController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int $id
+     * @param int $id
      * @return void
      */
     public function show($id) {
@@ -137,8 +139,8 @@ class DesignsController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request $request
-     * @param string                    $type
+     * @param \Illuminate\Http\Request $request
+     * @param string                   $type
      * @return \Illuminate\Http\Response
      * @throws \Anacreation\Cms\Exceptions\UnAuthorizedException
      */
@@ -175,7 +177,7 @@ class DesignsController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function destroy($id) {
@@ -198,4 +200,133 @@ class DesignsController extends Controller
         return getActiveThemePath() . "/" . $type . "/" . $request->get('file');
     }
 
+    public function uploadLayout() {
+        $view = $this->getUploadPage('layouts');
+
+        return view($view);
+    }
+
+    public function postUploadLayout(Request $request) {
+        $msg = $this->uploadFile('layouts', $request);
+
+        return redirect()->route("designs.index")
+                         ->withStatus($msg);
+    }
+
+    /**
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function uploadDefinition() {
+        $view = $this->getUploadPage('definition');
+
+        return view($view);
+    }
+
+    public function postUploadDefinition(Request $request) {
+        $msg = $this->uploadFile('definition', $request);
+
+        return redirect()->route("designs.index")
+                         ->withStatus($msg);
+    }
+
+    /**
+     * @param string $type
+     * @return string
+     */
+    private function getUploadPage(string $type): string {
+        switch ($type) {
+            case 'layouts';
+            case 'definition':
+                $permissionCode = "upload_" . ($type === 'layouts' ? 'layout' : 'definition');
+                if (!request()->user()
+                              ->hasPermission($permissionCode)) {
+                    abort(403);
+                };
+
+                return "cms::admin.designs.upload." . ($type === 'layouts' ? 'layout' : 'definition');
+
+            default:
+                abort(403);
+
+        }
+    }
+
+    /**
+     * @param string                   $type
+     * @param \Illuminate\Http\Request $request
+     * @return string
+     */
+    private function uploadFile(string $type, Request $request): string {
+        switch ($type) {
+            case 'layouts';
+            case 'definition':
+                $permissionCode = AdminPermissionAction::Create()
+                                                       ->getValue() . "_" . ($type === 'layouts' ? 'layout' : 'definition');
+                if (!request()->user()
+                              ->hasPermission($permissionCode)) {
+                    abort(403);
+                };
+
+                $this->registerValidationRule();
+
+                $this->validate($request, [
+                    'files'   => 'required',
+                    'files.*' => 'file|' . ($type === 'layouts' ? 'isBladeFile' : 'isXml')
+                ]);
+
+                $files = $request->file('files');
+
+                $layoutPath = getActiveThemePath() . "/" . $type;
+                collect($files)->each(function (UploadedFile $file) use (
+                    $layoutPath
+                ) {
+                    $file->move($layoutPath, $file->getClientOriginalName());
+                });
+
+                return 'File uploaded!';
+
+            default:
+                abort(403);
+
+        }
+
+
+        $msg = 'Layout uploaded!';
+
+        return $msg;
+    }
+
+    private function registerValidationRule(): void {
+        Validator::extend('isBladeFile',
+            function ($attribute, $value, $parameters, $validator) {
+                $nameArray = explode('.', $value->getClientOriginalName());
+
+                $length = count($nameArray);
+
+                if ($length < 3) {
+                    return false;
+                }
+
+                if ($nameArray[$length - 1] !== 'php') {
+                    return false;
+                }
+                if ($nameArray[$length - 2] !== 'blade') {
+                    return false;
+                }
+
+                return true;
+
+            });
+
+        Validator::extend('isXml',
+            function ($attribute, $value, $parameters, $validator) {
+                /**
+                 * @var \Illuminate\Http\UploadedFile $value
+                 */
+                $extension = $value->getClientOriginalExtension();
+
+                return $extension === 'xml';
+
+            });
+    }
 }

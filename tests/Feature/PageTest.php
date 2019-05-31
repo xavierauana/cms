@@ -2,10 +2,10 @@
 
 namespace Tests\Feature;
 
+use Anacreation\Cms\ContentModels\TextContent;
 use Anacreation\Cms\Models\ContentIndex;
 use Anacreation\Cms\Models\Language;
 use Anacreation\Cms\Models\Page;
-use Anacreation\Cms\Models\TextContent;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Tests\TestCase;
 

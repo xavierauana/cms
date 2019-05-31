@@ -46,7 +46,7 @@ class ModulesController extends Controller
         }
 
         $parser = new TemplateParser();
-        $definitions = $parser->loadTemplateDefinition("", $page->template);
+        $definitions = $parser->loadTemplateDefinition($page->template, "");
 
         $targetNode = null;
         foreach ($definitions->model as $node) {
