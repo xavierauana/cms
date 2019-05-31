@@ -2,7 +2,13 @@
 
 @section("content")
 	@component('cms::components.container')
-		@slot('title') All Design Layouts @endslot
+		@slot('title')
+			All Design Layouts
+			@if(auth('admin')->user()->hasPermission('manage_asset'))
+				<a href="/filemanager?type=files" target="_blank"
+				   class="btn btn-sm btn-success float-right">Manage Assets</a>
+			@endif
+		@endslot
 		
 		@component('cms::elements.accordion_container',['id'=>'design_accordion'])
 			@if(auth('admin')->user()->hasPermission('index_definition'))
@@ -11,9 +17,15 @@
 					@slot('id')definition_panel @endslot
 					@slot('title')Content Definition @endslot
 					@if(Auth::guard('admin')->user()->hasPermission('create_definition'))
-						@slot('panelActions') <a
-								class=" mt-1 btn btn-sm text-light btn-success float-right"
-								href="{{route('designs.create', 'definition')}}">Create Definition</a>@endslot
+						@slot('panelActions')
+							<a class=" mt-1 btn btn-sm text-light btn-success float-right"
+							   href="{{route('designs.create', 'definition')}}">Create Definition</a>
+							@if(Auth::guard('admin')->user()->hasPermission('upload_definition'))
+								<a class=" mt-1 mr-1  btn btn-sm text-light btn-success float-right"
+								   href="{{route('designs.upload.definition')}}">Upload Definition</a>
+							@endif
+						@endslot
+					
 					@endif
 					<div class="table-responsive">
 					<table class="table">
@@ -51,9 +63,14 @@
 					@slot('id')layouts_panel @endslot
 					@slot('title')Layouts @endslot
 					@if(Auth::guard('admin')->user()->hasPermission('create_layout'))
-						@slot('panelActions') <a
-								class=" mt-1 btn btn-sm text-light btn-success float-right"
-								href="{{route('designs.create','layouts')}}">Create Layout</a>@endslot
+						@slot('panelActions')
+							<a class=" mt-1 btn btn-sm text-light btn-success float-right"
+							   href="{{route('designs.create','layouts')}}">Create Layout</a>
+							@if(Auth::guard('admin')->user()->hasPermission('upload_layout'))
+								<a class=" mt-1 mr-1  btn btn-sm text-light btn-success float-right"
+								   href="{{route('designs.upload.layout')}}">Upload Layout</a>
+							@endif
+						@endslot
 					@endif
 					<div class="table-responsive">
 					<table class="table">

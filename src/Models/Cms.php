@@ -12,6 +12,7 @@ use Anacreation\Cms\Services\ApiAuthentication;
 use Anacreation\Cms\Services\ApiAuthStatus;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Route;
 
 class Cms
@@ -26,7 +27,6 @@ class Cms
                 Auth::routes();
             });
         }
-
 
         Route::group([
             "namespace"  => "\\Anacreation\\Cms\\Controllers",
@@ -51,6 +51,17 @@ class Cms
 
                                 Route::get('designs', "DesignsController@index")
                                      ->name('designs.index');
+
+                                Route::get('designs/upload/layout',
+                                    "DesignsController@uploadLayout")
+                                     ->name('designs.upload.layout');
+                                Route::post('designs/upload/layout',
+                                    "DesignsController@postUploadLayout");
+                                Route::get('designs/upload/definition',
+                                    "DesignsController@uploadDefinition")
+                                     ->name('designs.upload.definition');
+                                Route::post('designs/upload/definition',
+                                    "DesignsController@postUploadDefinition");
 
                                 Route::get('designs/edit/{type}',
                                     "DesignsController@edit")
@@ -119,7 +130,6 @@ class Cms
                                     "AdministratorRolesController");
                                 Route::resource('admin_permissions',
                                     "AdministratorRolesController");
-
 
                                 Route::post('logout', function () {
 

@@ -17,7 +17,14 @@ return [
     ],
     'single_login_session'   => false,
     'content_type'           => [],
+    'view_composer'          => [
+        'view' => "Class"
+    ],
+    'translation_table'      => 'translations',
+    'enable_upload_template' => false,
+    'enable_upload_assets'   => false,
     'custom_redirect'        => [
         //from_uri => to_uri
     ]
+
 ];
