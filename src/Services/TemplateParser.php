@@ -67,10 +67,15 @@ class TemplateParser
         $contents = [];
 
         $xml = $this->loadTemplateDefinition($template, $path);
-        foreach ($xml->content as $content) {
-            if ($this->notYetParsed($content, $contents)) {
-                $this->constructContentDefinitionArray($contents, $content);
+        
+        try {
+            foreach ($xml->content as $content) {
+                if ($this->notYetParsed($content, $contents)) {
+                    $this->constructContentDefinitionArray($contents, $content);
+                }
             }
+        } catch (\Exception $e) {
+            Log::info('Cannot load definition file for template: ' . $template . ' in path: ' . $path);
         }
 
         if ($editable != null) {
