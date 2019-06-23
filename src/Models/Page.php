@@ -96,7 +96,7 @@ class Page extends Model
 
         $segment = request()->segments()[0] ?? "/";
 
-        return ($segment === 'api' ? "api/" : '') . ($this->uri !== '/' ? $this->uri : "");
+        return ($segment === 'api' ? "api/" : '') . ($this->uri !== '/' ? $this->uri : "/");
 
     }
 
