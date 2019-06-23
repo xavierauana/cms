@@ -4,6 +4,7 @@ namespace Anacreation\Cms\Controllers;
 
 use Anacreation\Cms\Contracts\CmsPageInterface as Page;
 use Anacreation\Cms\Models\Permission;
+use Anacreation\Cms\Requests\Pages\StoreRequest;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
@@ -58,33 +59,14 @@ class PagesController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param \Illuminate\Http\Request                    $request
+     * @param \Anacreation\Cms\Requests\Pages\StoreRequest $request
      *
-     * @param \Anacreation\Cms\Contracts\CmsPageInterface $page
+     * @param \Anacreation\Cms\Contracts\CmsPageInterface  $page
      * @return \Illuminate\Http\Response
-     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
-    public function store(Request $request, Page $page) {
-        $this->authorize('create', $page);
+    public function store(StoreRequest $request, Page $page) {
 
-        $layouts = getLayoutFiles()['layouts'];
-
-        $validatedInputs = $this->validate($request, [
-            'uri'           => [
-                'required',
-                'not_in:api,modules',
-                Rule::unique('pages')->where(function ($query) {
-                    return $query->where('parent_id', 0);
-                })
-            ],
-            'template'      => 'required|in:' . implode(',', $layouts),
-            'has_children'  => 'required|boolean',
-            'is_active'     => 'required|boolean',
-            'is_restricted' => 'required|boolean',
-            'order'         => 'nullable|numeric|min:0',
-            'permission_id' => 'required|in:0,' . implode(',',
-                    Permission::pluck('id')->toArray()),
-        ]);
+        $validatedInputs = $request->validated();
 
         $page->create($validatedInputs);
 

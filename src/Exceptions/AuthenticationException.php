@@ -8,6 +8,6 @@
 namespace Anacreation\Cms\Exceptions;
 
 
-class NoAuthenticationException extends \Exception
+class AuthenticationException extends \Exception
 {
 }

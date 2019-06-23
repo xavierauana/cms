@@ -8,9 +8,9 @@
 namespace Anacreation\Cms\Controllers;
 
 
+use Anacreation\Cms\Contracts\CmsPageInterface;
 use Anacreation\Cms\Contracts\RequestParserInterface;
-use Anacreation\Cms\Exceptions\NoAuthenticationException;
-use Anacreation\Cms\Models\Page;
+use Anacreation\Cms\Exceptions\AuthenticationException;
 use Anacreation\Cms\Services\LanguageService;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -50,7 +50,7 @@ abstract class CmsBaseController extends Controller
 
     /**
      * @param \Illuminate\Http\Request $request
-     * @throws \Anacreation\Cms\Exceptions\NoAuthenticationException
+     * @throws \Anacreation\Cms\Exceptions\AuthenticationException
      */
     protected function checkUserSessions(Request $request): void {
         $table = "user_sessions";
@@ -74,7 +74,7 @@ abstract class CmsBaseController extends Controller
         ) {
             Auth::logout();
 
-            throw new NoAuthenticationException("You are not allowed to visit the page!");
+            throw new AuthenticationException("You are not allowed to visit the page!");
         }
     }
 
@@ -82,16 +82,18 @@ abstract class CmsBaseController extends Controller
      * @param \Anacreation\Cms\Models\Page $page
      * @param string                       $guard
      * @return mixed
-     * @throws \Anacreation\Cms\Exceptions\NoAuthenticationException
+     * @throws \Anacreation\Cms\Exceptions\AuthenticationException
      */
     protected function userHasPagePermission(
-        Page $page, string $guard = 'web'
+        CmsPageInterface $page, string $guard = 'web'
     ): bool {
 
         if ($user = Auth::guard($guard)->user()) {
-            return !!$page->permission === false or $user()->hasPermission($page->permission->code);
+            $permission = $page->getPermission();
+
+            return is_null($permission) or $user->hasPermission($page->permission->code);
         }
-        throw new NoAuthenticationException("You are not allowed to visit the page!");
+        throw new AuthenticationException("You are not allowed to visit the page!");
 
     }
 

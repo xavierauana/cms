@@ -8,6 +8,7 @@
 namespace Anacreation\Cms\Requests\Links;
 
 
+use Anacreation\Cms\Models\Language;
 use Anacreation\Cms\Models\Page;
 use Illuminate\Foundation\Http\FormRequest;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -53,7 +54,7 @@ class UpdateRequest extends FormRequest
             'external_uri'    => 'required_without:page_id',
             'files'           => "nullable",
             'files.*.lang_id' => 'sometimes|exists:languages,id',
-            'files.*.file'    => 'sometimes|file',
+            'files.*.file'    => 'sometimes',
         ];
     }
 

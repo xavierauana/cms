@@ -288,8 +288,8 @@ class ContentService
     # region Private Methods
 
     /**
-     * @param array  $types
      * @param string $needle
+     * @param string $searchFor
      * @return string
      */
     private function getContentType(string $needle, string $searchFor = 'type'

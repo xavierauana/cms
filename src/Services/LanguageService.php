@@ -11,7 +11,6 @@ namespace Anacreation\Cms\Services;
 use Anacreation\Cms\CacheKey;
 use Anacreation\Cms\Exceptions\LanguageNotFoundException;
 use Anacreation\Cms\Models\Language;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Cache;
 
 class LanguageService
@@ -52,7 +51,10 @@ class LanguageService
         if ($language) {
             return $language;
         }
-        throw new LanguageNotFoundException("Cannot find active language with code: " . $locale);
+
+        return $this->defaultLanguage;
+
+//        throw new LanguageNotFoundException("Cannot find active language with code: " . $locale);
     }
 
     public function getLanguageById(int $id): Language {
@@ -63,7 +65,9 @@ class LanguageService
             return $language->id === $id;
         });
         if ($language === null) {
-            throw new ModelNotFoundException("Cannot find language with id:" . $id);
+            //            throw new ModelNotFoundException("Cannot find language with id:" . $id);
+
+            return $this->defaultLanguage;
         }
 
         return $language;
@@ -72,7 +76,13 @@ class LanguageService
 
     public function getFallbackLanguage(string $languageCode): Language {
 
-        return $this->getLanguage($languageCode)->fallbackLanguage;
+        $fallbackLanguageId = (int)$this->getLanguage($languageCode)->fallback_language_id;
+        if ($fallbackLanguageId !== 0) {
+            return $this->getLanguage($languageCode)->fallbackLanguage;
+        }
+
+        return $this->defaultLanguage;
+
     }
 
     public function getDefaultLanguage(): Language {

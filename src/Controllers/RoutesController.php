@@ -8,7 +8,9 @@
 namespace Anacreation\Cms\Controllers;
 
 
+use Anacreation\Cms\Contracts\CmsPageInterface;
 use Anacreation\Cms\Contracts\RequestParserInterface;
+use Anacreation\Cms\Exceptions\AuthenticationException;
 use Anacreation\Cms\Exceptions\PageNotFoundHttpException;
 use Anacreation\Cms\Exceptions\UnAuthorizedException;
 use Anacreation\Cms\Models\Page;
@@ -19,7 +21,6 @@ use Illuminate\View\View;
 class RoutesController extends CmsBaseController
 {
     public function resolve(Request $request) {
-
         if (config("cms.single_login_session", false) == true) {
             $this->checkUserSessions($request);
         }
@@ -35,41 +36,53 @@ class RoutesController extends CmsBaseController
      * @param \Illuminate\Http\Request                          $request
      * @param \Anacreation\Cms\Contracts\RequestParserInterface $parser
      * @return \Illuminate\View\View
-     * @throws \Anacreation\Cms\Exceptions\NoAuthenticationException
+     * @throws \Anacreation\Cms\Exceptions\AuthenticationException
      * @throws \Anacreation\Cms\Exceptions\PageNotFoundHttpException
      * @throws \Anacreation\Cms\Exceptions\UnAuthorizedException
      */
     protected function toResponse(
         Request $request, RequestParserInterface $parser
     ) {
-
         $vars = $parser->parse($request);
-        $page = $this->getPage($vars);
+        /** @var \Anacreation\Cms\Contracts\CmsPageInterface $page */
+        $page = $vars['page'] ?? null;
+        if (is_null($page)) {
 
-        if (!$page) {
-            $redirect = config('cms.custom_redirect', []);
-
-            if (in_array($request->path(), array_keys($redirect))) {
-                return redirect($redirect[$request->path()]);
+            if ($redirectUri = $this->getCustomRedirect($request->path())) {
+                return redirect($redirectUri);
             }
-        }
 
-
-        if (!$page) {
             throw new PageNotFoundHttpException();
         }
 
-        if (!$page->is_restricted or $this->userHasPagePermission($page)) {
+        if (!$page->isRestricted()) {
             return $this->constructView($page, $vars);
         }
 
-        throw new UnAuthorizedException("You are not allowed to visit the page!");
+        /** @var \App\User $user */
+        $user = auth()->user();
+
+        if (is_null($user)) {
+            throw new AuthenticationException('The page is restricted');
+        }
+
+        $permission = $page->getPermission();
+
+        if (is_null($permission)) {
+            return $this->constructView($page, $vars);
+        }
+
+        if ($user->hasPermission($permission->code)) {
+            return $this->constructView($page, $vars);
+        }
+
+        throw new UnAuthorizedException('You are not allow to visit the page!');
+
     }
 
 
-    private function constructView(Page $page, $vars): View {
-        //        dd($page);
-        return view("themes." . config('cms.active_theme') . ".layouts." . ".{$page->template}",
+    private function constructView(CmsPageInterface $page, $vars): View {
+        return view("themes." . config('cms.active_theme') . ".layouts." . ".{$page->getTemplate()}",
             $vars);
     }
 
@@ -84,5 +97,15 @@ class RoutesController extends CmsBaseController
         }
 
         return $page = $vars['page'] ?? null;
+    }
+
+    private function getCustomRedirect(string $path): ?string {
+        $customRedirectPaths = config('cms.custom_redirect', []);
+
+        if (in_array($path, array_keys($customRedirectPaths))) {
+            return $customRedirectPaths[$path];
+        }
+
+        return null;
     }
 }
