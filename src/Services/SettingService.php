@@ -43,7 +43,7 @@ class SettingService
      * @return \Illuminate\Cache\CacheManager|mixed
      * @throws \Exception
      */
-    public function all() {
+    public function all(): array {
         return cache()->rememberForever(CacheKey::CMS_SETTINGS, function () {
             return DB::table(SettingService::tableName)->get()
                      ->reduce(function ($carry, $record) {

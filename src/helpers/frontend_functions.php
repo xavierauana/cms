@@ -214,7 +214,7 @@ if (!function_exists('settings')) {
     function settings(string $key) {
         $settings = (New SettingService)->all();
 
-        $setting = $settings->first(function ($s) use ($key) {
+        $setting = array_first($settings, function ($s) use ($key) {
             return $s->key === $key;
         });
 
