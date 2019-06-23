@@ -10,6 +10,7 @@ namespace Anacreation\Cms;
 
 class CacheKey
 {
+    public const ALL_PAGES              = "ALL_PAGES";
     public const ACTIVE_PAGES           = "ACTIVE_PAGES";
     public const TOP_LEVEL_ACTIVE_PAGES = "TOP_LEVEL_ACTIVE_PAGES";
     public const ALL_LANGUAGES          = "ALL_LANGUAGES";

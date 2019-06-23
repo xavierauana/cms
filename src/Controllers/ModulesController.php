@@ -8,7 +8,7 @@
 namespace Anacreation\Cms\Controllers;
 
 
-use Anacreation\Cms\Exceptions\NoAuthenticationException;
+use Anacreation\Cms\Exceptions\AuthenticationException;
 use Anacreation\Cms\Exceptions\NoModuleException;
 use Anacreation\Cms\Exceptions\PageNotFoundHttpException;
 use Anacreation\Cms\Exceptions\UnAuthorizedException;
@@ -23,7 +23,7 @@ class ModulesController extends Controller
     /**
      * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\JsonResponse
-     * @throws \Anacreation\Cms\Exceptions\NoAuthenticationException
+     * @throws \Anacreation\Cms\Exceptions\AuthenticationException
      * @throws \Anacreation\Cms\Exceptions\PageNotFoundHttpException
      * @throws \Anacreation\Cms\Exceptions\UnAuthorizedException
      * @throws \Anacreation\Cms\Exceptions\NoModuleException
@@ -36,7 +36,7 @@ class ModulesController extends Controller
         }
 
         if ($page->is_restricted and Auth::guard('web')->guest()) {
-            throw new NoAuthenticationException("You are not allowed to visit the page!");
+            throw new AuthenticationException("You are not allowed to visit the page!");
         }
 
         if ($page->permission and !Auth::guard('web')

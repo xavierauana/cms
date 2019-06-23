@@ -14,39 +14,8 @@ use Illuminate\Support\Facades\DB;
 class SettingService
 {
 
-    const cacheKeyPrefix = "cms_setting:";
+    const cacheKeyPrefix = "cms_setting_";
     const tableName      = "cms_settings";
-
-    /**
-     * SettingService constructor.
-     */
-    public function __construct() {
-
-    }
-
-    /**
-     * @param string $key
-     * @param string $value
-     * @throws \Exception
-     */
-//    public function set(string $key, string $value) {
-    //
-    //        $cacheKey = $this->getCacheKey($key);
-    //
-    //        if (DB::table(SettingService::tableName)->whereKey($key)->count()) {
-    //            DB::table(SettingService::tableName)->whereKey($key)
-    //              ->update(compact('value'));
-    //
-    //            cache()->forget($cacheKey);
-    //            cache()->forever($cacheKey, $value);
-    //        } else {
-    //            $label = ucwords($key);
-    //            DB::table(SettingService::tableName)->insert(compact('label', 'key',
-    //                'value'));
-    //
-    //            cache()->forever($cacheKey, $value);
-    //        }
-    //    }
 
     /**
      * @param string      $key
@@ -56,18 +25,8 @@ class SettingService
      */
     public function get(string $key, string $default = null) {
         $cacheKey = $this->getCacheKey($key);
-        if (cache()->has($cacheKey)) {
-            $value = cache($cacheKey);
-        } else {
-            $record = $this->findByKey($key);
-            if ($record) {
-                cache()->forever($cacheKey, $record->value);
-            }
 
-            $value = $record ? $record->value : $default;
-        }
-
-        return $value;
+        return ($this->all())[$cacheKey] ?? $default;
     }
 
     /**
@@ -85,15 +44,14 @@ class SettingService
      * @throws \Exception
      */
     public function all() {
-        $settings = cache(CacheKey::CMS_SETTINGS);
+        return cache()->rememberForever(CacheKey::CMS_SETTINGS, function () {
+            return DB::table(SettingService::tableName)->get()
+                     ->reduce(function ($carry, $record) {
+                         $carry[$this->getCacheKey($record->key)] = $record->value;
 
-        if (!$settings) {
-            $settings = DB::table(SettingService::tableName)->get();
-            cache()->forever(CacheKey::CMS_SETTINGS, $settings);
-        }
-
-
-        return $settings;
+                         return $carry;
+                     }, []);
+        });
     }
 
     public function update(int $settingId, array $data) {
@@ -101,8 +59,6 @@ class SettingService
         if ($record) {
             DB::table(SettingService::tableName)->whereId($settingId)
               ->update($data);
-
-            $this->invalidateSpecificCacheKey($record);
 
             cache()->forget(CacheKey::CMS_SETTINGS);
 
@@ -121,18 +77,14 @@ class SettingService
     }
 
     public function delete(int $settingId) {
-        $record = $this->find($settingId);
 
-        if ($record) {
-
-            $this->invalidateSpecificCacheKey($record);
+        if ($record = $this->find($settingId)) {
 
             cache()->forget(CacheKey::CMS_SETTINGS);
 
             DB::table(SettingService::tableName)
               ->whereId($settingId)
               ->delete();
-
         }
 
     }
@@ -149,22 +101,7 @@ class SettingService
      * @throws \Exception
      */
     private function invalidateSpecificCacheKey($record) {
-
         $cacheKey = $this->getCacheKey($record->key);
-
         cache()->forget($cacheKey);
-
-    }
-
-    /**
-     * @param string $key
-     * @return mixed
-     */
-    private function findByKey(string $key) {
-        $record = DB::table(SettingService::tableName)
-                    ->whereKey($key)
-                    ->first();
-
-        return $record;
     }
 }

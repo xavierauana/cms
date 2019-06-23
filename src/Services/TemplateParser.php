@@ -9,6 +9,7 @@ namespace Anacreation\Cms\Services;
 
 
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Log;
 
 class TemplateParser
 {
@@ -29,10 +30,10 @@ class TemplateParser
             $filePath = $path . "/definition/" . $layoutDefinition;
 
             try {
-                $xml = simplexml_load_file($filePath);
-
-                return $xml;
+                return simplexml_load_file($filePath);
             } catch (\Exception $e) {
+                Log::error('failed to parse definition file for ' . $template);
+
                 return null;
             }
         }

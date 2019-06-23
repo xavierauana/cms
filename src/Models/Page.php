@@ -14,7 +14,7 @@ use Anacreation\Cms\traits\SortableTrait;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation;
-use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Log;
 
 class Page extends Model
     implements ContentGroupInterface, CacheManageableInterface, CmsPageInterface
@@ -81,16 +81,22 @@ class Page extends Model
     }
 
     public function getAbsoluteUrl(): string {
+
+        return url($this->getRelativeUrl());
+
+    }
+
+    public function getRelativeUrl(): string {
         if ($parent = $this->parent) {
 
-            $parentUrl = $parent->getAbsoluteUrl();
+            $parentUrl = $parent->getRelativeUrl();
 
             return $parentUrl . "/{$this->uri}";
         }
 
         $segment = request()->segments()[0] ?? "/";
 
-        return url(($segment === 'api' ? "api/" : '/') . ($this->uri !== '/' ? $this->uri : ""));
+        return ($segment === 'api' ? "api/" : '') . ($this->uri !== '/' ? $this->uri : "");
 
     }
 
@@ -124,40 +130,48 @@ class Page extends Model
         return $this->getCacheKey() . '_' . $langCode . '_' . $contentIdentifier;
     }
 
-    public function getActivePages(): Collection {
+    public static function ActivePages(): array {
 
-        if ($this->id) {
+        return (new static())->getActivePages();
 
-            if ($pages = cache($this->getCacheKey())) {
-                return $pages;
-            }
+    }
 
-            $pages = $this->children()->active()->sorted()->get();
+    public function getActivePages(): array {
+        try {
+            return cache()->rememberForever(CacheKey::ACTIVE_PAGES,
+                function () {
+                    return $this->active()
+                                ->get()
+                                ->reduce(function ($carry, Page $page) {
+                                    $carry[$page->getRelativeUrl()] = $page;
 
-            cache()->forever($this->getCacheKey(), $pages);
+                                    return $carry;
+                                }, []);
+                });
 
-            return $pages;
-        } else {
-            $pages = cache(CacheKey::TOP_LEVEL_ACTIVE_PAGES);
+        } catch (\Exception $e) {
+            Log::error($e->getMessage());
 
-            if ($pages) {
-                return $pages;
-            }
+            return [];
+        }
+    }
 
-            $pages = $this
-                ->topLevel()
-                ->active()
-                ->with([
-                    'children' => function ($query) {
-                        $query->active();
-                    }
-                ])
-                ->sorted()
-                ->get();
+    public function getAllPages(): array {
+        try {
+            return cache()->rememberForever(CacheKey::ALL_PAGES,
+                function () {
+                    return $this->get()
+                                ->reduce(function ($carry, Page $page) {
+                                    $carry[$page->getRelativeUrl()] = $page;
 
-            cache()->forever(CacheKey::TOP_LEVEL_ACTIVE_PAGES, $pages);
+                                    return $carry;
+                                }, []);
+                });
 
-            return $pages;
+        } catch (\Exception $e) {
+            Log::error($e->getMessage());
+
+            return [];
         }
     }
 
@@ -179,4 +193,19 @@ class Page extends Model
     }
 
     //endregion
+    public function create(array $attributes = []) {
+        return parent::create($attributes);
+    }
+
+    public function getTemplate(): ?string {
+        return $this->template;
+    }
+
+    public function getPermission(): ?Permission {
+        return $this->permission;
+    }
+
+    public function isRestricted(): bool {
+        return !!$this->is_restricted;
+    }
 }
