@@ -214,7 +214,7 @@ if (!function_exists('settings')) {
     function settings(string $key) {
         $settings = (New SettingService)->all();
 
-        return $settings[$key]?? null;
+        return $settings[$key] ?? null;
     }
 }
 

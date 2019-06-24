@@ -28,7 +28,9 @@ class RequestParser implements RequestParserInterface
 
     public function parse(Request $request, array $vars = null): ?array {
 
-        if ($page = ((Page::ActivePages())[$request->path()] ?? null)) {
+        $decodePath = urldecode($request->path());
+
+        if ($page = ((Page::ActivePages())[$decodePath] ?? null)) {
             return $this->createData($page);
         }
 
