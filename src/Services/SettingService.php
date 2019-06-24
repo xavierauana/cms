@@ -45,12 +45,15 @@ class SettingService
      */
     public function all(): array {
         return cache()->rememberForever(CacheKey::CMS_SETTINGS, function () {
-            return DB::table(SettingService::tableName)->get()
-                     ->reduce(function ($carry, $record) {
-                         $carry[$this->getCacheKey($record->key)] = $record->value;
+            $result = DB::table(SettingService::tableName)
+                        ->get()
+                        ->reduce(function ($carry, $record) {
+                            $carry[$this->getCacheKey($record->key)] = $record->value;
 
-                         return $carry;
-                     }, []);
+                            return $carry;
+                        }, []);
+
+            return is_array($result) ? $result : (array)$result;
         });
     }
 

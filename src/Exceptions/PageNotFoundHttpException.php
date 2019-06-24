@@ -10,6 +10,7 @@ namespace Anacreation\Cms\Exceptions;
 
 use Anacreation\Cms\Models\Language;
 use Anacreation\Cms\Models\Page;
+use Illuminate\Support\Facades\Log;
 
 class PageNotFoundHttpException extends \Exception
 {
@@ -23,7 +24,10 @@ class PageNotFoundHttpException extends \Exception
         $page = app()->make(Page::class);
         $notFoundPage = $page->whereUri("404")->first() ?? $page;
 
+        Log::warning("CMS page not found: " . request()->fullUrl());
+
         return view('themes.' . config('cms.active_theme') . '.layouts.not_found',
             ['page' => $notFoundPage, 'language' => (new Language)]);
     }
+
 }

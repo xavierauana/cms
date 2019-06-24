@@ -8,6 +8,7 @@
 namespace Anacreation\Cms\Handler;
 
 use Anacreation\Cms\Controllers\RoutesController;
+use Anacreation\Cms\Exceptions\PageNotFoundHttpException;
 use Anacreation\Cms\Services\RequestParser;
 use App\Exceptions\Handler as ExceptionHandler;
 use Exception;
@@ -15,6 +16,10 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class Handler extends ExceptionHandler
 {
+    protected $dontReport = [
+        PageNotFoundHttpException::class
+    ];
+
     /**
      * @param \Illuminate\Http\Request $request
      * @param \Exception               $exception
