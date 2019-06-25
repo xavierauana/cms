@@ -5,6 +5,7 @@ namespace Anacreation\Cms\Controllers;
 use Anacreation\Cms\Services\SettingService;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class CmsSettingsController extends Controller
 {
@@ -25,7 +26,8 @@ class CmsSettingsController extends Controller
 
         $this->authorize('index', 'CmsSettings');
 
-        $settings = $this->service->all();
+        $settings =DB::table(SettingService::tableName)
+                     ->get();
 
         return view('cms::admin.settings.index', compact('settings'));
     }
