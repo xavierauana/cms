@@ -2,17 +2,29 @@
 
 namespace Anacreation\Cms;
 
+use Anacreation\Cms\Console\Commands\ReloadPhpFpm;
+use Anacreation\Cms\Console\Commands\UpdateDefaultAppConfig;
 use Anacreation\Cms\Console\Kernel;
 use Anacreation\Cms\Contracts\CmsPageInterface as Page;
+use Anacreation\Cms\Contracts\ICreateContentObjectFromRequest;
+use Anacreation\Cms\Enums\PluginOption;
 use Anacreation\Cms\Handler\Handler;
+use Anacreation\Cms\Services\CreateContentObjectFromRequest;
 use Illuminate\Contracts\Debug\ExceptionHandler;
 use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 
 class CmsServiceProvider extends ServiceProvider
 {
+
+    private $commands = [
+        UpdateDefaultAppConfig::class,
+        ReloadPhpFpm::class
+    ];
+
     /**
      * Bootstrap any application services.
      */
@@ -44,6 +56,8 @@ class CmsServiceProvider extends ServiceProvider
             app()->make('CmsScheduler');
         }
         $this->registerBladeDirectives();
+
+        $this->registerConsoleCommands();
     }
 
     /**
@@ -92,11 +106,15 @@ class CmsServiceProvider extends ServiceProvider
     }
 
     private function registerBindings() {
+
         app()->bind(ExceptionHandler::class, Handler::class);
 
         foreach (config('cms.bindings') as $abstract => $implementation) {
             app()->bind($abstract, $implementation);
         }
+
+        app()->bind(ICreateContentObjectFromRequest::class,
+            CreateContentObjectFromRequest::class);
 
         Route::model('page', get_class(app(Page::class)));
 
@@ -119,5 +137,32 @@ class CmsServiceProvider extends ServiceProvider
 
     private function registerBladeDirectives() {
 
+    }
+
+    private function registerConsoleCommands() {
+
+        if ($this->app->runningInConsole()) {
+            $plugins = app()->make("CmsPlugins");
+
+            foreach ($plugins as $pluginName => $options) {
+                if ($this->hasCommands($options)) {
+                    $pluginCommands = $options[PluginOption::Commands()
+                                                           ->getValue()];
+                    $this->commands = $this->commands + $pluginCommands;
+                    Log::info("scheduler for {$pluginName} has run");
+                }
+            }
+            $this->commands($this->commands);
+        }
+    }
+
+    /**
+     * @param $options
+     * @return bool
+     */
+    private function hasCommands($options): bool {
+        $type = PluginOption::Commands();
+
+        return isset($options[$type->getValue()]) and is_string($options[$type->getValue()]);
     }
 }

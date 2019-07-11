@@ -18,6 +18,7 @@ use Anacreation\Cms\Models\Role;
 use Anacreation\Cms\Policies\AdministratorPolicy;
 use Anacreation\Cms\Policies\CmsSettingsPolicy;
 use Anacreation\Cms\Policies\ContentIndexPolicy;
+use Anacreation\Cms\Policies\Definition;
 use Anacreation\Cms\Policies\DesignPolicy;
 use Anacreation\Cms\Policies\LanguagePolicy;
 use Anacreation\Cms\Policies\LinkPolicy;
@@ -47,6 +48,8 @@ class CmsAuthServiceProvider extends AuthServiceProvider
         Permission::class   => PermissionPolicy::class,
         ContentIndex::class => ContentIndexPolicy::class,
         "CmsSettings"       => CmsSettingsPolicy::class,
+        "Definition"        => CmsSettingsPolicy::class,
+        "Layout"            => CmsSettingsPolicy::class,
     ];
 
     /**

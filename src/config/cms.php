@@ -21,10 +21,8 @@ return [
         'view' => "Class"
     ],
     'translation_table'      => 'translations',
-    'enable_upload_template' => false,
-    'enable_upload_assets'   => false,
     'custom_redirect'        => [
         //from_uri => to_uri
-    ]
-
+    ],
+    'reload_php_fpm'         => env("RELOAD_PHP_FPM_VERSION", null)
 ];

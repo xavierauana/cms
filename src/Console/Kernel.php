@@ -8,7 +8,6 @@ use Illuminate\Support\Facades\Log;
 
 class Kernel extends ConsoleKernel
 {
-
     protected function schedule(Schedule $schedule) {
 
         parent::schedule($schedule);

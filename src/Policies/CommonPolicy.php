@@ -2,51 +2,118 @@
 
 namespace Anacreation\Cms\Policies;
 
+use Anacreation\Cms\Models\Permissions\CmsAction;
 use Anacreation\MultiAuth\Model\Admin;
 use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * Class CommonPolicy
+ * @package Anacreation\Cms\Policies
+ */
 abstract class CommonPolicy
 {
     use HandlesAuthorization;
 
+    /**
+     * @var string
+     */
     protected $shortName = "object";
 
     /**
-     * Create a new policy instance.
-     *
-     * @return void
+     * CommonPolicy constructor.
      */
     public function __construct() {
         //
     }
 
+    /**
+     * @param \Anacreation\MultiAuth\Model\Admin $admin
+     * @return bool
+     */
     public function index(Admin $admin): bool {
 
-        return $admin->hasPermission("index_" . strtolower($this->shortName));
+        $permissionCode = $this->constructPermissionCode(CmsAction::Index());
+
+        return $admin->hasPermission($permissionCode);
     }
 
+    /**
+     * @param \Anacreation\MultiAuth\Model\Admin  $admin
+     * @param \Illuminate\Database\Eloquent\Model $model
+     * @return bool
+     */
     public function show(Admin $admin, Model $model): bool {
-        return $admin->hasPermission("edit_" . strtolower($this->shortName));
+        $permissionCode = $this->constructPermissionCode(CmsAction::Show());
+
+        return $admin->hasPermission($permissionCode);
     }
 
+    /**
+     * @param \Anacreation\MultiAuth\Model\Admin $admin
+     * @return bool
+     */
     public function create(Admin $admin): bool {
-        return $admin->hasPermission("create_" . strtolower($this->shortName));
+        $permissionCode = $this->constructPermissionCode(CmsAction::Create());
+
+        return $admin->hasPermission($permissionCode);
     }
 
-    public function edit(Admin $admin, Model $model): bool {
-        return $admin->hasPermission("edit_" . strtolower($this->shortName));
-    }
-
-    public function update(Admin $admin, Model $model): bool {
-        return $admin->hasPermission("create_" . strtolower($this->shortName));
-    }
-
+    /**
+     * @param \Anacreation\MultiAuth\Model\Admin  $admin
+     * @param \Illuminate\Database\Eloquent\Model $model
+     * @return bool
+     */
     public function store(Admin $admin, Model $model): bool {
-        return $admin->hasPermission("store_" . strtolower($this->shortName));
+
+        $permissionCode = $this->constructPermissionCode(CmsAction::Create());
+
+        return $admin->hasPermission($permissionCode);
     }
 
+    /**
+     * @param \Anacreation\MultiAuth\Model\Admin  $admin
+     * @param \Illuminate\Database\Eloquent\Model $model
+     * @return bool
+     */
+    public function edit(Admin $admin, Model $model): bool {
+        $permissionCode = $this->constructPermissionCode(CmsAction::Edit());
+
+        return $admin->hasPermission($permissionCode);
+    }
+
+    /**
+     * @param \Anacreation\MultiAuth\Model\Admin  $admin
+     * @param \Illuminate\Database\Eloquent\Model $model
+     * @return bool
+     */
+    public function update(Admin $admin, Model $model): bool {
+        $permissionCode = $this->constructPermissionCode(CmsAction::Edit());
+
+        return $admin->hasPermission($permissionCode);
+    }
+
+    /**
+     * @param \Anacreation\MultiAuth\Model\Admin  $admin
+     * @param \Illuminate\Database\Eloquent\Model $model
+     * @return bool
+     */
     public function delete(Admin $admin, Model $model): bool {
-        return $admin->hasPermission("delete_" . strtolower($this->shortName));
+        $permissionCode = $this->constructPermissionCode(CmsAction::Delete());
+
+        return $admin->hasPermission($permissionCode);
+
+    }
+
+    /**
+     * @param \Anacreation\Cms\Models\Permissions\CmsAction $action
+     * @return string
+     */
+    final protected function constructPermissionCode(CmsAction $action
+    ): string {
+        return sprintf("%s_%s",
+            $action->getValue(),
+            strtolower($this->shortName)
+        );
     }
 }
