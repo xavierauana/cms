@@ -51,7 +51,6 @@
         </ul>
     </li>
 
-@if($plugins = app()->make("CmsPlugins") and count($plugins) > 0)
 	
 	
 	<li class="dropdown">
@@ -60,14 +59,12 @@
            aria-expanded="false" aria-haspopup="true">
            Plugins <span class="caret"></span>
         </a>
-
-        <ul class="dropdown-menu">
-	        @foreach($plugins as $pluginName=>$params)
-		        @if(isset($params['EntryPath']))
-			        <li><a class="nav-link"
-			               href="{{"/".config('admin.route_prefix')."/".$params['EntryPath']['Path']}}">{{$params['EntryPath']['Name']}}</a></li>
-		        @endif
-	        @endforeach
+		<ul class="dropdown-menu">
+	        @foreach(Anacreation\Cms\Plugin\CmsPluginCollection::Instance()->getPlugins() as $plugin)
+				@if($entryPath = $plugin->getEntryPath())
+					<li><a class="nav-link"
+					       href="{{"/".config('admin.route_prefix')."/".$entryPath}}">{{$plugin->getEntryPathName()}}</a></li>
+				@endif
+			@endforeach
         </ul>
     </li>
-@endif

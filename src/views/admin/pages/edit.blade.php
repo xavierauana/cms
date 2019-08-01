@@ -53,6 +53,15 @@
 			@endif
 		</div>
 		<div class="form-group">
+			{{Form::label('in_sitemap', 'Show in sitemap')}}
+			{{Form::select('in_sitemap', [0=>'No', 1=>'Yes'], $page->in_sitemap,['class'=>'form-control'])}}
+			@if ($errors->has('in_sitemap'))
+				<span class="help-block">
+                    <strong>{{ $errors->first('in_sitemap') }}</strong>
+                </span>
+			@endif
+		</div>
+		<div class="form-group">
 			{{Form::label('template', 'Layout Template')}}
 			{{Form::select('template', array_combine(array_values(
 			$layouts),array_values(

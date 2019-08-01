@@ -12,6 +12,7 @@ use Anacreation\Cms\Models\Permissions\Design\LayoutPermission;
 use Anacreation\Cms\Services\Design\CreateTemplateFile;
 use Anacreation\Cms\Services\Design\GetTemplateContent;
 use Anacreation\Cms\Services\Design\UpdateTemplateContent;
+use Anacreation\Cms\Services\ReloadPhpFpm;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
@@ -142,11 +143,15 @@ class DesignsController extends CmsAdminBaseController
      * @param \Illuminate\Http\Request                               $request
      * @param string                                                 $type
      * @param \Anacreation\Cms\Services\Design\UpdateTemplateContent $service
+     * @param \Anacreation\Cms\Services\ReloadPhpFpm                 $fpm
      * @return \Illuminate\Http\Response
-     * @throws \Anacreation\Cms\Exceptions\UnAuthorizedException
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function update(
-        Request $request, string $type, UpdateTemplateContent $service
+        Request $request,
+        string $type,
+        UpdateTemplateContent $service,
+        ReloadPhpFpm $fpm
     ) {
 
         $this->authorize(CmsAction::Edit(), ucwords($type));
@@ -157,7 +162,8 @@ class DesignsController extends CmsAdminBaseController
             $request->get('code'));
 
         Artisan::call('view:clear', ['--quiet' => true]);
-        Artisan::call('cms:reload_php_fpm', ['--quiet' => true]);
+
+        $fpm->reload();
 
         if ($request->ajax()) {
             return response()->json(['status' => 'completed']);

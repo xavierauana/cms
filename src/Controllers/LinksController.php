@@ -49,7 +49,6 @@ class LinksController extends Controller
         $this->authorize('create', $model);
 
         list($pages, $links) = $this->loadResources($menu, $page);
-
         $languages = Language::all();
 
         return view('cms::admin.links.create',
@@ -69,6 +68,7 @@ class LinksController extends Controller
     public function store(
         Menu $menu, Request $request, Page $page, Link $model
     ) {
+        $allData = $request->all();
         $this->authorize('create', $model);
 
         $this->sanitizeInputs($request);

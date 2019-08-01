@@ -34,13 +34,19 @@ class ReloadPhpFpm extends Command
      *
      * @return mixed
      */
-    public function handle() {
+    public function handle(\Anacreation\Cms\Services\ReloadPhpFpm $service) {
 
         if ($phpVersion = config('cms.reload_php_fpm', null)) {
-            sprintf('echo "" | sudo -S service php%s-fpm reload', $phpVersion);
+
+            $service->reload();
 
             $msg = sprintf("%s-fpm has been reload!", $phpVersion);
+
             $this->info($msg);
+
+        } else {
+
+            $this->warn("No php-fpm version set!");
         }
     }
 }

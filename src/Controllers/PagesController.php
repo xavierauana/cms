@@ -135,11 +135,13 @@ class PagesController extends Controller
             'template'      => 'required|in:' . implode(',', $layouts),
             'has_children'  => 'required|boolean',
             'is_active'     => 'required|boolean',
+            'in_sitemap'    => 'required|boolean',
             'is_restricted' => 'required|boolean',
             'order'         => 'nullable|numeric|min:0',
             'permission_id' => 'required|in:0,' . implode(',',
                     Permission::pluck('id')->toArray()),
         ]);
+
         $page->update($validatedInputs);
 
         return ($parent = $page->parent) ? redirect()->route('contents.index',

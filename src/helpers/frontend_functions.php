@@ -212,8 +212,8 @@ if (!function_exists('sanitizeFileNames')) {
 
 if (!function_exists('settings')) {
     function settings(string $key) {
-        $settings = (New SettingService)->all();
 
+        $settings = (New SettingService)->all();
         return $settings[$key] ?? null;
     }
 }
