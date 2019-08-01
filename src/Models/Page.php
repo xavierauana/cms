@@ -31,6 +31,7 @@ class Page extends Model
         'order',
         'template',
         'is_active',
+        'in_sitemap',
         'has_children',
         'permission_id',
         'is_restricted',

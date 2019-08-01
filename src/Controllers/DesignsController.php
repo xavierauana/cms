@@ -2,21 +2,24 @@
 
 namespace Anacreation\Cms\Controllers;
 
-use Anacreation\Cms\Enums\AdminPermissionAction;
 use Anacreation\Cms\Enums\DesignType;
 use Anacreation\Cms\Exceptions\UnAuthorizedException;
 use Anacreation\Cms\Models\Design;
 use Anacreation\Cms\Models\Page;
+use Anacreation\Cms\Models\Permissions\CmsAction;
+use Anacreation\Cms\Models\Permissions\Design\DefinitionPermission;
+use Anacreation\Cms\Models\Permissions\Design\LayoutPermission;
 use Anacreation\Cms\Services\Design\CreateTemplateFile;
 use Anacreation\Cms\Services\Design\GetTemplateContent;
 use Anacreation\Cms\Services\Design\UpdateTemplateContent;
-use App\Http\Controllers\Controller;
+use Anacreation\Cms\Services\ReloadPhpFpm;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Validator;
 
-class DesignsController extends Controller
+class DesignsController extends CmsAdminBaseController
 {
     private $path;
 
@@ -89,12 +92,12 @@ class DesignsController extends Controller
             ($type === 'definition' ? DesignType::Definition() : DesignType::Layout()),
             $request->get('file'));
 
-        $type = ucwords($type);
-
-        $file = $request->get('file');
+        $msg = sprintf("%s - %s is created!",
+            ucwords($type),
+            $request->get('file'));
 
         return redirect()->route('designs.index')
-                         ->withStatus("{$type} - {$file} is created!");
+                         ->withStatus($msg);
     }
 
     /**
@@ -140,22 +143,27 @@ class DesignsController extends Controller
      * @param \Illuminate\Http\Request                               $request
      * @param string                                                 $type
      * @param \Anacreation\Cms\Services\Design\UpdateTemplateContent $service
+     * @param \Anacreation\Cms\Services\ReloadPhpFpm                 $fpm
      * @return \Illuminate\Http\Response
-     * @throws \Anacreation\Cms\Exceptions\UnAuthorizedException
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function update(
-        Request $request, string $type, UpdateTemplateContent $service
+        Request $request,
+        string $type,
+        UpdateTemplateContent $service,
+        ReloadPhpFpm $fpm
     ) {
 
-        $this->checkPermission($type, 'edit');
+        $this->authorize(CmsAction::Edit(), ucwords($type));
 
         $service->execute(
             ($type === 'definition' ? DesignType::Definition() : DesignType::Layout()),
             $request->get('file'),
             $request->get('code'));
 
-
         Artisan::call('view:clear', ['--quiet' => true]);
+
+        $fpm->reload();
 
         if ($request->ajax()) {
             return response()->json(['status' => 'completed']);
@@ -180,12 +188,20 @@ class DesignsController extends Controller
     }
 
     public function uploadLayout() {
-        $view = $this->getUploadPage('layouts');
+        $type = DesignType::Layout();
+
+        $this->checkUploadPermission($type);
+
+        $view = $this->getUploadPage($type);
 
         return view($view);
     }
 
     public function postUploadLayout(Request $request) {
+        $type = DesignType::Layout();
+
+        $this->checkUploadPermission($type);
+
         $msg = $this->uploadFile('layouts', $request);
 
         return redirect()->route("designs.index")
@@ -196,12 +212,19 @@ class DesignsController extends Controller
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function uploadDefinition() {
-        $view = $this->getUploadPage('definition');
+        $type = DesignType::Definition();
+
+        $this->checkUploadPermission($type);
+        $view = $this->getUploadPage($type);
 
         return view($view);
     }
 
     public function postUploadDefinition(Request $request) {
+        $type = DesignType::Definition();
+
+        $this->checkUploadPermission($type);
+
         $msg = $this->uploadFile('definition', $request);
 
         return redirect()->route("designs.index")
@@ -209,24 +232,16 @@ class DesignsController extends Controller
     }
 
     /**
-     * @param string $type
-     * @return string
+     * @param \Anacreation\Cms\Enums\DesignType $type
+     * @return \Anacreation\Cms\Enums\DesignType
      */
-    private function getUploadPage(string $type): string {
+    private function getUploadPage(DesignType $type
+    ): string {
         switch ($type) {
-            case 'layouts';
-            case 'definition':
-                $permissionCode = "upload_" . ($type === 'layouts' ? 'layout' : 'definition');
-                if (!request()->user()
-                              ->hasPermission($permissionCode)) {
-                    abort(403);
-                };
-
-                return "cms::admin.designs.upload." . ($type === 'layouts' ? 'layout' : 'definition');
-
+            case DesignType::Layout();
+                return "cms::admin.designs.upload.layout";
             default:
-                abort(403);
-
+                return "cms::admin.designs.upload.definition";
         }
     }
 
@@ -235,47 +250,41 @@ class DesignsController extends Controller
      * @param \Illuminate\Http\Request $request
      * @return string
      */
-    private function uploadFile(string $type, Request $request): string {
+    private function uploadFile(DesignType $type, Request $request): string {
+        $this->registerValidationRule();
+
+        $rules = [
+            'files'   => 'required',
+            'files.*' => 'file'
+        ];
+
         switch ($type) {
-            case 'layouts';
-            case 'definition':
-                $permissionCode = AdminPermissionAction::Create()
-                                                       ->getValue() . "_" . ($type === 'layouts' ? 'layout' : 'definition');
-                if (!request()->user()
-                              ->hasPermission($permissionCode)) {
-                    abort(403);
-                };
-
-                $this->registerValidationRule();
-
-                $this->validate($request, [
-                    'files'   => 'required',
-                    'files.*' => 'file|' . ($type === 'layouts' ? 'isBladeFile' : 'isXml')
-                ]);
-
-                $files = $request->file('files');
-
-                $layoutPath = getActiveThemePath() . "/" . $type;
-                collect($files)->each(function (UploadedFile $file) use (
-                    $layoutPath
-                ) {
-                    $file->move($layoutPath, $file->getClientOriginalName());
-                });
-
-                return 'File uploaded!';
-
+            case DesignType::Layout();
+                $rules['files.*'] .= "|isBladeFile";
+                $directory = 'layouts';
+                break;
             default:
-                abort(403);
-
+                $rules['files.*'] .= "|isXml";
+                $directory = 'definition';
         }
 
+        $this->validate($request, $rules);
 
-        $msg = 'Layout uploaded!';
+        $files = $request->file('files');
 
-        return $msg;
+        $layoutPath = getActiveThemePath() . "/" . $directory;
+        collect($files)->each(function (UploadedFile $file) use (
+            $layoutPath
+        ) {
+            $file->move($layoutPath, $file->getClientOriginalName());
+        });
+
+        return 'File uploaded!';
+
     }
 
-    private function registerValidationRule(): void {
+    private
+    function registerValidationRule(): void {
         Validator::extend('isBladeFile',
             function ($attribute, $value, $parameters, $validator) {
                 $nameArray = explode('.', $value->getClientOriginalName());
@@ -315,6 +324,7 @@ class DesignsController extends Controller
      * @throws \Anacreation\Cms\Exceptions\UnAuthorizedException
      */
     private function checkPermission(string $type, string $action) {
+
         $type = ($type === 'definition' ? 'definition' : 'layout');
 
         $permission = "{$action}_{$type}";
@@ -322,5 +332,25 @@ class DesignsController extends Controller
         if (!request()->user()->hasPermission($permission)) {
             throw new UnAuthorizedException();
         }
+    }
+
+    /**
+     * @param \Anacreation\Cms\Enums\DesignType $type
+     */
+    private
+    function checkUploadPermission(
+        DesignType $type
+    ): void {
+        switch ($type) {
+            case DesignType::Layout();
+                $permissionCode = LayoutPermission::Upload();
+                break;
+            default:
+                $permissionCode = DefinitionPermission::Upload();
+        }
+        if (!request()->user()
+                      ->hasPermission($permissionCode->getValue())) {
+            throw new AuthorizationException('Unauthorized');
+        };
     }
 }

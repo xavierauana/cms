@@ -2,6 +2,12 @@
     data-parentId="{{$parentId}}"
     class="connectedSortable my-3">
 @foreach($links as $link)
+	<?php
+			echo $link->id;
+		if($link->id == 13){
+		    dd($link->children()->order()->get());
+		}
+		?>
 		<li data-id="{{$link->id}}"
 		    data-order="{{$link->order}}"
 		    data-parentId="{{$parentId}}"
@@ -21,11 +27,9 @@
 				{{csrf_field()}}
 				<div class="btn-group btn-group-sm float-right">
 					<button class="btn btn-sm btn-danger"
-					        style="margin-left: 10px"
-					>Delete</button>
+					        style="margin-left: 10px">Delete</button>
 						<a class="btn btn-sm btn-info"
-						   href="{{route('menus.links.edit', [$menu->id, $link->id])}}"
-						>Edit</a>
+						   href="{{route('menus.links.edit', [$menu->id, $link->id])}}">Edit</a>
 				</div>
 				
 			</form>

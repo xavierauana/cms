@@ -18,6 +18,7 @@ use Anacreation\Cms\ContentModels\TextContent;
 use Anacreation\Cms\Contracts\CmsPageInterface;
 use Anacreation\Cms\Contracts\ContentGroupInterface;
 use Anacreation\Cms\Contracts\ContentTypeInterface;
+use Anacreation\Cms\Contracts\ICreateContentObjectFromRequest;
 use Anacreation\Cms\Entities\ContentObject;
 use Anacreation\Cms\Exceptions\IncorrectContentTypeException;
 use Anacreation\Cms\Models\ContentIndex;
@@ -125,10 +126,11 @@ class ContentService
         ContentGroupInterface $contentOwner, Request $request
     ): void {
 
-        $contentObject = $this->createContentObject($request);
+        /** @var ICreateContentObjectFromRequest $creator */
+        $creator = app(ICreateContentObjectFromRequest::class);
 
         $this->updateOrCreateContentIndexWithContentObject($contentOwner,
-            $contentObject);
+            $creator->create($request));
 
     }
 

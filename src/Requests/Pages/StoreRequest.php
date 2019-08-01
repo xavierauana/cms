@@ -12,7 +12,6 @@ use Anacreation\Cms\Models\Page;
 use Anacreation\Cms\Models\Permission;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class StoreRequest extends FormRequest
 {
@@ -50,6 +49,7 @@ class StoreRequest extends FormRequest
             'template'      => 'required|in:' . implode(',', $layouts),
             'has_children'  => 'required|boolean',
             'is_active'     => 'required|boolean',
+            'in_sitemap'    => 'required|boolean',
             'is_restricted' => 'required|boolean',
             'order'         => 'nullable|numeric|min:0',
             'permission_id' => 'required|in:0,' . implode(',',

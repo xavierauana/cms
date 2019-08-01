@@ -8,7 +8,6 @@ use Anacreation\Cms\traits\ContentType;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\File;
-use Illuminate\Support\Facades\Storage;
 
 class FileContent extends Model implements ContentTypeInterface
 {
@@ -53,7 +52,7 @@ class FileContent extends Model implements ContentTypeInterface
     }
 
     private function isUploadFile($contentObject) {
-        return $contentObject->file and get_class($contentObject->file) === UploadedFile::class;
+        return $contentObject->file and ($contentObject->file instanceof UploadedFile);
     }
 
     /**
@@ -61,12 +60,16 @@ class FileContent extends Model implements ContentTypeInterface
      */
     private function MoveFile(ContentObject $contentObject): void {
 
-        $path = Storage::putFileAs('public/files',
-            $contentObject->file,
-            $contentObject->file->getClientOriginalName());
+        $directory = public_path("files");
 
-        $path = str_replace("public", "storage", $path);
 
-        $this->link = $path;
+        if (!File::isDirectory($directory)) {
+            File::makeDirectory($directory);
+        }
+
+        File::put($directory . "/" . $contentObject->file->getClientOriginalName(),
+            $contentObject->file);
+
+        $this->link = "files/" . $contentObject->file->getClientOriginalName();
     }
 }

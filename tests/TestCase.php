@@ -1,10 +1,7 @@
 <?php
 
-namespace Tests;
+namespace Anacreation\Cms\Tests;
 
-use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
-
-abstract class TestCase extends BaseTestCase
+abstract class TestCase extends \Tests\TestCase
 {
-    use CreatesApplication;
 }

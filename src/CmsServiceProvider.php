@@ -2,9 +2,13 @@
 
 namespace Anacreation\Cms;
 
-use Anacreation\Cms\Console\Kernel;
+use Anacreation\Cms\Console\Commands\GenerateSitemap;
+use Anacreation\Cms\Console\Commands\ReloadPhpFpm;
+use Anacreation\Cms\Console\Commands\UpdateDefaultAppConfig;
 use Anacreation\Cms\Contracts\CmsPageInterface as Page;
+use Anacreation\Cms\Contracts\ICreateContentObjectFromRequest;
 use Anacreation\Cms\Handler\Handler;
+use Anacreation\Cms\Services\CreateContentObjectFromRequest;
 use Illuminate\Contracts\Debug\ExceptionHandler;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Route;
@@ -13,6 +17,13 @@ use Illuminate\Support\ServiceProvider;
 
 class CmsServiceProvider extends ServiceProvider
 {
+
+    private $commands = [
+        ReloadPhpFpm::class,
+        GenerateSitemap::class,
+        UpdateDefaultAppConfig::class,
+    ];
+
     /**
      * Bootstrap any application services.
      */
@@ -34,15 +45,8 @@ class CmsServiceProvider extends ServiceProvider
 
         $this->registerBindings();
 
-        if (config('cms.enable_scheduler', false)) {
-            app()->singleton('CmsScheduler', function ($app) {
-                $dispatcher = $app->make(\Illuminate\Contracts\Events\Dispatcher::class);
+        $this->registerConsoleCommands();
 
-                return new Kernel($app, $dispatcher);
-            });
-
-            app()->make('CmsScheduler');
-        }
         $this->registerBladeDirectives();
     }
 
@@ -92,17 +96,17 @@ class CmsServiceProvider extends ServiceProvider
     }
 
     private function registerBindings() {
+
         app()->bind(ExceptionHandler::class, Handler::class);
 
         foreach (config('cms.bindings') as $abstract => $implementation) {
             app()->bind($abstract, $implementation);
         }
 
-        Route::model('page', get_class(app(Page::class)));
+        app()->bind(ICreateContentObjectFromRequest::class,
+            CreateContentObjectFromRequest::class);
 
-        app()->singleton('CmsPlugins', function () {
-            return [];
-        });
+        Route::model('page', get_class(app(Page::class)));
     }
 
     private function requestFrontend(): bool {
@@ -119,5 +123,11 @@ class CmsServiceProvider extends ServiceProvider
 
     private function registerBladeDirectives() {
 
+    }
+
+    private function registerConsoleCommands() {
+        if ($this->app->runningInConsole()) {
+            $this->commands($this->commands);
+        }
     }
 }
