@@ -24,15 +24,15 @@ class TemplateParser
 
         $path = $path ?: getActiveThemePath();
 
-        if ($layoutDefinition = $this->fetchLayoutDefinition($path,
-            $template)) {
+        if($layoutDefinition = $this->fetchLayoutDefinition($path,
+                                                            $template)) {
 
-            $filePath = $path . "/definition/" . $layoutDefinition;
+            $filePath = $path."/definition/".$layoutDefinition;
 
             try {
                 return simplexml_load_file($filePath);
             } catch (\Exception $e) {
-                Log::error('failed to parse definition file for ' . $template);
+                Log::error('failed to parse definition file for '.$template);
 
                 return null;
             }
@@ -43,16 +43,16 @@ class TemplateParser
 
     private function fetchLayoutDefinition(string $path, string $template
     ): ?string {
-        $path = $path . "/definition";
+        $path = $path."/definition";
 
-        if (!File::isDirectory($path)) {
+        if( !File::isDirectory($path)) {
             throw new \Exception("No definition directory for theme '{$template}' ");
         }
 
         $files = File::files($path);
         $layoutDefinition = null;
-        foreach ($files as $file) {
-            if ($file->getFilename() === $template . ".xml") {
+        foreach($files as $file) {
+            if($file->getFilename() === $template.".xml") {
                 $layoutDefinition = $file->getFilename();
                 break;
             }
@@ -66,30 +66,37 @@ class TemplateParser
     ): array {
         $contents = [];
 
-        $xml = $this->loadTemplateDefinition($template, $path);
-        
+        $xml = $this->loadTemplateDefinition($template,
+                                             $path);
+
         try {
-            foreach ($xml->content as $content) {
-                if ($this->notYetParsed($content, $contents)) {
-                    $this->constructContentDefinitionArray($contents, $content);
+            foreach($xml->content as $content) {
+                if($this->notYetParsed($content,
+                                       $contents)) {
+                    $this->constructContentDefinitionArray($contents,
+                                                           $content);
                 }
             }
         } catch (\Exception $e) {
-            Log::info('Cannot load definition file for template: ' . $template . ' in path: ' . $path);
+            Log::info('Cannot load definition file for template: '.$template.' in path: '.$path);
         }
 
-        if ($editable != null) {
-            $this->setLayoutEditable($xml, $editable);
+        if($editable != null) {
+            $this->setLayoutEditable($xml,
+                                     $editable);
         }
 
         return $contents;
     }
 
     public function setLayoutEditable($xml, bool &$editable) {
-        foreach ($xml->attributes() as $attribute => $value) {
-            if ($attribute == 'editable' and $value == 'false') {
-                $editable = false;
-                break;
+        $editable = false;
+        if($xml !== null) {
+            foreach($xml->attributes() as $attribute => $value) {
+                if($attribute == 'editable' and $value == 'false') {
+                    $editable = false;
+                    break;
+                }
             }
         }
     }
@@ -112,6 +119,7 @@ class TemplateParser
      * @return bool
      */
     private function notYetParsed($content, $contents): bool {
-        return !array_key_exists((string)$content->identifier, $contents);
+        return !array_key_exists((string)$content->identifier,
+                                 $contents);
     }
 }
