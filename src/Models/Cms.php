@@ -160,18 +160,16 @@ class Cms
         });
 
         CmsPluginCollection::RegisterRoutes();
-    }
 
-    public static function dynamicRoutes(): void {
         Route::group([
-            "namespace"  => "\\Anacreation\\Cms\\Controllers",
-            'middleware' => ['web']
-        ], function () {
+                         "namespace"  => "\\Anacreation\\Cms\\Controllers",
+                         'middleware' => ['web']
+                     ], function () {
 
             Route::get("modules", "ModulesController@resolve");
             Route::post("modules", "ModulesController@resolve");
             Route::get("{segment1?}/{segment2?}/{segment3?}/{segment4?}/{segment5?}",
-                "RoutesController@resolve");
+                       "RoutesController@resolve");
         });
     }
 

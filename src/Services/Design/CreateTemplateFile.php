@@ -16,19 +16,21 @@ class CreateTemplateFile extends TemplateService
 {
 
     public function execute(DesignType $type, string $name) {
-        $path = $this->getFilePath($type, $name);
+        $path = $this->getFilePath($type,
+                                   $name);
         $cap = $this->getCap($type);
-        $full_path = Str::finish($path, $cap);
+        $full_path = Str::finish($path,
+                                 $cap);
 
         $this->createFile($full_path);
     }
 
     private function getCap(DesignType $type): string {
-        switch ($type) {
-            case DesignType::Layout():
-                return ".blade.php";
-            default:
+        switch($type) {
+            case DesignType::Definition():
                 return ".xml";
+            default:
+                return ".blade.php";
         }
     }
 
@@ -38,9 +40,10 @@ class CreateTemplateFile extends TemplateService
      */
     private function createFile(string $full_path) {
 
-        if (File::exists($full_path)) {
+        if(File::exists($full_path)) {
             throw new \Exception("File already exists!");
         }
-        file_put_contents($full_path, "");
+        file_put_contents($full_path,
+                          "");
     }
 }

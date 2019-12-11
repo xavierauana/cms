@@ -14,10 +14,12 @@ use MyCLabs\Enum\Enum;
  * Class DesignType
  * @method static DesignType Layout
  * @method static DesignType Definition
+ * @method static DesignType Partial
  * @package Anacreation\Cms\Enums
  */
 class DesignType extends Enum
 {
     private const Layout     = "layout";
     private const Definition = "definition";
+    private const Partial    = "partials";
 }

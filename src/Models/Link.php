@@ -7,7 +7,6 @@ use Anacreation\Cms\Contracts\ContentGroupInterface;
 use Anacreation\Cms\Enums\LinkMediaCollections;
 use Anacreation\Cms\Events\LinkDeleted;
 use Anacreation\Cms\Events\LinkSaved;
-use Anacreation\CMS\Services\LanguageService;
 use Anacreation\Cms\traits\ContentGroup;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -33,13 +32,13 @@ class Link extends Model
         'is_active',
         'parent_id',
         'page_id',
-        'external_uri'
+        'external_uri',
     ];
 
     protected $appends = [
         'name',
         'uri',
-        'absoluteUri'
+        'absoluteUri',
     ];
 
     public const Identifier = "link";
@@ -54,7 +53,8 @@ class Link extends Model
     }
 
     public function children(): Relation {
-        return $this->hasMany(Link::class, 'parent_id');
+        return $this->hasMany(Link::class,
+                              'parent_id');
     }
 
     public function parent(): Relation {
@@ -68,27 +68,19 @@ class Link extends Model
     // Accessor
 
     public function getUriAttribute(): ?string {
-        return $this->page_id ? optional($this->page)->uri : $this->external_uri;
+        return $this->page_id ? optional($this->page)->uri: $this->external_uri;
     }
 
     public function getAbsoluteUriAttribute(): string {
 
-        return $this->page ? url($this->constructFullUrl($this->page)) : $this->external_uri;
+        return $this->page ? url($this->constructFullUrl($this->page)): $this->external_uri;
     }
 
     public function getNameAttribute(string $langCode = null): string {
 
-        $langCode = $langCode ?? app()->getLocale();
-
-        $name = $this->getContent(Link::Identifier, "", $langCode);
-
-        if ($name) {
-            return $name;
-        }
-
-        $language = (new LanguageService())->getFallbackLanguage($langCode);
-
-        return $this->getNameAttribute($language->code);
+        return $this->getContent(Link::Identifier,
+                                 "",
+                                 $langCode);
 
     }
 
@@ -118,7 +110,7 @@ class Link extends Model
 
         $mediaItems = $this->getMedia(LinkMediaCollections::IMAGES);
 
-        return optional($mediaItems->first(function (Media $item) use (
+        return optional($mediaItems->first(function(Media $item) use (
             $languageCode
         ) {
             return $item->name === $languageCode;
@@ -130,7 +122,7 @@ class Link extends Model
 
         $mediaItems = $this->getMedia(LinkMediaCollections::IMAGES);
 
-        return optional($mediaItems->first(function (Media $item) use (
+        return optional($mediaItems->first(function(Media $item) use (
             $languageCode
         ) {
             return $item->name === $languageCode;
@@ -139,7 +131,7 @@ class Link extends Model
 
     public function deleteImage(string $languageCode) {
         $mediaItems = $this->getMedia(LinkMediaCollections::IMAGES);
-        optional($mediaItems->first(function (Media $item) use (
+        optional($mediaItems->first(function(Media $item) use (
             $languageCode
         ) {
             return $item->name === $languageCode;
@@ -165,18 +157,18 @@ class Link extends Model
     }
 
     public function getCacheKey(): string {
-        return "link_" . $this->id;
+        return "link_".$this->id;
     }
 
     public function getContentCacheKey(
         string $langCode, string $contentIdentifier
     ): string {
-        return $this->getCacheKey() . "_" . $langCode . "_" . Link::Identifier;
+        return $this->getCacheKey()."_".$langCode."_".Link::Identifier;
     }
 
     private function constructFullUrl(Page $p): string {
         $uri = $p->parent_id !== 0 ?
-            $this->constructFullUrl($p->parent) . "/" . $p->uri :
+            $this->constructFullUrl($p->parent)."/".$p->uri:
             $p->uri;
 
         return $uri;
