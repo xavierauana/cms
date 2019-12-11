@@ -1,5 +1,5 @@
 <content-blocks
-		:contents="{{ count($contents) > 0 ? json_encode($contents,JSON_PRETTY_PRINT) : (new stdClass()) }}"
+		:contents="{{ count($contents) > 0 ? json_encode($contents,JSON_PRETTY_PRINT) : json_encode(new stdClass()) }}"
 		:editable="{{json_encode(auth()->user()->hasPermission('edit_content'))}}"
 		:deleteable="{{json_encode(auth()->user()->hasPermission('delete_content'))}}"
 		:languages="{{$languages}}"
