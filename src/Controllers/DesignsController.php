@@ -18,6 +18,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
 
 class DesignsController extends CmsAdminBaseController
 {
@@ -47,7 +48,9 @@ class DesignsController extends CmsAdminBaseController
 
         $pages = $page->get()->groupBy('template');
 
-        return view('cms::admin.designs.index', compact('design', 'pages'));
+        return view('cms::admin.designs.index',
+                    compact('design',
+                            'pages'));
     }
 
     /**
@@ -59,17 +62,18 @@ class DesignsController extends CmsAdminBaseController
      * @throws \Anacreation\Cms\Exceptions\UnAuthorizedException
      */
     public function create(Request $request, string $type) {
-        if ($type === 'definition') {
-            if (!$request->user()->hasPermission('create_definition')) {
+        if($type === 'definition') {
+            if( !$request->user()->hasPermission('create_definition')) {
                 throw new UnAuthorizedException();
             }
         } else {
-            if (!$request->user()->hasPermission('create_layout')) {
+            if( !$request->user()->hasPermission('create_layout')) {
                 throw new UnAuthorizedException();
             }
         }
 
-        return view("cms::admin.designs.create", compact('type'));
+        return view("cms::admin.designs.create",
+                    compact('type'));
 
     }
 
@@ -86,15 +90,16 @@ class DesignsController extends CmsAdminBaseController
         Request $request, string $type, CreateTemplateFile $service
     ) {
 
-        $this->checkPermission($type, 'create');
+        $this->checkPermission($type,
+                               'create');
 
         $service->execute(
-            ($type === 'definition' ? DesignType::Definition() : DesignType::Layout()),
+            new DesignType($type),
             $request->get('file'));
 
         $msg = sprintf("%s - %s is created!",
-            ucwords($type),
-            $request->get('file'));
+                       ucwords($type),
+                       $request->get('file'));
 
         return redirect()->route('designs.index')
                          ->withStatus($msg);
@@ -121,16 +126,16 @@ class DesignsController extends CmsAdminBaseController
         Request $request, string $type, GetTemplateContent $service
     ) {
 
-        if (!$request->ajax()) {
+        if( !$request->ajax()) {
             return view('cms::admin.designs.edit',
-                [
-                    'file' => $request->get('file'),
-                    'type' => $type,
-                ]);
+                        [
+                            'file' => $request->get('file'),
+                            'type' => $type,
+                        ]);
         }
 
         $content = $service->execute(
-            ($type === 'definition' ? DesignType::Definition() : DesignType::Layout()),
+            new DesignType($type),
             $request->get('file'));
 
         return response()->json($content);
@@ -153,19 +158,20 @@ class DesignsController extends CmsAdminBaseController
         UpdateTemplateContent $service,
         ReloadPhpFpm $fpm
     ) {
-
-        $this->authorize(CmsAction::Edit(), ucwords($type));
+        $this->authorize(CmsAction::Edit(),
+                         ucwords((Str::singular($type))));
 
         $service->execute(
-            ($type === 'definition' ? DesignType::Definition() : DesignType::Layout()),
+            new DesignType($type),
             $request->get('file'),
             $request->get('code'));
 
-        Artisan::call('view:clear', ['--quiet' => true]);
+        Artisan::call('view:clear',
+                      ['--quiet' => true]);
 
         $fpm->reload();
 
-        if ($request->ajax()) {
+        if($request->ajax()) {
             return response()->json(['status' => 'completed']);
         }
 
@@ -202,7 +208,8 @@ class DesignsController extends CmsAdminBaseController
 
         $this->checkUploadPermission($type);
 
-        $msg = $this->uploadFile('layouts', $request);
+        $msg = $this->uploadFile('layouts',
+                                 $request);
 
         return redirect()->route("designs.index")
                          ->withStatus($msg);
@@ -225,7 +232,8 @@ class DesignsController extends CmsAdminBaseController
 
         $this->checkUploadPermission($type);
 
-        $msg = $this->uploadFile('definition', $request);
+        $msg = $this->uploadFile('definition',
+                                 $request);
 
         return redirect()->route("designs.index")
                          ->withStatus($msg);
@@ -237,7 +245,7 @@ class DesignsController extends CmsAdminBaseController
      */
     private function getUploadPage(DesignType $type
     ): string {
-        switch ($type) {
+        switch($type) {
             case DesignType::Layout();
                 return "cms::admin.designs.upload.layout";
             default:
@@ -255,10 +263,10 @@ class DesignsController extends CmsAdminBaseController
 
         $rules = [
             'files'   => 'required',
-            'files.*' => 'file'
+            'files.*' => 'file',
         ];
 
-        switch ($type) {
+        switch($type) {
             case DesignType::Layout();
                 $rules['files.*'] .= "|isBladeFile";
                 $directory = 'layouts';
@@ -268,15 +276,17 @@ class DesignsController extends CmsAdminBaseController
                 $directory = 'definition';
         }
 
-        $this->validate($request, $rules);
+        $this->validate($request,
+                        $rules);
 
         $files = $request->file('files');
 
-        $layoutPath = getActiveThemePath() . "/" . $directory;
-        collect($files)->each(function (UploadedFile $file) use (
+        $layoutPath = getActiveThemePath()."/".$directory;
+        collect($files)->each(function(UploadedFile $file) use (
             $layoutPath
         ) {
-            $file->move($layoutPath, $file->getClientOriginalName());
+            $file->move($layoutPath,
+                        $file->getClientOriginalName());
         });
 
         return 'File uploaded!';
@@ -286,19 +296,20 @@ class DesignsController extends CmsAdminBaseController
     private
     function registerValidationRule(): void {
         Validator::extend('isBladeFile',
-            function ($attribute, $value, $parameters, $validator) {
-                $nameArray = explode('.', $value->getClientOriginalName());
+            function($attribute, $value, $parameters, $validator) {
+                $nameArray = explode('.',
+                                     $value->getClientOriginalName());
 
                 $length = count($nameArray);
 
-                if ($length < 3) {
+                if($length < 3) {
                     return false;
                 }
 
-                if ($nameArray[$length - 1] !== 'php') {
+                if($nameArray[$length - 1] !== 'php') {
                     return false;
                 }
-                if ($nameArray[$length - 2] !== 'blade') {
+                if($nameArray[$length - 2] !== 'blade') {
                     return false;
                 }
 
@@ -307,7 +318,7 @@ class DesignsController extends CmsAdminBaseController
             });
 
         Validator::extend('isXml',
-            function ($attribute, $value, $parameters, $validator) {
+            function($attribute, $value, $parameters, $validator) {
                 /**
                  * @var \Illuminate\Http\UploadedFile $value
                  */
@@ -325,11 +336,11 @@ class DesignsController extends CmsAdminBaseController
      */
     private function checkPermission(string $type, string $action) {
 
-        $type = ($type === 'definition' ? 'definition' : 'layout');
+        $type = ($type === 'definition' ? 'definition': 'layout');
 
         $permission = "{$action}_{$type}";
 
-        if (!request()->user()->hasPermission($permission)) {
+        if( !request()->user()->hasPermission($permission)) {
             throw new UnAuthorizedException();
         }
     }
@@ -341,14 +352,14 @@ class DesignsController extends CmsAdminBaseController
     function checkUploadPermission(
         DesignType $type
     ): void {
-        switch ($type) {
+        switch($type) {
             case DesignType::Layout();
                 $permissionCode = LayoutPermission::Upload();
                 break;
             default:
                 $permissionCode = DefinitionPermission::Upload();
         }
-        if (!request()->user()
+        if( !request()->user()
                       ->hasPermission($permissionCode->getValue())) {
             throw new AuthorizationException('Unauthorized');
         };
