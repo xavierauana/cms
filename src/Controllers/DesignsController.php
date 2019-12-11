@@ -94,7 +94,7 @@ class DesignsController extends CmsAdminBaseController
                                'create');
 
         $service->execute(
-            ($type === 'definition' ? DesignType::Definition(): DesignType::Layout()),
+            new DesignType($type),
             $request->get('file'));
 
         $msg = sprintf("%s - %s is created!",
