@@ -7,18 +7,11 @@ use Anacreation\MultiAuth\Model\Admin;
 use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Database\Eloquent\Model;
 
-/**
- * Class CommonPolicy
- * @package Anacreation\Cms\Policies
- */
-abstract class CommonPolicy
+class PartialPolicy
 {
     use HandlesAuthorization;
 
-    /**
-     * @var string
-     */
-    protected $shortName = "object";
+    private $shortName = 'partial';
 
     /**
      * CommonPolicy constructor.
@@ -76,7 +69,7 @@ abstract class CommonPolicy
      * @param \Illuminate\Database\Eloquent\Model $model
      * @return bool
      */
-    public function edit(Admin $admin, Model $model): bool {
+    public function edit(Admin $admin): bool {
         $permissionCode = $this->constructPermissionCode(CmsAction::Edit());
 
         return $admin->hasPermission($permissionCode);

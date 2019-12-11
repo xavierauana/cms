@@ -15,12 +15,12 @@ class CmsAdminBaseController extends Controller
 {
 
     public function authorize($ability, $arguments = []) {
-
-        if ($ability instanceof Enum) {
+        if($ability instanceof Enum) {
             $ability = $ability->getValue();
         }
 
-        return parent::authorize($ability, $arguments);
+        return parent::authorize($ability,
+                                 $arguments);
     }
 
 }

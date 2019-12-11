@@ -42,7 +42,6 @@ class ApiAuthentication
     public static function isAuthenticated(): int {
 
         $token = str_replace("Bearer ", "", request()->header('authorization'));
-        dd(JWTAuth::authenticate($token));
 
         try {
 

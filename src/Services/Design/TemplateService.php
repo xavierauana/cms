@@ -21,12 +21,15 @@ abstract class TemplateService
     protected function getFilePath(DesignType $type, string $name) {
         $path = null;
 
-        switch ($type) {
+        switch($type) {
             case DesignType::Definition():
                 $path = $this->getDefinitionFilePath($name);
                 break;
             case DesignType::Layout():
                 $path = $this->getLayoutFilePath($name);
+                break;
+            case DesignType::Partial():
+                $path = $this->getPartialFilePath($name);
                 break;
         }
 
@@ -34,12 +37,16 @@ abstract class TemplateService
     }
 
     private function getDefinitionFilePath(string $name) {
-        return getActiveThemePath() . "/definition/" . $name;
+        return getActiveThemePath()."/definition/".$name;
     }
 
     private function getLayoutFilePath(string $name): string {
 
-        return getActiveThemePath() . "/layouts/" . $name . ".blade.php";
+        return getActiveThemePath()."/layouts/".$name.".blade.php";
+    }
+
+    private function getPartialFilePath(string $name) {
+        return getActiveThemePath()."/partials/".$name.".blade.php";
     }
 
 }
