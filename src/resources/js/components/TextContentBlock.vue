@@ -33,7 +33,8 @@
       filebrowserImageBrowseUrl: '/filemanager?type=Images',
       filebrowserImageUploadUrl: '/filemanager/upload?type=Images&_token=',
       filebrowserBrowseUrl     : '/filemanager?type=Files',
-      filebrowserUploadUrl     : '/filemanager/upload?type=Files&_token='
+      filebrowserUploadUrl     : '/filemanager/upload?type=Files&_token=',
+      extraAllowedContent      : '*(*);*{*};*[id]'
     }
 
     export default {
