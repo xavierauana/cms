@@ -15,12 +15,12 @@ class DatetimeContent extends Model implements ContentTypeInterface
     protected $table = 'datetime_contents';
 
     protected $dates = [
-        'content'
+        'content',
     ];
 
     public function updateContent(ContentObject $contentObject
     ): ContentTypeInterface {
-        $this->content = new Carbon($contentObject->content);
+        $this->content = $contentObject->content ? new Carbon($contentObject->content): null;
         $this->save();
 
         return $this;
@@ -28,27 +28,36 @@ class DatetimeContent extends Model implements ContentTypeInterface
 
     public function saveContent(ContentObject $contentObject
     ): ContentTypeInterface {
-        $this->content = new Carbon($contentObject->content);
+        $this->content = $contentObject->content ? new Carbon($contentObject->content): null;
         $this->save();
 
         return $this;
     }
 
     public function show(array $params = []) {
+        if($this->attributes['content'] === null) {
+            return null;
+        }
         $locale = $params['locale'] ?? app()->getLocale();
-        $format = $params['$format'] ?? null;
+        $format = $params['format'] ?? null;
 
         Carbon::setLocale($locale);
 
-        if ($format) {
+        if($format) {
             return $this->content->format($format);
         }
 
         return $this->content->toDateTimeString();
     }
 
+    public function showBackEnd() {
+        return optional($this->content)->format("Y-m-d h:m");
+    }
+
     public function deleteContent(array $query = null) {
-        $this->content = Carbon::createFromDate(1900, 1, 1);
+        $this->content = Carbon::createFromDate(1900,
+                                                1,
+                                                1);
         $this->save();
     }
 }

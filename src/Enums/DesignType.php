@@ -19,7 +19,7 @@ use MyCLabs\Enum\Enum;
  */
 class DesignType extends Enum
 {
-    private const Layout     = "layout";
+    private const Layout     = "layouts";
     private const Definition = "definition";
     private const Partial    = "partials";
 }
