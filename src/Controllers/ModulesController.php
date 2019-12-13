@@ -8,66 +8,32 @@
 namespace Anacreation\Cms\Controllers;
 
 
-use Anacreation\Cms\Exceptions\AuthenticationException;
-use Anacreation\Cms\Exceptions\NoModuleException;
+use Anacreation\Cms\Contracts\CmsPageInterface;
 use Anacreation\Cms\Exceptions\PageNotFoundHttpException;
-use Anacreation\Cms\Exceptions\UnAuthorizedException;
-use Anacreation\Cms\Models\Page;
-use Anacreation\Cms\Services\TemplateParser;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
 class ModulesController extends Controller
 {
     /**
      * @param \Illuminate\Http\Request $request
+     * @param int                      $pageId
+     * @param string                   $name
+     * @param string                   $method
      * @return \Illuminate\Http\JsonResponse
      * @throws \Anacreation\Cms\Exceptions\AuthenticationException
-     * @throws \Anacreation\Cms\Exceptions\PageNotFoundHttpException
-     * @throws \Anacreation\Cms\Exceptions\UnAuthorizedException
      * @throws \Anacreation\Cms\Exceptions\NoModuleException
+     * @throws \Anacreation\Cms\Exceptions\PageNotFoundHttpException
      */
-    public function resolve(Request $request) {
+    public function resolve(Request $request, int $pageId, string $name, string $method
+    ) {
 
-        if (!$pageId = $request->get('page') or
-            !$page = Page::active()->find($pageId)) {
+        if( !$page = app(CmsPageInterface::class)->active()->find($pageId)) {
             throw new PageNotFoundHttpException();
         }
 
-        if ($page->is_restricted and Auth::guard('web')->guest()) {
-            throw new AuthenticationException("You are not allowed to visit the page!");
-        }
-
-        if ($page->permission and !Auth::guard('web')
-                                       ->user()
-                                       ->hasPermission($page->permission->code)) {
-            throw new UnAuthorizedException("You are not allowed to visit the page!");
-        }
-
-        $parser = new TemplateParser();
-        $definitions = $parser->loadTemplateDefinition($page->template, "");
-
-        $targetNode = null;
-        foreach ($definitions->model as $node) {
-            if ((string)$node->name === $request->get('name')) {
-                $targetNode = $node;
-                break;
-            }
-        }
-
-        if (is_null($targetNode)) {
-            throw new NoModuleException();
-        }
-
-        $class = (string)($targetNode->class);
-
-        $method = $request->query('method');
-
-        $result = $method ? app($class)->$method($request) : (app($class))($request);
-
-        return $request->ajax() ? response()->json($result) : $result;
-
+        return $page->callModel($name,
+                                $method,
+                                [$request]);
     }
-
 }

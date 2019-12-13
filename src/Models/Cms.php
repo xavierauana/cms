@@ -21,183 +21,201 @@ class Cms
 {
     public static function routes(): void {
 
-        if (!config('cms.use_spark')) {
+        if( !config('cms.use_spark')) {
 
             Route::group([
-                'namespace'  => "\\App\\Http\\Controllers",
-                "middleware" => ['web']
-            ], function () {
-                Auth::routes();
-            });
+                             'namespace'  => "\\App\\Http\\Controllers",
+                             "middleware" => ['web'],
+                         ],
+                function() {
+                    Auth::routes();
+                });
         }
 
         Route::group([
-            "namespace"  => "\\Anacreation\\Cms\\Controllers",
-            'middleware' => ['web']
-        ], function () {
+                         "namespace"  => "\\Anacreation\\Cms\\Controllers",
+                         'middleware' => ['web'],
+                     ],
+            function() {
 
-            Route::group(['prefix' => config('admin.route_prefix')],
-                function () {
-                    Route::group(['middleware' => 'auth:admin'],
-                        function () {
-                            Route::get('profile',
-                                "HomeController@getProfile")
-                                 ->name('profile');
+                Route::group(['prefix' => config('admin.route_prefix')],
+                    function() {
+                        Route::group(['middleware' => 'auth:admin'],
+                            function() {
+                                Route::get('profile',
+                                           "HomeController@getProfile")
+                                     ->name('profile');
 
-                            Route::put('profile/{admin}',
-                                "HomeController@putProfile")
-                                 ->name('profile.update');
+                                Route::put('profile/{admin}',
+                                           "HomeController@putProfile")
+                                     ->name('profile.update');
 
-                            Route::get('designs', "DesignsController@index")
-                                 ->name('designs.index');
+                                Route::get('designs',
+                                           "DesignsController@index")
+                                     ->name('designs.index');
 
-                            Route::get('designs/upload/layout',
-                                "DesignsController@uploadLayout")
-                                 ->name('designs.upload.layout');
-                            Route::post('designs/upload/layout',
-                                "DesignsController@postUploadLayout");
-                            Route::get('designs/upload/definition',
-                                "DesignsController@uploadDefinition")
-                                 ->name('designs.upload.definition');
-                            Route::post('designs/upload/definition',
-                                "DesignsController@postUploadDefinition");
+                                Route::get('designs/upload/layout',
+                                           "DesignsController@uploadLayout")
+                                     ->name('designs.upload.layout');
+                                Route::post('designs/upload/layout',
+                                            "DesignsController@postUploadLayout");
+                                Route::get('designs/upload/definition',
+                                           "DesignsController@uploadDefinition")
+                                     ->name('designs.upload.definition');
+                                Route::post('designs/upload/definition',
+                                            "DesignsController@postUploadDefinition");
 
-                            Route::get('designs/edit/{type}',
-                                "DesignsController@edit")
-                                 ->name('designs.edit');
-                            Route::post('designs/edit/{type}',
-                                "DesignsController@store")
-                                 ->name('designs.store');
-                            Route::get('designs/edit/{type}/create',
-                                "DesignsController@create")
-                                 ->name('designs.create');
+                                Route::get('designs/edit/{type}',
+                                           "DesignsController@edit")
+                                     ->name('designs.edit');
+                                Route::post('designs/edit/{type}',
+                                            "DesignsController@store")
+                                     ->name('designs.store');
+                                Route::get('designs/edit/{type}/create',
+                                           "DesignsController@create")
+                                     ->name('designs.create');
 
-                            Route::put('designs/edit/{type}',
-                                "DesignsController@update")
-                                 ->name('update.design');
+                                Route::put('designs/edit/{type}',
+                                           "DesignsController@update")
+                                     ->name('update.design');
 
-                            Route::put('menus/{menu}/order',
-                                'MenusController@updateOrder')
-                                 ->name('menus.order.update');
-                            Route::resource('menus', 'MenusController');
+                                Route::put('menus/{menu}/order',
+                                           'MenusController@updateOrder')
+                                     ->name('menus.order.update');
+                                Route::resource('menus',
+                                                'MenusController');
 
-                            Route::delete('pages/{page}/contents/child/{childId}',
-                                'ContentsController@destroyChild')
-                                 ->name('content.delete');
-                            Route::get('pages/{page}/contents',
-                                'ContentsController@index')
-                                 ->name('contents.index');
-                            Route::post('pages/{page}/contents/update',
-                                'ContentsController@update')
-                                 ->name('contents.update');
-                            Route::post('pages/{page}/contents',
-                                'ContentsController@store')
-                                 ->name('contents.store');
-                            Route::delete('pages/{page}/contents/{identifier}',
-                                'ContentsController@destroy')
-                                 ->name('contents.delete');
+                                Route::delete('pages/{page}/contents/child/{childId}',
+                                              'ContentsController@destroyChild')
+                                     ->name('content.delete');
+                                Route::get('pages/{page}/contents',
+                                           'ContentsController@index')
+                                     ->name('contents.index');
+                                Route::post('pages/{page}/contents/update',
+                                            'ContentsController@update')
+                                     ->name('contents.update');
+                                Route::post('pages/{page}/contents',
+                                            'ContentsController@store')
+                                     ->name('contents.store');
+                                Route::delete('pages/{page}/contents/{identifier}',
+                                              'ContentsController@destroy')
+                                     ->name('contents.delete');
 
-                            Route::get('pages/{page}/contents/create',
-                                'ContentsController@create')
-                                 ->name('contents.create');
+                                Route::get('pages/{page}/contents/create',
+                                           'ContentsController@create')
+                                     ->name('contents.create');
 
-                            Route::post('pages/order',
-                                'PagesController@postOrder')
-                                 ->name('pages.update.order');
-                            Route::resource('pages', 'PagesController');
+                                Route::post('pages/order',
+                                            'PagesController@postOrder')
+                                     ->name('pages.update.order');
+                                Route::resource('pages',
+                                                'PagesController');
 
 
-                            Route::delete('menus/{menu}/links/{link}/images/{langCode}',
-                                'LinksController@deleteImage')
-                                 ->name('menus.links.image.delete');
+                                Route::delete('menus/{menu}/links/{link}/images/{langCode}',
+                                              'LinksController@deleteImage')
+                                     ->name('menus.links.image.delete');
 
-                            Route::resource('menus.links',
-                                'LinksController');
+                                Route::resource('menus.links',
+                                                'LinksController');
 
-                            Route::resource('roles', 'RolesController');
-                            Route::resource('permissions',
-                                'PermissionsController');
-                            Route::resource('languages',
-                                'LanguagesController');
+                                Route::resource('roles',
+                                                'RolesController');
+                                Route::resource('permissions',
+                                                'PermissionsController');
+                                Route::resource('languages',
+                                                'LanguagesController');
 
-                            Route::resource('settings',
-                                'CmsSettingsController');
+                                Route::resource('settings',
+                                                'CmsSettingsController');
 
-                            Route::resource('administrators',
-                                "AdministratorsController");
-                            Route::resource('admin_roles',
-                                "AdministratorRolesController");
-                            Route::resource('admin_permissions',
-                                "AdministratorRolesController");
+                                Route::resource('administrators',
+                                                "AdministratorsController");
+                                Route::resource('admin_roles',
+                                                "AdministratorRolesController");
+                                Route::resource('admin_permissions',
+                                                "AdministratorRolesController");
 
-                            Route::post('logout', function () {
+                                Route::post('logout',
+                                    function() {
 
-                                Auth::guard('admin')->logout();
+                                        Auth::guard('admin')->logout();
 
-                                return redirect("/");
+                                        return redirect("/");
 
-                            })->name('admin.logout');
+                                    })->name('admin.logout');
 
-                        });
-                });
+                            });
+                    });
 
-            Route::get('_sitemap', function (SitemapGenerator $generator
-            ) {
+                Route::get('_sitemap',
+                    function(SitemapGenerator $generator
+                    ) {
 
-                $content = $generator->generate();
+                        $content = $generator->generate();
 
-                return response($content->render(), 200,
-                    ['Content-Type' => "text/xml, application/xml"]);
+                        return response($content->render(),
+                                        200,
+                                        ['Content-Type' => "text/xml, application/xml"]);
+                    });
+
+                Route::get('setLocale/{locale}',
+                    function(string $locale) {
+                        session()->put('locale',
+                                       $locale);
+
+                        return redirect()->back();
+                    })
+                     ->name('set.locale');
+
             });
-
-            Route::get('setLocale/{locale}', function (string $locale) {
-                session()->put('locale', $locale);
-
-                return redirect()->back();
-            })
-                 ->name('set.locale');
-
-        });
 
         CmsPluginCollection::RegisterRoutes();
 
         Route::group([
                          "namespace"  => "\\Anacreation\\Cms\\Controllers",
-                         'middleware' => ['web']
-                     ], function () {
+                         'middleware' => ['web'],
+                     ],
+            function() {
 
-            Route::get("modules", "ModulesController@resolve");
-            Route::post("modules", "ModulesController@resolve");
-            Route::get("{segment1?}/{segment2?}/{segment3?}/{segment4?}/{segment5?}",
-                       "RoutesController@resolve");
-        });
+                Route::get("modules/{pageId}/{name}/{method?}",
+                           "ModulesController@resolve");
+                Route::post("modules/{pageId}/{name}/{method?}",
+                            "ModulesController@resolve");
+                Route::get("{segment1?}/{segment2?}/{segment3?}/{segment4?}/{segment5?}",
+                           "RoutesController@resolve");
+            });
     }
 
     public static function apiRoutes(): void {
         Route::group([
-            "namespace"  => "\\Anacreation\\Cms\\Controllers\\Api",
-            'prefix'     => 'api',
-            'middleware' => ['web']
-        ], function () {
+                         "namespace"  => "\\Anacreation\\Cms\\Controllers\\Api",
+                         'prefix'     => 'api',
+                         'middleware' => ['web'],
+                     ],
+            function() {
 
-            Route::post('authenticate', "AuthController@authenticate");
+                Route::post('authenticate',
+                            "AuthController@authenticate");
 
-            Route::get('user', function (Request $request) {
-                switch (ApiAuthentication::isAuthenticated()) {
-                    case ApiAuthStatus::AUTHENTICATED:
-                        return response()->json([
-                            'user'       => $request->user(),
-                            'session_id' => session()->get('id')
-                        ]);
-                    default:
-                        return response()->json('not login', 401);
-                }
+                Route::get('user',
+                    function(Request $request) {
+                        switch(ApiAuthentication::isAuthenticated()) {
+                            case ApiAuthStatus::AUTHENTICATED:
+                                return response()->json([
+                                                            'user'       => $request->user(),
+                                                            'session_id' => session()->get('id'),
+                                                        ]);
+                            default:
+                                return response()->json('not login',
+                                                        401);
+                        }
+                    });
+
+                Route::get("{segment1?}/{segment2?}/{segment3?}/{segment4?}/{segment5?}",
+                           "RoutesController@resolve");
+
             });
-
-            Route::get("{segment1?}/{segment2?}/{segment3?}/{segment4?}/{segment5?}",
-                "RoutesController@resolve");
-
-        });
     }
 
     public static function registerPlugin(Plugin $plugin): void {

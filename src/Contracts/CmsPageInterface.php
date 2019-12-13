@@ -8,8 +8,8 @@
 namespace Anacreation\Cms\Contracts;
 
 use Anacreation\Cms\Models\Permission;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\Relation;
-use Illuminate\Support\Collection;
 
 interface CmsPageInterface
 {
@@ -28,6 +28,8 @@ interface CmsPageInterface
 
     public function contentIndices(): Relation;
 
+    public function scopeActive(Builder $query): Builder;
+
     public function create(array $attributes = []);
 
     public function getTemplate(): ?string;
@@ -35,4 +37,8 @@ interface CmsPageInterface
     public function getPermission(): ?Permission;
 
     public function isRestricted(): bool;
+
+    public function getDefinitionNodeByModelName(string $name);
+
+    public function callModel(string $name, string $method = null, array $arguments = []);
 }
