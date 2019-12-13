@@ -10,6 +10,7 @@ namespace Anacreation\Cms\Services;
 
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
+use SimpleXMLElement;
 
 class TemplateParser
 {
@@ -101,6 +102,17 @@ class TemplateParser
         }
     }
 
+    public function getModelNodeByName($page, string $name): ?SimpleXMLElement {
+        if($definitions = $this->loadTemplateDefinition($page->template,
+                                                        "")) {
+            foreach($definitions->model as $node) {
+                if((string)$node->name === $name) {
+                    return $node;
+                }
+            }
+        }
+    }
+
     /**
      * @param $contents
      * @param $content
@@ -122,4 +134,5 @@ class TemplateParser
         return !array_key_exists((string)$content->identifier,
                                  $contents);
     }
+
 }
