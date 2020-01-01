@@ -70,6 +70,7 @@ class PartialPolicy
      * @return bool
      */
     public function edit(Admin $admin): bool {
+
         $permissionCode = $this->constructPermissionCode(CmsAction::Edit());
 
         return $admin->hasPermission($permissionCode);
