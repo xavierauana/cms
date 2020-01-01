@@ -1,67 +1,67 @@
 {
-  "name": "anacreation/cms",
-  "type": "project",
-  "license": "MIT",
-  "authors": [
-	{
-	  "name": "Xavier Au",
-	  "email": "xavier.au@anacreation.com"
-	}
-  ],
-  "require": {
-	"php": ">=7.1.0",
-	"laravel/framework": "5.5.*|5.6.*",
-	"spatie/laravel-medialibrary": "^7.5",
-	"xavierau/multi-auth": "2.*",
-	"laravelcollective/html": "^5.5|^5.6",
-	"tymon/jwt-auth": "^0.5.12",
-	"maatwebsite/excel": "^3.0",
-	"myclabs/php-enum": "^1.7",
-	"unisharp/laravel-filemanager": "^1.9"
-  },
-  "require-dev": {
-	"filp/whoops": "~2.0",
-	"fzaninotto/faker": "~1.4",
-	"mockery/mockery": "~1.0",
-	"phpunit/phpunit": "~6.0",
-	"symfony/thanks": "^1.0",
-	"barryvdh/laravel-debugbar": "^3.1"
-  },
-  "autoload": {
-	"psr-4": {
-	  "Anacreation\\Cms\\": "src/"
-	},
-	"files": [
-	  "src/helpers/frontend_functions.php",
-	  "src/helpers/functions.php"
-	]
-  },
-  "autoload-dev": {
-	"psr-4": {
-	  "Anacreation\\Cms\\Tests\\": "tests/"
-	},
-	"files": [
-	  "src/helpers/frontend_functions.php",
-	  "src/helpers/functions.php"
-	]
-  },
-  "extra": {
-	"laravel": {
-	  "dont-discover": [
-		"xavierau/multi-auth"
-	  ],
-	  "providers": [
-		"Anacreation\\MultiAuth\\MultiAuthServiceProvider",
-		"Anacreation\\Cms\\CmsServiceProvider",
-		"Anacreation\\Cms\\CmsAuthServiceProvider",
-		"Anacreation\\Cms\\CmsEventServiceProvider",
-		"Tymon\\JWTAuth\\Providers\\JWTAuthServiceProvider"
-	  ],
-	  "aliases": {
-		"Debugbar": "Barryvdh\\Debugbar\\Facade",
-		"JWTAuth": "Tymon\\JWTAuth\\Facades\\JWTAuth",
-		"JWTFactory": "Tymon\\JWTAuth\\Facades\\JWTFactory"
-	  }
-	}
-  }
+    "name": "anacreation/cms",
+    "type": "project",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Xavier Au",
+            "email": "xavier.au@anacreation.com"
+        }
+    ],
+    "require": {
+        "php": ">=7.1.0",
+        "laravel/framework": "5.5.*|5.6.*",
+        "spatie/laravel-medialibrary": "^7.5",
+        "xavierau/multi-auth": "2.*",
+        "laravelcollective/html": "^5.5|^5.6",
+        "tymon/jwt-auth": "^0.5.12",
+        "maatwebsite/excel": "^3.0",
+        "myclabs/php-enum": "^1.7",
+        "unisharp/laravel-filemanager": "^1.9"
+    },
+    "require-dev": {
+        "filp/whoops": "~2.0",
+        "fzaninotto/faker": "~1.4",
+        "mockery/mockery": "~1.0",
+        "phpunit/phpunit": "~6.0",
+        "symfony/thanks": "^1.0",
+        "barryvdh/laravel-debugbar": "^3.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "Anacreation\\Cms\\": "src/"
+        },
+        "files": [
+            "src/helpers/frontend_functions.php",
+            "src/helpers/functions.php"
+        ]
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Anacreation\\Cms\\Tests\\": "tests/"
+        },
+        "files": [
+            "src/helpers/frontend_functions.php",
+            "src/helpers/functions.php"
+        ]
+    },
+    "extra": {
+        "laravel": {
+            "dont-discover": [
+                "xavierau/multi-auth"
+            ],
+            "providers": [
+                "Anacreation\\MultiAuth\\MultiAuthServiceProvider",
+                "Anacreation\\Cms\\CmsServiceProvider",
+                "Anacreation\\Cms\\CmsAuthServiceProvider",
+                "Anacreation\\Cms\\CmsEventServiceProvider",
+                "Tymon\\JWTAuth\\Providers\\JWTAuthServiceProvider"
+            ],
+            "aliases": {
+                "Debugbar": "Barryvdh\\Debugbar\\Facade",
+                "JWTAuth": "Tymon\\JWTAuth\\Facades\\JWTAuth",
+                "JWTFactory": "Tymon\\JWTAuth\\Facades\\JWTFactory"
+            }
+        }
+    }
 }

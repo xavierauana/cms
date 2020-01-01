@@ -37,7 +37,7 @@
 </template>
 
 <script>
-import Extension from "../packages/ContentBlockExtension"
+import Extension from "../packages"
 import * as Events from "../EventNames"
 
 export default {

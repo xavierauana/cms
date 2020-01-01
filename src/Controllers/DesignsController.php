@@ -6,19 +6,10 @@ use Anacreation\Cms\Enums\DesignType;
 use Anacreation\Cms\Exceptions\UnAuthorizedException;
 use Anacreation\Cms\Models\Design;
 use Anacreation\Cms\Models\Page;
-use Anacreation\Cms\Models\Permissions\CmsAction;
-use Anacreation\Cms\Models\Permissions\Design\DefinitionPermission;
-use Anacreation\Cms\Models\Permissions\Design\LayoutPermission;
 use Anacreation\Cms\Services\Design\CreateTemplateFile;
 use Anacreation\Cms\Services\Design\GetTemplateContent;
-use Anacreation\Cms\Services\Design\UpdateTemplateContent;
-use Anacreation\Cms\Services\ReloadPhpFpm;
-use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\Request;
-use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Artisan;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Str;
 
 class DesignsController extends CmsAdminBaseController
 {
@@ -186,7 +177,8 @@ class DesignsController extends CmsAdminBaseController
     /**
      * Remove the specified resource from storage.
      *
-     * @param int $id
+     * @param int
+     * $id
      * @return \Illuminate\Http\Response
      */
     public function destroy($id) {
@@ -293,8 +285,7 @@ class DesignsController extends CmsAdminBaseController
 
     }
 
-    private
-    function registerValidationRule(): void {
+    private function registerValidationRule(): void {
         Validator::extend('isBladeFile',
             function($attribute, $value, $parameters, $validator) {
                 $nameArray = explode('.',
@@ -338,7 +329,9 @@ class DesignsController extends CmsAdminBaseController
 
         $type = ($type === 'definition' ? 'definition': 'layout');
 
-        $permission = "{$action}_{$type}";
+        $permission = "{
+            $action}_{
+            $type}";
 
         if( !request()->user()->hasPermission($permission)) {
             throw new UnAuthorizedException();
