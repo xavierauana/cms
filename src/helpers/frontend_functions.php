@@ -2,6 +2,7 @@
 
 use Anacreation\Cms\Models\Page;
 use Anacreation\Cms\Services\SettingService;
+use Illuminate\Support\Str;
 
 
 /**
@@ -130,7 +131,7 @@ if (!function_exists('getActivePages')) {
                                   ->toArray();
 
         $removeSlash = function ($string) {
-            return str_replace("/", "", $string);
+            return Str::replace("/", "", $string);
         };
 
         $pages = array_combine(
@@ -198,7 +199,7 @@ if (!function_exists('sanitizeFileNames')) {
             $rawNameArray = array_slice($rawNameArray, 2);
 
             foreach ($rawNameArray as $index => $fileName) {
-                $rawNameArray[$index] = str_replace('.blade.php', '',
+                $rawNameArray[$index] = Str::replace('.blade.php', '',
                     $fileName);
             }
             $items[$key] = $rawNameArray;
