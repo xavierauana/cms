@@ -16,6 +16,7 @@ use Anacreation\Cms\Services\SitemapGenerator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use UniSharp\LaravelFilemanager\Lfm;
 
 class Cms
 {
@@ -32,120 +33,121 @@ class Cms
                 });
         }
 
+
+        // Banked Admin Routes
         Route::group([
                          "namespace"  => "\\Anacreation\\Cms\\Controllers",
                          'middleware' => ['web'],
                      ],
             function() {
 
-                Route::group(['prefix' => config('admin.route_prefix')],
+                Route::group([
+                                 'prefix'     => config('admin.route_prefix'),
+                                 'middleware' => ['auth:admin'],
+                             ],
                     function() {
-                        Route::group(['middleware' => 'auth:admin'],
+                        Route::get('profile',
+                                   "HomeController@getProfile")
+                             ->name('profile');
+
+                        Route::put('profile/{admin}',
+                                   "HomeController@putProfile")
+                             ->name('profile.update');
+
+                        Route::get('designs',
+                                   "DesignsController@index")
+                             ->name('designs.index');
+
+                        Route::get('designs/upload/layout',
+                                   "DesignsController@uploadLayout")
+                             ->name('designs.upload.layout');
+                        Route::post('designs/upload/layout',
+                                    "DesignsController@postUploadLayout");
+                        Route::get('designs/upload/definition',
+                                   "DesignsController@uploadDefinition")
+                             ->name('designs.upload.definition');
+                        Route::post('designs/upload/definition',
+                                    "DesignsController@postUploadDefinition");
+
+                        Route::get('designs/edit/{type}',
+                                   "DesignsController@edit")
+                             ->name('designs.edit');
+                        Route::post('designs/edit/{type}',
+                                    "DesignsController@store")
+                             ->name('designs.store');
+                        Route::get('designs/edit/{type}/create',
+                                   "DesignsController@create")
+                             ->name('designs.create');
+
+                        Route::put('designs/edit/{type}',
+                                   "DesignsController@update")
+                             ->name('update.design');
+
+                        Route::put('menus/{menu}/order',
+                                   'MenusController@updateOrder')
+                             ->name('menus.order.update');
+                        Route::resource('menus',
+                                        'MenusController');
+
+                        Route::delete('pages/{page}/contents/child/{childId}',
+                                      'ContentsController@destroyChild')
+                             ->name('content.delete');
+                        Route::get('pages/{page}/contents',
+                                   'ContentsController@index')
+                             ->name('contents.index');
+                        Route::post('pages/{page}/contents/update',
+                                    'ContentsController@update')
+                             ->name('contents.update');
+                        Route::post('pages/{page}/contents',
+                                    'ContentsController@store')
+                             ->name('contents.store');
+                        Route::delete('pages/{page}/contents/{identifier}',
+                                      'ContentsController@destroy')
+                             ->name('contents.delete');
+
+                        Route::get('pages/{page}/contents/create',
+                                   'ContentsController@create')
+                             ->name('contents.create');
+
+                        Route::post('pages/order',
+                                    'PagesController@postOrder')
+                             ->name('pages.update.order');
+                        Route::resource('pages',
+                                        'PagesController');
+
+
+                        Route::delete('menus/{menu}/links/{link}/images/{langCode}',
+                                      'LinksController@deleteImage')
+                             ->name('menus.links.image.delete');
+
+                        Route::resource('menus.links',
+                                        'LinksController');
+
+                        Route::resource('roles',
+                                        'RolesController');
+                        Route::resource('permissions',
+                                        'PermissionsController');
+                        Route::resource('languages',
+                                        'LanguagesController');
+
+                        Route::resource('settings',
+                                        'CmsSettingsController');
+
+                        Route::resource('administrators',
+                                        "AdministratorsController");
+                        Route::resource('admin_roles',
+                                        "AdministratorRolesController");
+                        Route::resource('admin_permissions',
+                                        "AdministratorRolesController");
+
+                        Route::post('logout',
                             function() {
-                                Route::get('profile',
-                                           "HomeController@getProfile")
-                                     ->name('profile');
 
-                                Route::put('profile/{admin}',
-                                           "HomeController@putProfile")
-                                     ->name('profile.update');
+                                Auth::guard('admin')->logout();
 
-                                Route::get('designs',
-                                           "DesignsController@index")
-                                     ->name('designs.index');
+                                return redirect("/");
 
-                                Route::get('designs/upload/layout',
-                                           "DesignsController@uploadLayout")
-                                     ->name('designs.upload.layout');
-                                Route::post('designs/upload/layout',
-                                            "DesignsController@postUploadLayout");
-                                Route::get('designs/upload/definition',
-                                           "DesignsController@uploadDefinition")
-                                     ->name('designs.upload.definition');
-                                Route::post('designs/upload/definition',
-                                            "DesignsController@postUploadDefinition");
-
-                                Route::get('designs/edit/{type}',
-                                           "DesignsController@edit")
-                                     ->name('designs.edit');
-                                Route::post('designs/edit/{type}',
-                                            "DesignsController@store")
-                                     ->name('designs.store');
-                                Route::get('designs/edit/{type}/create',
-                                           "DesignsController@create")
-                                     ->name('designs.create');
-
-                                Route::put('designs/edit/{type}',
-                                           "DesignsController@update")
-                                     ->name('update.design');
-
-                                Route::put('menus/{menu}/order',
-                                           'MenusController@updateOrder')
-                                     ->name('menus.order.update');
-                                Route::resource('menus',
-                                                'MenusController');
-
-                                Route::delete('pages/{page}/contents/child/{childId}',
-                                              'ContentsController@destroyChild')
-                                     ->name('content.delete');
-                                Route::get('pages/{page}/contents',
-                                           'ContentsController@index')
-                                     ->name('contents.index');
-                                Route::post('pages/{page}/contents/update',
-                                            'ContentsController@update')
-                                     ->name('contents.update');
-                                Route::post('pages/{page}/contents',
-                                            'ContentsController@store')
-                                     ->name('contents.store');
-                                Route::delete('pages/{page}/contents/{identifier}',
-                                              'ContentsController@destroy')
-                                     ->name('contents.delete');
-
-                                Route::get('pages/{page}/contents/create',
-                                           'ContentsController@create')
-                                     ->name('contents.create');
-
-                                Route::post('pages/order',
-                                            'PagesController@postOrder')
-                                     ->name('pages.update.order');
-                                Route::resource('pages',
-                                                'PagesController');
-
-
-                                Route::delete('menus/{menu}/links/{link}/images/{langCode}',
-                                              'LinksController@deleteImage')
-                                     ->name('menus.links.image.delete');
-
-                                Route::resource('menus.links',
-                                                'LinksController');
-
-                                Route::resource('roles',
-                                                'RolesController');
-                                Route::resource('permissions',
-                                                'PermissionsController');
-                                Route::resource('languages',
-                                                'LanguagesController');
-
-                                Route::resource('settings',
-                                                'CmsSettingsController');
-
-                                Route::resource('administrators',
-                                                "AdministratorsController");
-                                Route::resource('admin_roles',
-                                                "AdministratorRolesController");
-                                Route::resource('admin_permissions',
-                                                "AdministratorRolesController");
-
-                                Route::post('logout',
-                                    function() {
-
-                                        Auth::guard('admin')->logout();
-
-                                        return redirect("/");
-
-                                    })->name('admin.logout');
-
-                            });
+                            })->name('admin.logout');
                     });
 
                 Route::get('_sitemap',
@@ -170,14 +172,20 @@ class Cms
 
             });
 
+
+        Route::group(['prefix' => 'filemanager', 'middleware' => ['web', 'auth:admin']],
+            function() {
+                Lfm::routes();
+            });
+
         CmsPluginCollection::RegisterRoutes();
 
+        // Frontend Routes
         Route::group([
                          "namespace"  => "\\Anacreation\\Cms\\Controllers",
                          'middleware' => ['web'],
                      ],
             function() {
-
                 Route::get("modules/{pageId}/{name}/{method?}",
                            "ModulesController@resolve");
                 Route::post("modules/{pageId}/{name}/{method?}",

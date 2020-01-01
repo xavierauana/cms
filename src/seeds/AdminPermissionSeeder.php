@@ -18,20 +18,21 @@ class AdminPermissionSeeder extends Seeder
      */
     public function run() {
         $objects = [
-            'layout',
+            'admin_role',
             'definition',
-            'menu',
-            'link',
-            'page',
-            'content',
-            'group',
-            'user',
-            'role',
             'permission',
             'language',
-            'admin',
+            'content',
+            'partial',
             'setting',
-            'admin_role',
+            'admin',
+            'group',
+            'layout',
+            'link',
+            'menu',
+            'page',
+            'role',
+            'user',
         ];
 
         $others = [
@@ -40,21 +41,25 @@ class AdminPermissionSeeder extends Seeder
             'manage_asset',
         ];
 
-        foreach ($objects as $object) {
-            foreach (\Anacreation\Cms\Enums\AdminPermissionAction::values() as $action) {
-                $code = $action->getValue() . "_" . $object;
-                $label = ucwords($action) . " " . ucwords($object);
+        foreach($objects as $object) {
+            foreach(\Anacreation\Cms\Enums\AdminPermissionAction::values() as $action) {
+                $code = $action->getValue()."_".$object;
+                $label = ucwords($action)." ".ucwords($object);
 
-                if (!AdminPermission::whereCode($code)->count()) {
-                    AdminPermission::create(compact('code', 'label'));
+                if( !AdminPermission::whereCode($code)->count()) {
+                    AdminPermission::create(compact('code',
+                                                    'label'));
                 }
             }
         }
 
-        foreach ($others as $code) {
-            $label = ucwords(str_replace('_', ' ', $code));
-            if (!AdminPermission::whereCode($code)->count()) {
-                AdminPermission::create(compact('code', 'label'));
+        foreach($others as $code) {
+            $label = ucwords(str_replace('_',
+                                         ' ',
+                                         $code));
+            if( !AdminPermission::whereCode($code)->count()) {
+                AdminPermission::create(compact('code',
+                                                'label'));
             }
         }
     }

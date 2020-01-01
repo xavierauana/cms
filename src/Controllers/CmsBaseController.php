@@ -17,6 +17,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Str;
 
 abstract class CmsBaseController extends Controller
 {
@@ -37,8 +38,9 @@ abstract class CmsBaseController extends Controller
 
     protected function setLocale(Request $request): void {
 
-        if (!session()->has("id")) {
-            session()->put("id", str_random(64));
+        if( !session()->has("id")) {
+            session()->put("id",
+                           Str::random(64));
         }
 
         $checkLocale = $request->get('locale') ?? session()->get('locale');
@@ -55,22 +57,22 @@ abstract class CmsBaseController extends Controller
     protected function checkUserSessions(Request $request): void {
         $table = "user_sessions";
 
-        if (!Schema::hasTable($table)) {
+        if( !Schema::hasTable($table)) {
             throw new InvalidArgumentException("No user_sessions table");
         }
 
         $sessionId = $request->session()
                              ->getId();
         $userId = Auth::user()->count();
-        if (DB::table($table)
-              ->latest()
-              ->whereUserId($userId)
-              ->take(1)
-              ->get()
-              ->filter(function ($obj) use ($sessionId) {
-                  return $obj->session == $sessionId;
-              })
-              ->count() === 0
+        if(DB::table($table)
+             ->latest()
+             ->whereUserId($userId)
+             ->take(1)
+             ->get()
+             ->filter(function($obj) use ($sessionId) {
+                 return $obj->session == $sessionId;
+             })
+             ->count() === 0
         ) {
             Auth::logout();
 
@@ -88,7 +90,7 @@ abstract class CmsBaseController extends Controller
         CmsPageInterface $page, string $guard = 'web'
     ): bool {
 
-        if ($user = Auth::guard($guard)->user()) {
+        if($user = Auth::guard($guard)->user()) {
             $permission = $page->getPermission();
 
             return is_null($permission) or $user->hasPermission($page->permission->code);
@@ -106,15 +108,15 @@ abstract class CmsBaseController extends Controller
         $service = (new LanguageService);
         $defaultLanguage = $service->defaultLanguage;
 
-        if ($checkLocale === null) {
+        if($checkLocale === null) {
             return $defaultLanguage->code;
         }
 
         $activeLanguages = $service->activeLanguages;
 
         $locale = in_array($checkLocale,
-            $activeLanguages->pluck('code')
-                            ->toArray()) ? $checkLocale : $defaultLanguage->code;
+                           $activeLanguages->pluck('code')
+                                           ->toArray()) ? $checkLocale: $defaultLanguage->code;
 
         return $locale;
     }

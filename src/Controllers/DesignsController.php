@@ -6,10 +6,14 @@ use Anacreation\Cms\Enums\DesignType;
 use Anacreation\Cms\Exceptions\UnAuthorizedException;
 use Anacreation\Cms\Models\Design;
 use Anacreation\Cms\Models\Page;
+use Anacreation\Cms\Models\Permissions\CmsAction;
 use Anacreation\Cms\Services\Design\CreateTemplateFile;
 use Anacreation\Cms\Services\Design\GetTemplateContent;
+use Anacreation\Cms\Services\Design\UpdateTemplateContent;
+use Anacreation\Cms\Services\ReloadPhpFpm;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Str;
 
 class DesignsController extends CmsAdminBaseController
 {

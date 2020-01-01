@@ -4,17 +4,17 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-	
-	<!-- CSRF Token -->
+    
+    <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <title>A & A CMS</title>
-	
-	<!-- Styles -->
+    
+    <!-- Styles -->
     <link href="{{ asset('css/cms/app.css') }}" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/promise-polyfill@8/dist/polyfill.min.js"></script>
-	@stack("header-scripts")
-	@yield("stylesheets")
+    @stack("header-scripts")
+    @yield("stylesheets")
 </head>
 <body>
     <div id="app">
@@ -23,7 +23,7 @@
 
                 <!-- Branding Image -->
 	                <a class="navbar-brand"
-	                   href="{{ url('/') }}"> A & A CMS </a>
+                       href="{{ url('/') }}"> A & A CMS </a>
                 
                     
                     <div class="collapse navbar-collapse"
@@ -34,10 +34,10 @@
                         <ul class="navbar-nav mr-auto">
                             
                              @auth('admin')
-		
-		                        @include('cms::components.admin_menus')
-	
-	                        @endif
+        
+                                @include('cms::components.admin_menus')
+    
+                            @endif
                          
     
                         </ul>
@@ -46,16 +46,16 @@
                          <!-- Right Side Of Navbar -->
                         <ul class="navbar-nav ml-auto">
                             <!-- Authentication Links -->
-	                        @if($user = Auth::guard('admin')->user('admin'))
-		
-		                        <li class="nav-item dropdown">
+                            @if($user = Auth::guard('admin')->user('admin'))
+        
+                                <li class="nav-item dropdown">
                                     <a id="navbarDropdown"
                                        class="nav-link dropdown-toggle" href="#"
                                        role="button" data-toggle="dropdown"
                                        aria-haspopup="true"
                                        aria-expanded="false">
                                         {{ $user->name }} <span
-			                                    class="caret"></span>
+                                            class="caret"></span>
                                     </a>
     
                                     <div class="dropdown-menu"
@@ -79,25 +79,25 @@
                                         </form>
                                     </div>
                                 </li>
-	
-	                        @else
-		
-		                        <li><a class="nav-link"
-		                               href="{{ route('login') }}">Login</a></li>
-		                        <li><a class="nav-link"
-		                               href="{{ route('register') }}">Register</a></li>
-	                        @endguest
+    
+                            @else
+        
+                                <li><a class="nav-link"
+                                       href="{{ route('login') }}">Login</a></li>
+                                <li><a class="nav-link"
+                                       href="{{ route('register') }}">Register</a></li>
+                            @endguest
                         </ul>
                         
                     </div>
             </div>
         </nav>
-	
-	    @yield('content')
+    
+        @yield('content')
     </div>
 
     <!-- Scripts -->
-    <script src="{{asset("vendor/cms/ckeditor/ckeditor.js")}}"></script>
+    <script src="{{ asset("vendor/cms/ckeditor/ckeditor.js") }}"></script>
     <script src="{{ asset('js/cms/manifest.js') }}"></script>
     <script src="{{ asset('js/cms/vendor.js') }}"></script>
     <script src="{{ asset('js/cms/app.js') }}"></script>

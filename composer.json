@@ -11,11 +11,12 @@
     "require": {
         "laravel/framework": "6.*",
         "spatie/laravel-medialibrary": "^7.5",
-        "xavierau/multi-auth": "dev-develop",
+        "xavierau/multi-auth": "~6.0",
         "laravelcollective/html": "^6.0",
         "maatwebsite/excel": "^3.0",
         "myclabs/php-enum": "^1.7",
-        "unisharp/laravel-filemanager": "^1.9"
+        "unisharp/laravel-filemanager": "dev-master",
+        "laravel/helpers": "^1.1"
     },
     "autoload": {
         "psr-4": {
@@ -44,14 +45,16 @@
                 "Anacreation\\MultiAuth\\MultiAuthServiceProvider",
                 "Anacreation\\Cms\\CmsServiceProvider",
                 "Anacreation\\Cms\\CmsAuthServiceProvider",
-                "Anacreation\\Cms\\CmsEventServiceProvider",
-                "Tymon\\JWTAuth\\Providers\\JWTAuthServiceProvider"
+                "Anacreation\\Cms\\CmsEventServiceProvider"
             ],
             "aliases": {
-                "Debugbar": "Barryvdh\\Debugbar\\Facade",
-                "JWTAuth": "Tymon\\JWTAuth\\Facades\\JWTAuth",
-                "JWTFactory": "Tymon\\JWTAuth\\Facades\\JWTFactory"
+                "Debugbar": "Barryvdh\\Debugbar\\Facade"
             }
         }
+    },
+    "scripts": {
+        "post-install-cmd": [
+            "php artisan vendor:publish --provider=Anacreation\\\\Cms\\\\CmsServiceProvider --tag=config"
+        ]
     }
 }
