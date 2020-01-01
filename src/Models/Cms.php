@@ -145,6 +145,11 @@ class Cms
 
                                     })->name('admin.logout');
 
+                                Route::get('/filemanager',
+                                           '\UniSharp\LaravelFilemanager\Controllers\LfmController@show');
+                                Route::post('/filemanager/upload',
+                                            '\UniSharp\LaravelFilemanager\Controllers\UploadController@upload');
+
                             });
                     });
 
