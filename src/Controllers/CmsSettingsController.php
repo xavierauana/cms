@@ -5,6 +5,7 @@ namespace Anacreation\Cms\Controllers;
 use Anacreation\Cms\Services\SettingService;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class CmsSettingsController extends Controller
 {
@@ -25,9 +26,33 @@ class CmsSettingsController extends Controller
 
         $this->authorize('index', 'CmsSettings');
 
-        $settings = $this->service->all();
+        $settings =DB::table(SettingService::tableName)
+                     ->get();
 
         return view('cms::admin.settings.index', compact('settings'));
+    }
+
+    public function create() {
+
+        $this->authorize('create', 'CmsSettings');
+
+        return view('cms::admin.settings.create');
+    }
+
+    public function store(Request $request) {
+
+        $this->authorize('create', 'CmsSettings');
+
+        $validatedData = $this->validate($request, [
+            'label' => 'required',
+            'key'   => 'required|unique:cms_settings',
+            'value' => 'nullable',
+        ]);
+
+        $this->service->create($validatedData);
+
+        return redirect()->route('settings.index')
+                         ->withStatus('New setting created.');
     }
 
     public function edit(int $settingId) {
@@ -41,7 +66,7 @@ class CmsSettingsController extends Controller
 
     public function update(Request $request, int $settingId) {
 
-        $this->authorize('update', 'CmsSettings');
+        $this->authorize('edit', 'CmsSettings');
 
         $validatedData = $this->validate($request, [
             'label' => 'required',
@@ -52,5 +77,15 @@ class CmsSettingsController extends Controller
 
         return redirect()->route('settings.index')
                          ->withStatus('Setting updated');
+    }
+
+    public function destroy(Request $request, int $settingId) {
+
+        $this->authorize('delete', 'CmsSettings');
+
+        $this->service->delete($settingId);
+
+        return redirect()->route('settings.index')
+                         ->withStatus('Setting is deleted!');
     }
 }

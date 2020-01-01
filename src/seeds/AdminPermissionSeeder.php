@@ -30,22 +30,19 @@ class AdminPermissionSeeder extends Seeder
             'permission',
             'language',
             'admin',
-            'admin_role',
             'setting',
-        ];
-        $actions = [
-            'index',
-            'show',
-            'create',
-            'edit',
-            'delete'
+            'admin_role',
         ];
 
-        $others = [];
+        $others = [
+            'upload_definition',
+            'upload_layout',
+            'manage_asset',
+        ];
 
         foreach ($objects as $object) {
-            foreach ($actions as $action) {
-                $code = $action . "_" . $object;
+            foreach (\Anacreation\Cms\Enums\AdminPermissionAction::values() as $action) {
+                $code = $action->getValue() . "_" . $object;
                 $label = ucwords($action) . " " . ucwords($object);
 
                 if (!AdminPermission::whereCode($code)->count()) {

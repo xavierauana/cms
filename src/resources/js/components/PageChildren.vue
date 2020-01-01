@@ -29,10 +29,13 @@
                             <div class="col-4 clearfix">
                                 <div class="btn-group btn-group-sm">
                                         <button class="btn btn-primary"
+                                                v-if="canEdit"
                                                 @click.prevent="goToContentPage(child)">Content</button>
                                         <button class="btn btn-info"
+                                                v-if="canEdit"
                                                 @click.prevent="goToEditPage(child)">Edit</button>
                                         <button class="btn btn-danger"
+                                                v-if="canDelete"
                                                 @click.prevent="deleteChild(child)">Delete</button>
                                     </div>
                             </div>
@@ -54,7 +57,27 @@
 <script>
     export default {
       name    : 'page-children',
-      props   : ['page', 'children', 'baseUrl'],
+      props   : {
+        page     : {
+          type    : Object,
+          required: true
+        },
+        children : {
+          type: Object,
+        },
+        baseUrl  : {
+          type    : String,
+          required: true,
+        },
+        canEdit  : {
+          type   : Boolean,
+          default: true,
+        },
+        canDelete: {
+          type   : String,
+          default: false,
+        },
+      },
       data() {
         return {
           internalChildren: [],

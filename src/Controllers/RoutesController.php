@@ -8,172 +8,116 @@
 namespace Anacreation\Cms\Controllers;
 
 
-use Anacreation\Cms\Exceptions\NoAuthenticationException;
+use Anacreation\Cms\Contracts\CmsPageInterface;
+use Anacreation\Cms\Contracts\RequestParserInterface;
+use Anacreation\Cms\Exceptions\AuthenticationException;
 use Anacreation\Cms\Exceptions\PageNotFoundHttpException;
 use Anacreation\Cms\Exceptions\UnAuthorizedException;
 use Anacreation\Cms\Models\Page;
-use Anacreation\Cms\Services\LanguageService;
 use Anacreation\Cms\Services\RequestParser;
-use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Schema;
 use Illuminate\View\View;
-use InvalidArgumentException;
 
-class RoutesController extends Controller
+class RoutesController extends CmsBaseController
 {
-    public function resolve(Request $request, RequestParser $parser) {
+    public function resolve(Request $request) {
+        if(config("cms.single_login_session",
+                  false) == true) {
+            $this->checkUserSessions($request);
+        }
 
         $this->setLocale($request);
 
-        if ($request->ajax()) {
-            return $this->parseAjax();
-        }
 
-        return $this->parseView($request, $parser);
+        return $this->toResponse($request,
+                                 new RequestParser);
 
-    }
-
-    private function setLocale(Request $request): void {
-
-        if (!session()->has("id")) {
-            session()->put("id", str_random(64));
-        }
-
-        $checkLocale = $request->get('locale') ?? session()->get('locale');
-
-        $locale = $this->getLocale($checkLocale);
-
-        app()->setLocale($locale);
-    }
-
-    private function constructView(Page $page, $vars): View {
-        return view("themes." . config('cms.active_theme') . ".layouts." . ".{$page->template}",
-            $vars);
     }
 
     /**
-     * @param \Anacreation\Cms\Models\Page $page
-     * @return mixed
-     */
-    private function pageHasPermissionControl(Page $page): bool {
-        return !!$page->permission;
-    }
-
-    /**
-     * @param \Illuminate\Http\Request     $request
-     * @param \Anacreation\Cms\Models\Page $page
-     * @return mixed
-     */
-    private function userHasPagePermission(Request $request, Page $page
-    ): bool {
-        return $request->user()
-                       ->hasPermission($page->permission->code);
-    }
-
-    /**
-     * @param \Illuminate\Http\Request                $request
-     * @param \Anacreation\Cms\Services\RequestParser $parser
+     * @param \Illuminate\Http\Request                          $request
+     * @param \Anacreation\Cms\Contracts\RequestParserInterface $parser
      * @return \Illuminate\View\View
-     * @throws \Anacreation\Cms\Exceptions\NoAuthenticationException
+     * @throws \Anacreation\Cms\Exceptions\AuthenticationException
      * @throws \Anacreation\Cms\Exceptions\PageNotFoundHttpException
      * @throws \Anacreation\Cms\Exceptions\UnAuthorizedException
      */
-    private function parseView(Request $request, RequestParser $parser) {
+    protected function toResponse(
+        Request $request, RequestParserInterface $parser
+    ) {
+        $vars = $parser->parse($request);
+        /** @var \Anacreation\Cms\Contracts\CmsPageInterface $page */
+        $page = $vars['page'] ?? null;
+        if(is_null($page)) {
 
-        if ($vars = $parser->parse($request)) {
-
-            $page = $vars['page'];
-
-            if (!$page->is_restricted) {
-                return $this->constructView($page, $vars);
+            if($redirectUri = $this->getCustomRedirect($request->path())) {
+                return redirect($redirectUri);
             }
 
-            if (Auth::guest()) {
-                throw new NoAuthenticationException("You are not allowed to visit the page!");
-            }
-
-            if (config("cms.single_login_session", false) == true) {
-                $this->checkUserSessions($request);
-            }
-
-            if ($this->pageHasPermissionControl($page)) {
-                if ($this->userHasPagePermission($request,
-                    $page)) {
-                    return $this->constructView($page, $vars);
-                }
-
-                throw new UnAuthorizedException("You are not allowed to visit the page!");
-            }
+            throw new PageNotFoundHttpException();
         }
 
+        if( !$page->isRestricted()) {
+            return $this->constructView($page,
+                                        $vars);
+        }
 
-        return $this->constructView($page, $vars);
+        /** @var \App\User $user */
+        $user = auth()->user();
+
+        if(is_null($user)) {
+            throw new AuthenticationException('The page is restricted');
+        }
+
+        $permission = $page->getPermission();
+
+        if(is_null($permission)) {
+            return $this->constructView($page,
+                                        $vars);
+        }
+
+        if($user->hasPermission($permission->code)) {
+            return $this->constructView($page,
+                                        $vars);
+        }
+
+        throw new UnAuthorizedException('You are not allow to visit the page!');
 
     }
 
-    /**
-     * @throws \Anacreation\Cms\Exceptions\PageNotFoundHttpException
-     */
-    private
-    function parseAjax() {
-        throw new PageNotFoundHttpException();
+
+    private function constructView(CmsPageInterface $page, $vars): View {
+
+        $viewPath = sprintf("themes.%s.layouts.%s",
+                            config('cms.active_theme'),
+                            $page->getTemplate());
+
+        return view($viewPath,
+                    $vars);
     }
 
     /**
-     * @param $checkLocale
-     * @return mixed
+     * @param array|null $vars
+     * @return \Anacreation\Cms\Models\Page|null
      */
-    private
-    function getLocale(
-        string $checkLocale = null
-    ): string {
+    protected function getPage(?array $vars): ?Page {
 
-        $service = (new LanguageService);
-        $defaultLanguage = $service->defaultLanguage;
-
-        if ($checkLocale === null) {
-            return $defaultLanguage->code;
+        if(is_null($vars)) {
+            return null;
         }
 
-        $activeLanguages = $service->activeLanguages;
-
-        $locale = in_array($checkLocale,
-            $activeLanguages->pluck('code')
-                            ->toArray()) ? $checkLocale : $defaultLanguage->code;
-
-        return $locale;
+        return $page = $vars['page'] ?? null;
     }
 
-    /**
-     * @param \Illuminate\Http\Request $request
-     * @throws \Anacreation\Cms\Exceptions\NoAuthenticationException
-     */
-    private function checkUserSessions(Request $request): void {
-        $table = "user_sessions";
+    private function getCustomRedirect(string $path): ?string {
+        $customRedirectPaths = config('cms.custom_redirect',
+                                      []);
 
-        if (!Schema::hasTable($table)) {
-            throw new InvalidArgumentException("No user_sessions table");
+        if(in_array($path,
+                    array_keys($customRedirectPaths))) {
+            return $customRedirectPaths[$path];
         }
 
-        $sessionId = $request->session()
-                             ->getId();
-        $userId = Auth::user()->count();
-        if (DB::table($table)
-              ->latest()
-              ->whereUserId($userId)
-              ->take(1)
-              ->get()
-              ->filter(function ($obj) use ($sessionId) {
-                  return $obj->session == $sessionId;
-              })
-              ->count() === 0
-        ) {
-            Auth::logout();
-
-            throw new NoAuthenticationException("You are not allowed to visit the page!");
-        }
+        return null;
     }
 }

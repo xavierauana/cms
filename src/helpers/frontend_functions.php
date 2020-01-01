@@ -212,13 +212,9 @@ if (!function_exists('sanitizeFileNames')) {
 
 if (!function_exists('settings')) {
     function settings(string $key) {
+
         $settings = (New SettingService)->all();
-
-        $setting = $settings->first(function ($s) use ($key) {
-            return $s->key === $key;
-        });
-
-        return $setting->value ?? null;
+        return $settings[$key] ?? null;
     }
 }
 

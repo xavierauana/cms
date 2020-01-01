@@ -38,7 +38,9 @@
            enableTime: false,
            dateFormat: "Y-m-d",
            onReady   : () => {
-             console.log('Date flickr is ready!')
+           },
+           onChange  : () => {
+             this.getDirty()
            }
          }))
          .value();

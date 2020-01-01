@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Cache;
 
 class Menu extends Model implements CacheManageableInterface
 {
+
     // Relation
     protected $dispatchesEvents = [
         'saved'   => MenuSaved::class,
@@ -21,7 +22,7 @@ class Menu extends Model implements CacheManageableInterface
 
     protected $fillable = [
         'name',
-        'code'
+        'code',
     ];
 
     public function links(): Relation {
@@ -35,20 +36,23 @@ class Menu extends Model implements CacheManageableInterface
             'links' => $this->links()
                             ->active()
                             ->with([
-                                'children' => function ($query) {
-                                    return $query->active()->with('children');
-                                }
-                            ])
-                            ->orderBy('order')
+                                       'children' => function($query) {
+                                           return $query->active()->order()->with('children');
+                                       },
+                                   ])
+                            ->order()
                             ->whereParentId(0)
                             ->get(),
             'level' => 0,
-            'menu'  => $this
+            'menu'  => $this,
         ];
 
         $params = $params + ['args' => $args];
 
-        return view($template, $params)->render();
+        $html = view($template,
+                     $params)->render();
+
+        return "<?php echo {$html} ";
     }
 
     public static function renderWithCode(
@@ -57,9 +61,10 @@ class Menu extends Model implements CacheManageableInterface
         $instance = static::whereCode($menuCode)->firstOrFail();
         $key = $instance->getCacheKey();
 
-        return Cache::has($key) ? Cache::get($key) : Cache::rememberForever($key,
-            function () use ($instance, $template, $args) {
-                return $instance->render($template, $args);
+        return Cache::has($key) ? Cache::get($key): Cache::rememberForever($key,
+            function() use ($instance, $template, $args) {
+                return $instance->render($template,
+                                         $args);
             });
     }
 
@@ -74,11 +79,10 @@ class Menu extends Model implements CacheManageableInterface
     // Helpers
 
     public static function getLinksInMenu(string $menuCode): Collection {
-        if ($menu = static::whereCode($menuCode)->first()) {
+        if($menu = static::whereCode($menuCode)->first()) {
             return $menu->links()->whereIsActive(true)->orderBy('order')->get();
         }
 
         return new Collection();
     }
-
 }

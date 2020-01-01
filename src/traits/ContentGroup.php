@@ -144,7 +144,6 @@ trait ContentGroup
                       ->fetchIndex($identifier, $language->id)
                       ->first();
 
-
         return $index;
     }
 
@@ -171,7 +170,7 @@ trait ContentGroup
         $vars = [];
         $templateParser = new TemplateParser();
         $path = $path ?: getActiveThemePath();
-        $xml = $templateParser->loadTemplateDefinition($path, $template);
+        $xml = $templateParser->loadTemplateDefinition($template, $path);
         if ($xml) {
             foreach ($xml->model as $model) {
                 try {

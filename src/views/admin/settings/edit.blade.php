@@ -7,25 +7,7 @@
 		
 		{{Form::model($setting, ['route'=>["settings.update", $setting->id], 'method'=>'PUT'])}}
 		
-		<div class="form-group">
-			{{Form::label('label', 'Label')}}
-			{{Form::text('label', null, ['class'=>'form-control', 'placeholder'=>'Setting Label', 'required'])}}
-			@if ($errors->has('label'))
-				<span class="help-block">
-                    <strong>{{ $errors->first('label') }}</strong>
-                </span>
-			@endif
-		</div>
-		<div class="form-group">
-			{{Form::label('value', 'Value')}}
-			{{Form::text('value', null, ['class'=>'form-control', 'placeholder'=>'Value','required'])}}
-			@if ($errors->has('value'))
-				<span class="help-block">
-                    <strong>{{ $errors->first('value') }}</strong>
-                </span>
-			@endif
-		</div>
-		
+		@include('cms::admin.settings._partials.form')
 		
 		<div class="form-group">
 			{{Form::submit('Update', ['class'=>'btn btn-success'])}}

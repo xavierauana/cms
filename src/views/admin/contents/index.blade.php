@@ -16,8 +16,9 @@
 		<page-children v-if="{{json_encode($page->has_children)}} "
 		               base-url="{{route('pages.index')}}"
 		               :page="{{$page}}"
+		               :can-edit="{{json_encode(auth('admin')->user()->hasPermission('edit_content'))}} === true"
+		               :can-delete="{{json_encode(auth('admin')->user()->hasPermission('delete_content'))}} === true"
 		               :children="{{$page->children()->with('permission')->sorted()->get()}}"></page-children>
-	
 	
 	@endcomponent
 

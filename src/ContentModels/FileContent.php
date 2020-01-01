@@ -37,6 +37,10 @@ class FileContent extends Model implements ContentTypeInterface
     }
 
     public function show(array $params = []) {
+        return $this->link ? url($this->link) : null;
+    }
+
+    public function showBackEnd() {
         return $this->link;
     }
 
@@ -48,15 +52,24 @@ class FileContent extends Model implements ContentTypeInterface
     }
 
     private function isUploadFile($contentObject) {
-        return $contentObject->file and get_class($contentObject->file) === UploadedFile::class;
+        return $contentObject->file and ($contentObject->file instanceof UploadedFile);
     }
 
     /**
      * @param \Anacreation\CMS\Entities\ContentObject $contentObject
      */
     private function MoveFile(ContentObject $contentObject): void {
-        $contentObject->file->move("files",
-            $contentObject->file->getClientOriginalName());
-        $this->link = "/files/" . $contentObject->file->getClientOriginalName();
+
+        $directory = public_path("files");
+
+
+        if (!File::isDirectory($directory)) {
+            File::makeDirectory($directory);
+        }
+
+        File::put($directory . "/" . $contentObject->file->getClientOriginalName(),
+            $contentObject->file);
+
+        $this->link = "files/" . $contentObject->file->getClientOriginalName();
     }
 }

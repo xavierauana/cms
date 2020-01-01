@@ -56,6 +56,8 @@ export default {
     },
     setValue() {
       _.forEach(this.content.content, item => {
+        console.log('refs', this.$refs)
+        console.log('getInputRef', this.getInputRef({id: item.lang_id}))
         const el = this.$refs[this.getInputRef({id: item.lang_id})][0]
         el.value = item.content
       })

@@ -21,5 +21,12 @@ class CmsSettingsPolicy
         return $admin->hasPermission('update_setting');
     }
 
+    public function create(Admin $admin) {
+        return $admin->hasPermission('create_setting');
+    }
+
+    public function delete(Admin $admin) {
+        return $admin->hasPermission('delete_setting');
+    }
 
 }

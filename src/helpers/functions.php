@@ -11,6 +11,27 @@ if (!function_exists("getActiveThemePath")) {
         return resource_path("views/themes/" . config("cms.active_theme"));
     }
 }
+if (!function_exists("sortableLink")) {
+    function sortableLink(string $sortable, string $order = null): string {
+        $sortableOrder = (!is_null($order) and ($order === 'asc' or $order === 'desc')) ?
+            $order :
+            (request()->query('sortableOrder') === 'asc' ? 'desc' : 'asc');
+        $queries = request()->query();
+        $baseUrl = request()->path();
+
+        $queries['sortable'] = $sortable;
+        $queries['sortableOrder'] = $sortableOrder;
+
+        $temp = [];
+        foreach (array_keys($queries) as $key) {
+            $temp[] = $key . "=" . $queries[$key];
+        }
+
+        $queryString = implode("&", $temp);
+
+        return url($baseUrl) . "?" . $queryString;
+    }
+}
 if (!function_exists("getPartialKeyPath")) {
     function getPartialKeyPath($partialName): string {
         return "themes." . config("cms.active_theme") . '.partials.' . $partialName;

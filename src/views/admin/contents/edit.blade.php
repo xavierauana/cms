@@ -8,8 +8,7 @@
 			   class="btn btn-primary btn-sm pull-right">Edit Template: {{$child->template}}</a>
 		@endif
 		@endslot
-		
-		<content-blocks :contents="{{$contents}}"
+		<content-blocks :contents="{{json_encode($contents)}}"
 		                :editable="{{auth()->user()->hasPermission('edit_content')?1:0}}"
 		                :deleteable="{{auth()->user()->hasPermission('delete_content')?1:0}}"
 		                :languages="{{\Anacreation\Cms\Models\Language::all()}}"

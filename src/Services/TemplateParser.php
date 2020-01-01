@@ -9,23 +9,34 @@ namespace Anacreation\Cms\Services;
 
 
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Log;
+use SimpleXMLElement;
 
 class TemplateParser
 {
 
-    public function loadTemplateDefinition(string $path = null, string $template
+    /**
+     * @param string      $template
+     * @param string|null $path
+     * @return \SimpleXMLElement|null
+     */
+    public function loadTemplateDefinition(string $template, string $path = null
     ) {
 
         $path = $path ?: getActiveThemePath();
 
-        if ($layoutDefinition = $this->fetchLayoutDefinition($path,
-            $template)) {
+        if($layoutDefinition = $this->fetchLayoutDefinition($path,
+                                                            $template)) {
 
-            $filePath = $path . "/definition/" . $layoutDefinition;
+            $filePath = $path."/definition/".$layoutDefinition;
 
-            $xml = simplexml_load_file($filePath);
+            try {
+                return simplexml_load_file($filePath);
+            } catch (\Exception $e) {
+                Log::error('failed to parse definition file for '.$template);
 
-            return $xml;
+                return null;
+            }
         }
 
         return null;
@@ -33,11 +44,16 @@ class TemplateParser
 
     private function fetchLayoutDefinition(string $path, string $template
     ): ?string {
-        $path = $path . "/definition";
+        $path = $path."/definition";
+
+        if( !File::isDirectory($path)) {
+            throw new \Exception("No definition directory for theme '{$template}' ");
+        }
+
         $files = File::files($path);
         $layoutDefinition = null;
-        foreach ($files as $file) {
-            if ($file->getFilename() === $template . ".xml") {
+        foreach($files as $file) {
+            if($file->getFilename() === $template.".xml") {
                 $layoutDefinition = $file->getFilename();
                 break;
             }
@@ -51,25 +67,48 @@ class TemplateParser
     ): array {
         $contents = [];
 
-        $xml = $this->loadTemplateDefinition($path, $template);
-        foreach ($xml->content as $content) {
-            if ($this->notYetParsed($content, $contents)) {
-                $this->constructContentDefinitionArray($contents, $content);
+        $xml = $this->loadTemplateDefinition($template,
+                                             $path);
+
+        try {
+            foreach($xml->content as $content) {
+                if($this->notYetParsed($content,
+                                       $contents)) {
+                    $this->constructContentDefinitionArray($contents,
+                                                           $content);
+                }
             }
+        } catch (\Exception $e) {
+            Log::info('Cannot load definition file for template: '.$template.' in path: '.$path);
         }
 
-        if ($editable != null) {
-            $this->setLayoutEditable($xml, $editable);
+        if($editable != null) {
+            $this->setLayoutEditable($xml,
+                                     $editable);
         }
 
         return $contents;
     }
 
     public function setLayoutEditable($xml, bool &$editable) {
-        foreach ($xml->attributes() as $attribute => $value) {
-            if ($attribute == 'editable' and $value == 'false') {
-                $editable = false;
-                break;
+        $editable = false;
+        if($xml !== null) {
+            foreach($xml->attributes() as $attribute => $value) {
+                if($attribute == 'editable' and $value == 'false') {
+                    $editable = false;
+                    break;
+                }
+            }
+        }
+    }
+
+    public function getModelNodeByName($page, string $name): ?SimpleXMLElement {
+        if($definitions = $this->loadTemplateDefinition($page->template,
+                                                        "")) {
+            foreach($definitions->model as $node) {
+                if((string)$node->name === $name) {
+                    return $node;
+                }
             }
         }
     }
@@ -92,6 +131,8 @@ class TemplateParser
      * @return bool
      */
     private function notYetParsed($content, $contents): bool {
-        return !array_key_exists((string)$content->identifier, $contents);
+        return !array_key_exists((string)$content->identifier,
+                                 $contents);
     }
+
 }

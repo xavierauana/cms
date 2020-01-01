@@ -14,50 +14,19 @@ use Illuminate\Support\Facades\DB;
 class SettingService
 {
 
-    const cacheKeyPrefix = "cms_setting:";
+    const cacheKeyPrefix = "cms_setting_";
     const tableName      = "cms_settings";
 
     /**
-     * SettingService constructor.
+     * @param string      $key
+     * @param string|null $default
+     * @return \Illuminate\Cache\CacheManager|mixed|string
+     * @throws \Exception
      */
-    public function __construct() {
-
-    }
-
-    public function set(string $key, string $value) {
-
-        $cacheKey = $this->getCacheKey($key);
-
-        if (DB::table(SettingService::tableName)->whereKey($key)->count()) {
-            DB::table(SettingService::tableName)->whereKey($key)
-              ->update(compact('value'));
-
-            cache()->forget($cacheKey);
-            cache()->forever($cacheKey, $value);
-        } else {
-            $label = ucwords($key);
-            DB::table(SettingService::tableName)->insert(compact('label', 'key',
-                'value'));
-
-            cache()->forever($cacheKey, $value);
-        }
-    }
-
     public function get(string $key, string $default = null) {
         $cacheKey = $this->getCacheKey($key);
-        if (cache()->has($cacheKey)) {
-            $value = cache($cacheKey);
-        } else {
-            $record = DB::table(SettingService::tableName)->whereKey($key)
-                        ->first();
-            if ($record) {
-                cache()->forever($cacheKey, $record->value);
-            }
 
-            $value = $record ? $record->value : $default;
-        }
-
-        return $value;
+        return ($this->all())[$cacheKey] ?? $default;
     }
 
     /**
@@ -70,26 +39,72 @@ class SettingService
         return $cacheKey;
     }
 
-    public function all() {
-        $settings = cache(CacheKey::CMS_SETTINGS);
+    /**
+     * @return \Illuminate\Cache\CacheManager|mixed
+     * @throws \Exception
+     */
+    public function all(): array {
+        return cache()->rememberForever(CacheKey::CMS_SETTINGS, function () {
+            $result = DB::table(SettingService::tableName)
+                        ->get()
+                        ->reduce(function ($carry, $record) {
+                            $carry[$this->getCacheKey($record->key)] = $record->value;
 
-        if (!$settings) {
-            $settings = DB::table(SettingService::tableName)->get();
-            cache()->forever(CacheKey::CMS_SETTINGS, $settings);
+                            return $carry;
+                        }, []);
+
+            return is_array($result) ? $result : (array)$result;
+        });
+    }
+
+    public function update(int $settingId, array $data) {
+        $record = $this->find($settingId);
+        if ($record) {
+            DB::table(SettingService::tableName)->whereId($settingId)
+              ->update($data);
+
+            cache()->forget(CacheKey::CMS_SETTINGS);
+
         }
 
+    }
 
-        return $settings;
+    public function create(array $data = null): bool {
+        $result = DB::table(SettingService::tableName)->insert($data);
+        if ($result) {
+            cache()->forget(CacheKey::CMS_SETTINGS);
+        }
+
+        return $result;
+
+    }
+
+    public function delete(int $settingId) {
+
+        if ($record = $this->find($settingId)) {
+
+            cache()->forget(CacheKey::CMS_SETTINGS);
+
+            DB::table(SettingService::tableName)
+              ->whereId($settingId)
+              ->delete();
+        }
+
     }
 
     public function find(int $settingId) {
         return DB::table(SettingService::tableName)->find($settingId);
     }
 
-    public function update(int $settingId, array $data) {
-        DB::table(SettingService::tableName)->whereId($settingId)
-          ->update($data);
-
-        cache()->forget(CacheKey::CMS_SETTINGS);
+    /**
+     * @param int   $settingId
+     * @param array $data
+     * @param       $record
+     * @return string
+     * @throws \Exception
+     */
+    private function invalidateSpecificCacheKey($record) {
+        $cacheKey = $this->getCacheKey($record->key);
+        cache()->forget($cacheKey);
     }
 }
