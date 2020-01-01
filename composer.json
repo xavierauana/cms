@@ -44,8 +44,7 @@
                 "Anacreation\\MultiAuth\\MultiAuthServiceProvider",
                 "Anacreation\\Cms\\CmsServiceProvider",
                 "Anacreation\\Cms\\CmsAuthServiceProvider",
-                "Anacreation\\Cms\\CmsEventServiceProvider",
-                "Tymon\\JWTAuth\\Providers\\JWTAuthServiceProvider"
+                "Anacreation\\Cms\\CmsEventServiceProvider"
             ],
             "aliases": {
                 "Debugbar": "Barryvdh\\Debugbar\\Facade",
