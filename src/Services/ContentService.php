@@ -24,6 +24,7 @@ use Anacreation\Cms\Exceptions\IncorrectContentTypeException;
 use Anacreation\Cms\Models\ContentIndex;
 use Anacreation\Cms\Models\Language;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 
@@ -42,35 +43,35 @@ class ContentService
     private const ContentTypes = [
         'plain_text' => [
             "class"     => PlainTextContent::class,
-            "component" => "PlainTextContent"
+            "component" => "PlainTextContent",
         ],
         'text'       => [
             "class"     => TextContent::class,
-            "component" => "TextContent"
+            "component" => "TextContent",
         ],
         'string'     => [
             "class"     => StringContent::class,
-            "component" => "StringContent"
+            "component" => "StringContent",
         ],
         'number'     => [
             "class"     => NumberContent::class,
-            "component" => "NumberContent"
+            "component" => "NumberContent",
         ],
         'file'       => [
             "class"     => FileContent::class,
-            "component" => "FileContent"
+            "component" => "FileContent",
         ],
         'boolean'    => [
             "class"     => BooleanContent::class,
-            "component" => "BooleanContent"
+            "component" => "BooleanContent",
         ],
         'datetime'   => [
             "class"     => DatetimeContent::class,
-            "component" => "DatetimeContent"
+            "component" => "DatetimeContent",
         ],
         'date'       => [
             "class"     => DateContent::class,
-            "component" => "DateContent"
+            "component" => "DateContent",
         ],
     ];
 
@@ -80,8 +81,9 @@ class ContentService
      * ContentService constructor.
      */
     public function __construct() {
-        foreach ($this->getContentTypes() as $type => $data) {
-            $this->types[] = new ContentTypeStruct($type, $data);
+        foreach($this->getContentTypes() as $type => $data) {
+            $this->types[] = new ContentTypeStruct($type,
+                                                   $data);
         }
     }
 
@@ -89,9 +91,9 @@ class ContentService
     public function getUpdateValidationRules(): array {
         return [
             'identifier'   => "required",
-            'lang_id'      => "required|in:" .
+            'lang_id'      => "required|in:".
                               implode(",",
-                                  Language::pluck('id')->toArray()),
+                                      Language::pluck('id')->toArray()),
             'content'      => "nullable",
             'content_type' => "required",
         ];
@@ -111,9 +113,10 @@ class ContentService
      * @return null|string
      */
     public function convertToJsString($content): ?string {
-        $content = $content instanceof ContentTypeInterface ? get_class($content) : $content;
+        $content = $content instanceof ContentTypeInterface ? get_class($content): $content;
 
-        return $this->getContentType($content, 'class');
+        return $this->getContentType($content,
+                                     'class');
     }
 
 
@@ -130,7 +133,7 @@ class ContentService
         $creator = app(ICreateContentObjectFromRequest::class);
 
         $this->updateOrCreateContentIndexWithContentObject($contentOwner,
-            $creator->create($request));
+                                                           $creator->create($request));
 
     }
 
@@ -145,25 +148,27 @@ class ContentService
     ): void {
 
 
-        if (($contentType = $this->convertToContentTypeClass($contentObject->content_type)) === null) {
+        if(($contentType = $this->convertToContentTypeClass($contentObject->content_type)) === null) {
             throw new IncorrectContentTypeException();
         }
 
         $contentIndex = $contentOwner->contentIndices()
                                      ->fetchIndex($contentObject->identifier,
-                                         $contentObject->lang_id)
+                                                  $contentObject->lang_id)
                                      ->first();
 
-        if ($this->contentTypeIsSameAsInputContentType($contentIndex,
-                $contentType) and ($content = $contentIndex->content)) {
+        if($this->contentTypeIsSameAsInputContentType($contentIndex,
+                                                      $contentType) and ($content = $contentIndex->content)) {
             $contentIndex->content->updateContent($contentObject);
         } else {
-            $this->createContent($contentOwner, $contentObject, $contentIndex,
-                $contentType);
+            $this->createContent($contentOwner,
+                                 $contentObject,
+                                 $contentIndex,
+                                 $contentType);
         };
 
         $this->invalidateContentCacheWithContentObject($contentOwner,
-            $contentObject);
+                                                       $contentObject);
 
     }
 
@@ -185,18 +190,19 @@ class ContentService
         ContentGroupInterface $hasContent, array $identifiers
     ) {
         $contents = $hasContent->contentIndices()
-                               ->whereIn('identifier', $identifiers)
+                               ->whereIn('identifier',
+                                         $identifiers)
                                ->get();
 
-        $contents = $contents->groupBy('identifier')->map(function (
+        $contents = $contents->groupBy('identifier')->map(function(
             $collection, $key
         ) {
             $data['type'] = null;
             $data['content'] = null;
 
-            $collection->each(function (ContentIndex $ci) use (&$data
+            $collection->each(function(ContentIndex $ci) use (&$data
             ) {
-                if ($data['type'] === null) {
+                if($data['type'] === null) {
                     $data['type'] = $this->convertToJsString($ci->content_type);
                 }
                 $data['content'][] = [
@@ -218,14 +224,15 @@ class ContentService
     ): array {
         $adHocContent = [];
         $hasContent->contentIndices()
-                   ->select('identifier', 'content_type')->distinct()
-                   ->get()->each(function ($item) use (&$adHocContent) {
+                   ->select('identifier',
+                            'content_type')->distinct()
+                   ->get()->each(function($item) use (&$adHocContent) {
                 $adHocContent[$item->identifier]['type'] = $this->convertToJsString($item->content_type);
             });;
 
 
         return $predefinedContent ? array_merge($adHocContent,
-            $predefinedContent) : $adHocContent;
+                                                $predefinedContent): $adHocContent;
     }
 
     public function deleteContent(
@@ -234,13 +241,13 @@ class ContentService
         $query = $page->contentIndices()
                       ->whereIdentifier($identifier);
 
-        if (isset($queryString['remove_content'])) {
+        if(isset($queryString['remove_content'])) {
 
-            if (isset($queryString['lang_id'])) {
+            if(isset($queryString['lang_id'])) {
 
                 $contentIndex = $query->whereLangId($queryString['lang_id'])
                                       ->first();
-                if ($contentIndex) {
+                if($contentIndex) {
 
                     $contentIndex->content
                         ->deleteContent($queryString);
@@ -251,8 +258,9 @@ class ContentService
 
                     $language = app(LanguageService::class)->getLanguageById($contentIndex->lang_id);
 
-                    $this->invalidateContentCache($page, $identifier,
-                        $language->code);
+                    $this->invalidateContentCache($page,
+                                                  $identifier,
+                                                  $language->code);
 
                 } else {
                     $content = "no content found";
@@ -264,7 +272,7 @@ class ContentService
 
             $response = [
                 'status'  => 'completed',
-                'content' => $content
+                'content' => $content,
             ];
 
         } else {
@@ -273,9 +281,10 @@ class ContentService
 
             $languages = app(LanguageService::class)->languages;
 
-            foreach ($languages as $language) {
-                $this->invalidateContentCache($page, $identifier,
-                    $language->code);
+            foreach($languages as $language) {
+                $this->invalidateContentCache($page,
+                                              $identifier,
+                                              $language->code);
             }
 
 
@@ -296,8 +305,9 @@ class ContentService
      */
     private function getContentType(string $needle, string $searchFor = 'type'
     ): string {
-        if ($struct = $this->isAValidContentType($needle, $searchFor)) {
-            return $searchFor === 'type' ? $struct->getClass() : $struct->getType();
+        if($struct = $this->isAValidContentType($needle,
+                                                $searchFor)) {
+            return $searchFor === 'type' ? $struct->getClass(): $struct->getType();
         };
         throw new \InvalidArgumentException("jsText Content type is invalid! Or it haven't register yet!");
 
@@ -320,7 +330,7 @@ class ContentService
         ContentGroupInterface $contentOwner, ContentObject $contentInput,
         $index, $contentType
     ): void {
-        if ($index) {
+        if($index) {
             $index->delete();
         }
         /** @var ContentTypeInterface $content */
@@ -329,11 +339,11 @@ class ContentService
         $content->saveContent($contentInput);
 
         $contentOwner->contentIndices()->create([
-            'content_type' => get_class($content),
-            'content_id'   => $content->id,
-            'lang_id'      => $contentInput->lang_id,
-            'identifier'   => $contentInput->identifier,
-        ]);
+                                                    'content_type' => get_class($content),
+                                                    'content_id'   => $content->id,
+                                                    'lang_id'      => $contentInput->lang_id,
+                                                    'identifier'   => $contentInput->identifier,
+                                                ]);
     }
 
     /**
@@ -355,8 +365,9 @@ class ContentService
     ) {
         $language = (new LanguageService())->getLanguageById($contentObject->lang_id);
 
-        $this->invalidateContentCache($contentOwner, $contentObject->identifier,
-            $language->code);
+        $this->invalidateContentCache($contentOwner,
+                                      $contentObject->identifier,
+                                      $language->code);
     }
 
     /**
@@ -367,8 +378,8 @@ class ContentService
     private function isAValidContentType(
         string $needle, string $searchFor = 'type'
     ): ?ContentTypeStruct {
-        $struct = array_first($this->types,
-            function (ContentTypeStruct $type) use ($searchFor, $needle) {
+        $struct = Arr::first($this->types,
+            function(ContentTypeStruct $type) use ($searchFor, $needle) {
                 $name = ucwords($searchFor);
 
                 return $type->{"get{$name}"}() === $needle;
@@ -386,11 +397,12 @@ class ContentService
 
     public function getTypesForJs(): array {
         return array_reduce($this->types,
-            function ($previous, ContentTypeStruct $struct) {
+            function($previous, ContentTypeStruct $struct) {
                 $previous[$struct->getType()] = $struct->getComponent();
 
                 return $previous;
-            }, []);
+            },
+                            []);
     }
 
     # endregion
@@ -405,12 +417,13 @@ class ContentService
         $contentOwner, string $identifier, string $langCode
     ): void {
 
-        if ($contentOwner instanceof ContentGroupInterface) {
+        if($contentOwner instanceof ContentGroupInterface) {
 
-            $key = $contentOwner->getContentCacheKey($langCode, $identifier);
+            $key = $contentOwner->getContentCacheKey($langCode,
+                                                     $identifier);
 
-            if (Cache::has($key)) {
-                Log::info("Invalidate Content Cache:" . $key);
+            if(Cache::has($key)) {
+                Log::info("Invalidate Content Cache:".$key);
                 Cache::forget($key);
             }
         }
