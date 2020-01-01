@@ -26,7 +26,7 @@
 <script>
     import flatpickr from "flatpickr"
 
-    import Extension from "../packages/ContentBlockExtension"
+    import Extension from "../packages"
 
     export default {
       extends: Extension,

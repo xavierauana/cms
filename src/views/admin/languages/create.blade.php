@@ -44,7 +44,7 @@
 			@endif
 		</div>
 		<div class="form-group">
-			{{Form::label('fallback_language_id', 'Is Default')}}
+			{{Form::label('fallback_language_id', 'Fallback Language')}}
 			{{Form::select('fallback_language_id', $languages, 0,['class'=>'form-control'])}}
 			@if ($errors->has('fallback_language_id'))
 				<span class="help-block">

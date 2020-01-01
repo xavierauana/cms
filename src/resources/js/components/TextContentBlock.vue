@@ -27,7 +27,7 @@
 
 <script>
     import * as Events from "../EventNames"
-    import Extension from "../packages/ContentBlockExtension"
+    import Extension from "../packages"
 
     const options = {
       filebrowserImageBrowseUrl: '/filemanager?type=Images',

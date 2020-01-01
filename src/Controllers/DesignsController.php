@@ -33,12 +33,13 @@ class DesignsController extends Controller
 
     public function index(Design $design, Page $page) {
 
-        //        $this->authorize('index', $design);
         $design = getDesignFiles();
         $pages = $page->get()->groupBy('template');
 
 
-        return view('cms::admin.designs.index', compact('design', 'pages'));
+        return view('cms::admin.designs.index',
+                    compact('design',
+                            'pages'));
     }
 
     /**
@@ -50,42 +51,47 @@ class DesignsController extends Controller
      * @throws \Anacreation\Cms\Exceptions\UnAuthorizedException
      */
     public function create(Request $request, string $type) {
-        if ($type === 'definition') {
-            if (!$request->user()->hasPermission('create_definition')) {
+        if($type === 'definition') {
+            if( !$request->user()->hasPermission('create_definition')) {
                 throw new UnAuthorizedException();
             }
         } else {
-            if (!$request->user()->hasPermission('update_layout')) {
+            if( !$request->user()->hasPermission('edit_layout')) {
                 throw new UnAuthorizedException();
             }
         }
 
-        return view("cms::admin.designs.create", compact('type'));
+        return view("cms::admin.designs.create",
+                    compact('type'));
 
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request $request
+     * @param \Illuminate\Http\Request $request
      * @return void
      */
     public function store(Request $request, string $type) {
-        if ($type === 'definition') {
-            if (!$request->user()->hasPermission('store_definition')) {
+        if($type === 'definition') {
+            if( !$request->user()->hasPermission('store_definition')) {
                 throw new UnAuthorizedException();
             }
-            $path = $this->getDefinitionFilePath($request, $type);
+            $path = $this->getDefinitionFilePath($request,
+                                                 $type);
         } else {
-            if (!$request->user()->hasPermission('store_layout')) {
+            if( !$request->user()->hasPermission('store_layout')) {
                 throw new UnAuthorizedException();
             }
-            $path = $this->getFilePath($request, $type);
+            $path = $this->getFilePath($request,
+                                       $type);
         }
 
-        $path = $type === 'definition' ? $path . ".xml" : $path;
-        $handle = fopen($path, "w");
-        fwrite($handle, "");
+        $path = $type === 'definition' ? $path.".xml": $path;
+        $handle = fopen($path,
+                        "w");
+        fwrite($handle,
+               "");
         fclose($handle);
 
 
@@ -100,7 +106,7 @@ class DesignsController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int $id
+     * @param int $id
      * @return void
      */
     public function show($id) {
@@ -116,17 +122,19 @@ class DesignsController extends Controller
      */
     public function edit(Request $request, string $type) {
 
-        if (!$request->ajax()) {
+        if( !$request->ajax()) {
             return view('cms::admin.designs.edit',
-                [
-                    'file' => $request->get('file'),
-                    'type' => $type,
-                ]);
+                        [
+                            'file' => $request->get('file'),
+                            'type' => $type,
+                        ]);
         }
 
         $path = $type === 'definition' ?
-            $this->getDefinitionFilePath($request, $type) :
-            $this->getFilePath($request, $type);
+            $this->getDefinitionFilePath($request,
+                                         $type):
+            $this->getFilePath($request,
+                               $type);
 
         $content = file_get_contents($path);
 
@@ -137,30 +145,34 @@ class DesignsController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request $request
-     * @param string                    $type
+     * @param \Illuminate\Http\Request $request
+     * @param string                   $type
      * @return \Illuminate\Http\Response
      * @throws \Anacreation\Cms\Exceptions\UnAuthorizedException
      */
     public function update(Request $request, string $type) {
 
-        if ($type === 'definition') {
-            if (!$request->user()->hasPermission('update_definition')) {
+        if($type === 'definition') {
+            if( !$request->user()->hasPermission('edit_definition')) {
                 throw new UnAuthorizedException();
             }
-            $path = $this->getDefinitionFilePath($request, $type);
+            $path = $this->getDefinitionFilePath($request,
+                                                 $type);
         } else {
-            if (!$request->user()->hasPermission('update_layout')) {
+            if( !$request->user()->hasPermission('edit_layout')) {
                 throw new UnAuthorizedException();
             }
-            $path = $this->getFilePath($request, $type);
+            $path = $this->getFilePath($request,
+                                       $type);
         }
 
-        file_put_contents($path, $request->get('code'));
+        file_put_contents($path,
+                          $request->get('code'));
 
-        Artisan::call('view:clear', ['--quiet' => true]);
+        Artisan::call('view:clear',
+                      ['--quiet' => true]);
 
-        if ($request->ajax()) {
+        if($request->ajax()) {
             return response()->json(['status' => 'completed']);
         }
 
@@ -175,7 +187,7 @@ class DesignsController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function destroy($id) {
@@ -189,13 +201,13 @@ class DesignsController extends Controller
      */
     private function getFilePath(Request $request, string $type): string {
 
-        $path = getActiveThemePath() . "/" . $type . "/" . $request->get('file') . ".blade.php";
+        $path = getActiveThemePath()."/".$type."/".$request->get('file').".blade.php";
 
         return $path;
     }
 
     private function getDefinitionFilePath(Request $request, string $type) {
-        return getActiveThemePath() . "/" . $type . "/" . $request->get('file');
+        return getActiveThemePath()."/".$type."/".$request->get('file');
     }
 
 }

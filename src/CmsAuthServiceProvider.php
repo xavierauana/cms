@@ -5,7 +5,7 @@
  * Time: 3:39 PM.
  */
 
-namespace Anacreation\CMS;
+namespace Anacreation\Cms;
 
 use Anacreation\Cms\Contracts\CmsPageInterface as PageContract;
 use Anacreation\Cms\Models\ContentIndex;
