@@ -28,7 +28,6 @@ class CmsServiceProvider extends ServiceProvider
      */
     public function boot() {
 
-
         if($this->requestFrontend()) {
             $this->registerFrontendViewComposers();
         }
