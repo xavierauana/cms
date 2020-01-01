@@ -2,7 +2,6 @@
 
 use Anacreation\Cms\Models\Page;
 use Anacreation\Cms\Services\SettingService;
-use Illuminate\Support\Str;
 
 
 /**
@@ -20,31 +19,34 @@ use Illuminate\Support\Str;
  * @return array|null
  * @throws \Exception
  */
-if (!function_exists('getPage')) {
+if( !function_exists('getPage')) {
     function getPage(array $segments, array $vars = null): ?array {
 
         list($pages, $pageRepo) = getActivePages($vars['page']);
 
-        if (isRequestHome($segments, $vars)) {
+        if(isRequestHome($segments,
+                         $vars)) {
             $id = $pages[""];
 
-            if ($page = $pageRepo->with('children')->find($id)) {
+            if($page = $pageRepo->with('children')->find($id)) {
                 return createData($page);
             }
 
             throw new Exception("No Home Page");
 
-        } elseif ($id = getPageId($segments, $pages)) {
+        } elseif($id = getPageId($segments,
+                                 $pages)) {
 
             /** @var Page $page */
             $page = isset($vars['page']) ? $vars['page']->children()
                                                         ->with('children')
-                                                        ->find($id) :
+                                                        ->find($id):
                 $pageRepo->with('children')->find($id);
 
             return ($segments = getNextRequestSegments($segments,
-                $page)) ? getPage($segments,
-                ['page' => $page]) : createData($page);
+                                                       $page)) ? getPage($segments,
+                                                                         ['page' => $page]):
+                createData($page);
         }
 
         return null;
@@ -56,9 +58,9 @@ if (!function_exists('getPage')) {
  * @param       $page
  * @return bool
  */
-if (!function_exists('getNextRequestSegments')) {
+if( !function_exists('getNextRequestSegments')) {
     function getNextRequestSegments(array $segments, $page): ?array {
-        if ($page and isset($segments[1])) {
+        if($page and isset($segments[1])) {
             unset($segments[0]);
 
             return array_values($segments);
@@ -73,9 +75,10 @@ if (!function_exists('getNextRequestSegments')) {
  * @param       $pages
  * @return bool
  */
-if (!function_exists('getPageId')) {
+if( !function_exists('getPageId')) {
     function getPageId(array $segments, $pages): ?int {
-        if (in_array($segments[0], array_keys($pages))) {
+        if(in_array($segments[0],
+                    array_keys($pages))) {
             return $pages[$segments[0]];
         }
 
@@ -87,7 +90,7 @@ if (!function_exists('getPageId')) {
  * @param $page
  * @return mixed
  */
-if (!function_exists('createData')) {
+if( !function_exists('createData')) {
     function createData($page) {
         $data = $page->injectLayoutModels();
         $data['page'] = $page;
@@ -102,7 +105,7 @@ if (!function_exists('createData')) {
  * @param array $vars
  * @return bool
  */
-if (!function_exists('isRequestHome')) {
+if( !function_exists('isRequestHome')) {
     function isRequestHome(array $segments, array $vars = null): bool {
         return !isset($vars['page']) and count($segments) === 0;
     }
@@ -112,10 +115,10 @@ if (!function_exists('isRequestHome')) {
  * @param \Anacreation\Cms\Models\Page $page
  * @return array
  */
-if (!function_exists('getActivePages')) {
+if( !function_exists('getActivePages')) {
     function getActivePages(Page $page = null): array {
 
-        if ($page) {
+        if($page) {
             $pageRepo = $page;
 
             $query = $pageRepo->children();
@@ -127,80 +130,86 @@ if (!function_exists('getActivePages')) {
         }
 
         $allActivePageUri = $query->active()
-                                  ->pluck('id', 'uri')
+                                  ->pluck('id',
+                                          'uri')
                                   ->toArray();
 
-        $removeSlash = function ($string) {
-            return Str::replace("/", "", $string);
+        $removeSlash = function($string) {
+            return str_replace("/",
+                               "",
+                               $string);
         };
 
         $pages = array_combine(
-            array_map($removeSlash, array_keys($allActivePageUri)),
+            array_map($removeSlash,
+                      array_keys($allActivePageUri)),
             array_values($allActivePageUri));
 
-        return array($pages, $pageRepo);
+        return [$pages, $pageRepo];
     }
 }
 
-if (!function_exists('getPageChildren')) {
+if( !function_exists('getPageChildren')) {
     function getPageChildren(Page $page) {
         return $page->children;
     }
 }
 
-if (!function_exists('getLayoutFiles')) {
+if( !function_exists('getLayoutFiles')) {
     function getLayoutFiles() {
-        $layouts = scandir(getActiveThemePath() . "/layouts");
+        $layouts = scandir(getActiveThemePath()."/layouts");
 
         return sanitizeFileNames(compact("layouts"));
 
     }
 }
 
-if (!function_exists('getPartialFiles')) {
+if( !function_exists('getPartialFiles')) {
     function getPartialFiles() {
 
-        $partials = scandir(getActiveThemePath() . "/partials");
+        $partials = scandir(getActiveThemePath()."/partials");
 
         return sanitizeFileNames(compact("partials"));
 
     }
 }
-if (!function_exists('getPartialFile')) {
+if( !function_exists('getPartialFile')) {
     function getPartialFile($partialFileName) {
 
-        $partials = scandir(getActiveThemePath() . "/partials");
+        $partials = scandir(getActiveThemePath()."/partials");
 
         return sanitizeFileNames(compact("partials"));
 
     }
 }
 
-if (!function_exists('getDesignFiles')) {
+if( !function_exists('getDesignFiles')) {
     function getDesignFiles() {
         return [
             'layouts'     => getLayoutFiles()['layouts'],
             'partials'    => getPartialFiles()['partials'],
-            'definitions' => getDefinitionFiles()['definitions']
+            'definitions' => getDefinitionFiles()['definitions'],
         ];
     }
 }
-if (!function_exists('getDefinitionFiles')) {
+if( !function_exists('getDefinitionFiles')) {
     function getDefinitionFiles() {
-        $definitions = scandir(getActiveThemePath() . "/definition");
+        $definitions = scandir(getActiveThemePath()."/definition");
 
         return sanitizeFileNames(compact("definitions"));
     }
 }
 
-if (!function_exists('sanitizeFileNames')) {
+if( !function_exists('sanitizeFileNames')) {
     function sanitizeFileNames(array $items, array $excludeExtension = []) {
-        foreach ($items as $key => $rawNameArray) {
-            $rawNameArray = array_slice($rawNameArray, 2);
+        foreach($items as $key => $rawNameArray) {
+            $rawNameArray = array_slice($rawNameArray,
+                                        2);
 
-            foreach ($rawNameArray as $index => $fileName) {
-                $rawNameArray[$index] = Str::replace('.blade.php', '',
-                    $fileName);
+            foreach($rawNameArray as $index => $fileName) {
+                $rawNameArray[$index] = str_replace('.blade.php',
+                                                    '',
+                                                    $fileName);
             }
             $items[$key] = $rawNameArray;
         }
@@ -211,10 +220,11 @@ if (!function_exists('sanitizeFileNames')) {
 }
 
 
-if (!function_exists('settings')) {
+if( !function_exists('settings')) {
     function settings(string $key) {
 
         $settings = (New SettingService)->all();
+
         return $settings[$key] ?? null;
     }
 }
