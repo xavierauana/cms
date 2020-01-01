@@ -59,11 +59,13 @@ class LinksController extends Controller
      * Store a newly created resource in storage.
      *
      * @param \Anacreation\Cms\Models\Menu $menu
-     * @param  \Illuminate\Http\Request    $request
+     * @param \Illuminate\Http\Request     $request
      * @param \Anacreation\Cms\Models\Page $page
      * @param \Anacreation\Cms\Models\Link $model
-     * @throws \Illuminate\Auth\Access\AuthorizationException
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      * @throws \Anacreation\Cms\Exceptions\IncorrectContentTypeException
+     * @throws \Illuminate\Auth\Access\AuthorizationException
+     * @throws \Illuminate\Validation\ValidationException
      */
     public function store(
         Menu $menu, Request $request, Page $page, Link $model

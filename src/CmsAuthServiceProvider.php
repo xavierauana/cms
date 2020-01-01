@@ -16,11 +16,13 @@ use Anacreation\Cms\Models\Menu;
 use Anacreation\Cms\Models\Permission;
 use Anacreation\Cms\Models\Role;
 use Anacreation\Cms\Policies\AdministratorPolicy;
+use Anacreation\Cms\Policies\AdministratorRolePolicy;
 use Anacreation\Cms\Policies\CmsSettingsPolicy;
 use Anacreation\Cms\Policies\ContentIndexPolicy;
 use Anacreation\Cms\Policies\Definition;
 use Anacreation\Cms\Policies\DesignPolicy;
 use Anacreation\Cms\Policies\LanguagePolicy;
+use Anacreation\Cms\Policies\LinkPolicy;
 use Anacreation\Cms\Policies\MenuPolicy;
 use Anacreation\Cms\Policies\PagePolicy;
 use Anacreation\Cms\Policies\PartialPolicy;
@@ -39,12 +41,12 @@ class CmsAuthServiceProvider extends AuthServiceProvider
      */
     protected $policies = [
         Role::class         => RolePolicy::class,
-        Link::class         => PartialPolicy::class,
+        Link::class         => LinkPolicy::class,
         Menu::class         => MenuPolicy::class,
         Admin::class        => AdministratorPolicy::class,
         Design::class       => DesignPolicy::class,
         Language::class     => LanguagePolicy::class,
-        AdminRole::class    => AdministratorPolicy::class,
+        AdminRole::class    => AdministratorRolePolicy::class,
         Permission::class   => PermissionPolicy::class,
         ContentIndex::class => ContentIndexPolicy::class,
         "CmsSettings"       => CmsSettingsPolicy::class,
