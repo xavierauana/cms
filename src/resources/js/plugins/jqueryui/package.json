@@ -18,7 +18,7 @@
   "author": "Jörn Zaefferer",
   "license": "MIT",
   "dependencies": {
-    "jquery": "^2.1.4",
+    "jquery": "^3.4.0",
     "jquery-ui": "1.12.x"
   },
   "devDependencies": {
