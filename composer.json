@@ -11,7 +11,7 @@
     "require": {
         "laravel/framework": "6.*",
         "spatie/laravel-medialibrary": "^7.5",
-        "xavierau/multi-auth": "dev-develop",
+        "xavierau/multi-auth": "~6.0",
         "laravelcollective/html": "^6.0",
         "maatwebsite/excel": "^3.0",
         "myclabs/php-enum": "^1.7",
