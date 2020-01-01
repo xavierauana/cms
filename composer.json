@@ -15,7 +15,8 @@
         "laravelcollective/html": "^6.0",
         "maatwebsite/excel": "^3.0",
         "myclabs/php-enum": "^1.7",
-        "unisharp/laravel-filemanager": "dev-master"
+        "unisharp/laravel-filemanager": "dev-master",
+        "laravel/helpers": "^1.1"
     },
     "autoload": {
         "psr-4": {

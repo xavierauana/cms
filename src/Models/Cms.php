@@ -173,7 +173,7 @@ class Cms
             });
 
 
-        Route::group(['prefix' => 'filemanager'],
+        Route::group(['prefix' => 'filemanager', 'middleware' => ['web', 'auth:admin']],
             function() {
                 Lfm::routes();
             });
