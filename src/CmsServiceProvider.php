@@ -10,6 +10,7 @@ use Anacreation\Cms\Contracts\ICreateContentObjectFromRequest;
 use Anacreation\Cms\Handler\Handler;
 use Anacreation\Cms\Services\CreateContentObjectFromRequest;
 use Illuminate\Contracts\Debug\ExceptionHandler;
+use Illuminate\Database\Eloquent\Factory as EloquentFactory;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
@@ -63,6 +64,8 @@ class CmsServiceProvider extends ServiceProvider
         );
 
         $this->registerBindings();
+
+        $this->loadDevResources();
     }
 
     private function views() {
@@ -140,5 +143,9 @@ class CmsServiceProvider extends ServiceProvider
         if($this->app->runningInConsole()) {
             $this->commands($this->commands);
         }
+    }
+
+    private function loadDevResources() {
+
     }
 }

@@ -16,7 +16,3 @@ Route::group(['namespace' => Controller::class],
 
 
 Cms::routes();
-
-Cms::apiRoutes();
-
-Cms::dynamicRoutes();

@@ -11,6 +11,7 @@
     "require": {
         "laravel/framework": "6.*",
         "spatie/laravel-medialibrary": "^7.5",
+        "spatie/laravel-sitemap": "^5.5",
         "xavierau/multi-auth": "~6.0",
         "laravelcollective/html": "^6.0",
         "maatwebsite/excel": "^3.0",

@@ -4,7 +4,6 @@ namespace Anacreation\Cms\Tests;
 
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
-use Tests\TestCase;
 
 class DesignControllerTest extends TestCase
 {
@@ -20,7 +19,8 @@ class DesignControllerTest extends TestCase
 
     public function test_index_with_admin() {
         $admin = $this->createAdminWithPermission('index_design');
-        $response = $this->actingAs($admin, 'admin')->get('/admin/designs');
+        $response = $this->actingAs($admin,
+                                    'admin')->get('/admin/designs');
         $response->assertStatus(200);
     }
 
@@ -34,7 +34,8 @@ class DesignControllerTest extends TestCase
 
         $this->expectException(AuthorizationException::class);
         $admin = $this->createAdminWithPermission('something');
-        $this->actingAs($admin, 'admin')
+        $this->actingAs($admin,
+                        'admin')
              ->get($url);
     }
 
@@ -46,7 +47,8 @@ class DesignControllerTest extends TestCase
         $permissionCode = "upload_layout";
 
         $admin = $this->createAdminWithPermission($permissionCode);
-        $response = $this->actingAs($admin, 'admin')
+        $response = $this->actingAs($admin,
+                                    'admin')
                          ->get($url);
         $response->assertStatus(200);
     }
@@ -61,7 +63,8 @@ class DesignControllerTest extends TestCase
 
         $this->expectException(AuthorizationException::class);
         $admin = $this->createAdminWithPermission('something');
-        $this->actingAs($admin, 'admin')
+        $this->actingAs($admin,
+                        'admin')
              ->get($url);
     }
 
@@ -73,7 +76,8 @@ class DesignControllerTest extends TestCase
         $permissionCode = "upload_definition";
 
         $admin = $this->createAdminWithPermission($permissionCode);
-        $response = $this->actingAs($admin, 'admin')
+        $response = $this->actingAs($admin,
+                                    'admin')
                          ->get($url);
         $response->assertStatus(200);
     }

@@ -8,6 +8,7 @@
 namespace Anacreation\Cms;
 
 use Anacreation\Cms\Contracts\CmsPageInterface as PageContract;
+use Anacreation\Cms\Models\CommonContent;
 use Anacreation\Cms\Models\ContentIndex;
 use Anacreation\Cms\Models\Design;
 use Anacreation\Cms\Models\Language;
@@ -18,6 +19,7 @@ use Anacreation\Cms\Models\Role;
 use Anacreation\Cms\Policies\AdministratorPolicy;
 use Anacreation\Cms\Policies\AdministratorRolePolicy;
 use Anacreation\Cms\Policies\CmsSettingsPolicy;
+use Anacreation\Cms\Policies\CommonContentPolicy;
 use Anacreation\Cms\Policies\ContentIndexPolicy;
 use Anacreation\Cms\Policies\Definition;
 use Anacreation\Cms\Policies\DesignPolicy;
@@ -40,19 +42,20 @@ class CmsAuthServiceProvider extends AuthServiceProvider
      * @var array
      */
     protected $policies = [
-        Role::class         => RolePolicy::class,
-        Link::class         => LinkPolicy::class,
-        Menu::class         => MenuPolicy::class,
-        Admin::class        => AdministratorPolicy::class,
-        Design::class       => DesignPolicy::class,
-        Language::class     => LanguagePolicy::class,
-        AdminRole::class    => AdministratorRolePolicy::class,
-        Permission::class   => PermissionPolicy::class,
-        ContentIndex::class => ContentIndexPolicy::class,
-        "CmsSettings"       => CmsSettingsPolicy::class,
-        "Definition"        => CmsSettingsPolicy::class,
-        "Layout"            => CmsSettingsPolicy::class,
-        "Partial"           => PartialPolicy::class,
+        Role::class          => RolePolicy::class,
+        Link::class          => LinkPolicy::class,
+        Menu::class          => MenuPolicy::class,
+        Admin::class         => AdministratorPolicy::class,
+        Design::class        => DesignPolicy::class,
+        Language::class      => LanguagePolicy::class,
+        AdminRole::class     => AdministratorRolePolicy::class,
+        Permission::class    => PermissionPolicy::class,
+        ContentIndex::class  => ContentIndexPolicy::class,
+        CommonContent::class => CommonContentPolicy::class,
+        "CmsSettings"        => CmsSettingsPolicy::class,
+        "Definition"         => CmsSettingsPolicy::class,
+        "Layout"             => CmsSettingsPolicy::class,
+        "Partial"            => PartialPolicy::class,
     ];
 
     /**

@@ -140,6 +140,10 @@ class Cms
                         Route::resource('admin_permissions',
                                         "AdministratorRolesController");
 
+                        Route::resource('common_contents',
+                                        'CommonContentsController')
+                             ->names('cms::common_contents');
+
                         Route::post('logout',
                             function() {
 
