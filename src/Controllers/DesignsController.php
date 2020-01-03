@@ -17,6 +17,7 @@ use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Str;
+use InvalidArgumentException;
 
 class DesignsController extends CmsAdminBaseController
 {
@@ -334,11 +335,21 @@ class DesignsController extends CmsAdminBaseController
      */
     private function checkPermission(string $type, string $action) {
 
-        $type = ($type === 'definition' ? 'definition': 'layout');
+        switch($type) {
+            case 'definition':
+                $type = 'definition';
+                break;
+            case 'layout':
+                $type = 'layout';
+                break;
+            case 'partials':
+                $type = 'partial';
+                break;
+            default:
+                throw new InvalidArgumentException('Invalid Type');
+        }
 
-        $permission = "{
-            $action}_{
-            $type}";
+        $permission = "{$action}_{$type}";
 
         if( !request()->user()->hasPermission($permission)) {
             throw new UnAuthorizedException();

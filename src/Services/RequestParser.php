@@ -30,7 +30,7 @@ class RequestParser implements RequestParserInterface
 
         $decodePath = urldecode($request->path());
 
-        if ($page = ((Page::ActivePages())[$decodePath] ?? null)) {
+        if($page = ((Page::ActivePages())[$decodePath] ?? null)) {
             return $this->createData($page);
         }
 
@@ -39,9 +39,11 @@ class RequestParser implements RequestParserInterface
     }
 
     private function createData(CmsPageInterface $page) {
-        $data = $page->injectLayoutModels(null, $page->getTemplate());
+        $data = $page->injectLayoutModels(null,
+                                          $page->getTemplate());
         $data['page'] = $page;
         $data['language'] = new Language;
+        $data['common'] = new CommonContentService;
 
         return $data;
     }
