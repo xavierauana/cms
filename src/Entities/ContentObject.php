@@ -9,6 +9,7 @@ namespace Anacreation\Cms\Entities;
 
 
 use Illuminate\Http\UploadedFile;
+use InvalidArgumentException;
 
 class ContentObject
 {
@@ -35,5 +36,17 @@ class ContentObject
         $this->content = $content;
         $this->content_type = $content_type;
         $this->file = $file;
+    }
+
+    /**
+     * @return string
+     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
+     */
+    public function getFileContent(): string {
+        if($this->file) {
+            return $this->file->get();
+        }
+
+        throw new InvalidArgumentException('file is null not Uploadfile');
     }
 }
