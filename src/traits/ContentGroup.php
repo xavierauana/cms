@@ -23,7 +23,8 @@ trait ContentGroup
     public $editable = true;
 
     public function contentIndices(): Relation {
-        return $this->morphMany(ContentIndex::class, 'group');
+        return $this->morphMany(ContentIndex::class,
+                                'group');
     }
 
     /**
@@ -34,7 +35,7 @@ trait ContentGroup
     protected function loadFromCache($key, callable $callable) {
         $duration = config("cms.content_cache_duration");
 
-        if (Cache::has($key)) {
+        if(Cache::has($key)) {
 
             return Cache::get($key);
 
@@ -42,7 +43,9 @@ trait ContentGroup
 
             $value = $callable();
 
-            Cache::put($key, $value ?? "", $duration);
+            Cache::put($key,
+                       $value ?? "",
+                       $duration);
 
             return $value;
         }
@@ -50,7 +53,8 @@ trait ContentGroup
 
     public function loadContents(string $path, string $template) {
 
-        $contentIdentifiers = $this->fetchContentIdentifiers($path, $template);
+        $contentIdentifiers = $this->fetchContentIdentifiers($path,
+                                                             $template);
 
         return $this->loadContentWithIdentifiers($contentIdentifiers);
 
@@ -60,10 +64,10 @@ trait ContentGroup
 
         $contents = app()->make(ContentService::class)
                          ->loadContentWithIdentifiers($this,
-                             array_keys($contentIdentifiers));
+                                                      array_keys($contentIdentifiers));
 
-        foreach ($contentIdentifiers as $identifier => $definition) {
-            if (isset($contents[$identifier]) and isset($contents[$identifier]['content'])) {
+        foreach($contentIdentifiers as $identifier => $definition) {
+            if(isset($contents[$identifier]) and isset($contents[$identifier]['content'])) {
                 $contentIdentifiers[$identifier]['content'] = $contents[$identifier]['content'];
             }
         }
@@ -72,12 +76,12 @@ trait ContentGroup
     }
 
     private function loadAdHocContents(array $predefinedContent = []): array {
-        if ($this->editable) {
+        if($this->editable) {
 
             $service = app()->make(ContentService::class);
 
             return $service->loadAdHocContent($this,
-                $predefinedContent);
+                                              $predefinedContent);
         }
 
         return $predefinedContent;
@@ -89,9 +93,11 @@ trait ContentGroup
                             ->pluck('identifier')
                             ->unique()->values()->all();
         $contents = [];
-        foreach ($identifiers as $identifier) {
+        foreach($identifiers as $identifier) {
 
-            $content = $this->getContent($identifier, "", $langCode);
+            $content = $this->getContent($identifier,
+                                         "",
+                                         $langCode);
 
             $contents[$identifier] = $content;
         }
@@ -104,32 +110,29 @@ trait ContentGroup
         string $identifier, string $default = "", string $langCode = null,
         array $params = []
     ) {
+
         $langCode = $langCode ?? app()->getLocale();
 
-        $key = $this->getContentCacheKey($langCode, $identifier);
+        $value = $this->getContentWithoutFallBack($identifier,
+                                                  null,
+                                                  $langCode,
+                                                  $params);
 
-        $loadContent = function () use ($identifier, $langCode, $params) {
-            $content = optional($this->getContentIndex($identifier,
-                $langCode))->content;
-
-            return optional($content)->show($params);
-        };
-
-        $value = Cache::has($key) ? Cache::get($key) : $this->loadFromCache($key,
-            $loadContent);
-
-        if (isset($value) and !empty($value)) {
+        if($value !== null) {
             return $value;
         }
 
-        if ($langCode === app(LanguageService::class)->getDefaultLanguage()->code) {
+
+        if($langCode === app(LanguageService::class)->getDefaultLanguage()->code) {
             return $default;
         }
 
         $fallbackLang = app(LanguageService::class)->getFallbackLanguage($langCode);
 
-        return $this->getContent($identifier, $default, $fallbackLang->code,
-            $params);
+        return $this->getContent($identifier,
+                                 $default,
+                                 $fallbackLang->code,
+                                 $params);
 
     }
 
@@ -141,7 +144,8 @@ trait ContentGroup
 
         $index = $this->contentIndices()
                       ->with('content')
-                      ->fetchIndex($identifier, $language->id)
+                      ->fetchIndex($identifier,
+                                   $language->id)
                       ->first();
 
         return $index;
@@ -152,9 +156,12 @@ trait ContentGroup
         string $langCode = null
     ): ?string {
 
-        $value = $this->getContent($identifier, $default, $langCode);
+        $value = $this->getContent($identifier,
+                                   $default,
+                                   $langCode);
 
-        return $value ? sprintf($template, $value) : null;
+        return $value ? sprintf($template,
+                                $value): null;
 
     }
 
@@ -162,7 +169,7 @@ trait ContentGroup
 
         $index = $this->getContentIndex($identifier);
 
-        return $index ? $index->content : null;
+        return $index ? $index->content: null;
     }
 
     public function injectLayoutModels(string $path = null, string $template
@@ -170,14 +177,15 @@ trait ContentGroup
         $vars = [];
         $templateParser = new TemplateParser();
         $path = $path ?: getActiveThemePath();
-        $xml = $templateParser->loadTemplateDefinition($template, $path);
-        if ($xml) {
-            foreach ($xml->model as $model) {
+        $xml = $templateParser->loadTemplateDefinition($template,
+                                                       $path);
+        if($xml) {
+            foreach($xml->model as $model) {
                 try {
                     $vars[(string)$model->name] = app()->make((string)$model->class);
                 } catch
                 (\Exception $e) {
-                    Log::error('Layout model injection error: cannot inject model ' . (string)$model->class . " for " . $this);
+                    Log::error('Layout model injection error: cannot inject model '.(string)$model->class." for ".$this);
                     Log::info($e->getMessage());
                 }
             }
@@ -195,11 +203,39 @@ trait ContentGroup
     ): array {
 
         $contentIdentifiers = (new TemplateParser)->loadPredefinedIdentifiers($path,
-            $template, $this->editable);
+                                                                              $template,
+                                                                              $this->editable);
 
         $contentIdentifiers = $this->loadAdHocContents($contentIdentifiers);
 
         return $contentIdentifiers;
+    }
+
+    public function getContentWithoutFallBack(string $identifier, string $default = null,
+        string $langCode = null,
+        array $params = []
+    ) {
+        $langCode = $langCode ?? app()->getLocale();
+
+        $key = $this->getContentCacheKey($langCode,
+                                         $identifier);
+
+        $loadContent = function() use ($identifier, $langCode, $params) {
+            $content = optional($this->getContentIndex($identifier,
+                                                       $langCode))->content;
+
+            return optional($content)->show($params);
+        };
+
+        $value = Cache::has($key) ? Cache::get($key): $this->loadFromCache($key,
+                                                                           $loadContent);
+
+        if(isset($value) and !empty($value)) {
+            return $value;
+        }
+
+        return $default;
+
     }
 
 }
