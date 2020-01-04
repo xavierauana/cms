@@ -90,7 +90,7 @@
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="true" />
     <property name="javascript.nodejs.core.library.configured.version" value="13.2.0" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/src/Services" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/src/Events" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="/usr/local/bin/node" />
     <property name="nodejs_package_manager_path" value="yarn" />
     <property name="options.lastSelected" value="reference.webide.settings.project.settings.php" />
@@ -100,11 +100,11 @@
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/Services" />
       <recent name="$PROJECT_DIR$/src/Models" />
       <recent name="$PROJECT_DIR$/src/views/admin" />
       <recent name="$PROJECT_DIR$/src/Controllers" />
       <recent name="$PROJECT_DIR$/src" />
-      <recent name="$PROJECT_DIR$/src/Policies" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -146,6 +146,7 @@
       <workItem from="1549903119257" duration="461000" />
       <workItem from="1559458428262" duration="2000" />
       <workItem from="1578107112560" duration="861000" />
+      <workItem from="1578108940517" duration="170000" />
     </task>
     <servers />
   </component>
@@ -157,7 +158,9 @@
       <map>
         <entry key="MAIN">
           <value>
-            <State />
+            <State>
+              <option name="COLUMN_ORDER" />
+            </State>
           </value>
         </entry>
       </map>
