@@ -42,6 +42,8 @@
 		        <li><a class="nav-link" href="{{route('languages.index')}}">Languages</a></li>@endif
 	        @if(Auth::guard('admin')->user()->hasPermission('index_setting'))
 		        <li><a class="nav-link" href="{{route('settings.index')}}">Systems Settings</a></li>@endif
+	        @if(Auth::guard('admin')->user()->hasPermission('index_common_content'))
+		        <li><a class="nav-link" href="{{route('cms::common_contents.index')}}">Common Content</a></li>@endif
 	        @if(Auth::guard('admin')->user()->hasPermission('index_admin'))
 		        <li><a class="nav-link"
 		               href="{{route('administrators.index')}}">Administrators</a></li>@endif

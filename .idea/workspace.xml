@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="49c0659f-8551-4476-ba1f-1e75e8595f61" name="Default" comment="" />
+    <list default="true" id="49c0659f-8551-4476-ba1f-1e75e8595f61" name="Default" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -100,11 +102,11 @@
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/traits" />
       <recent name="$PROJECT_DIR$/src/Events" />
       <recent name="$PROJECT_DIR$/src/Services" />
       <recent name="$PROJECT_DIR$/src/Models" />
       <recent name="$PROJECT_DIR$/src/views/admin" />
-      <recent name="$PROJECT_DIR$/src/Controllers" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -146,7 +148,7 @@
       <workItem from="1549903119257" duration="461000" />
       <workItem from="1559458428262" duration="2000" />
       <workItem from="1578107112560" duration="861000" />
-      <workItem from="1578108940517" duration="306000" />
+      <workItem from="1578108940517" duration="1381000" />
     </task>
     <servers />
   </component>
