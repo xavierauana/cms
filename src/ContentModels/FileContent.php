@@ -15,7 +15,7 @@ class FileContent extends Model implements ContentTypeInterface
 
     public function updateContent(ContentObject $contentObject
     ): ContentTypeInterface {
-        if ($this->isUploadFile($contentObject)) {
+        if($this->isUploadFile($contentObject)) {
             $this->MoveFile($contentObject);
             $this->save();
         }
@@ -25,7 +25,7 @@ class FileContent extends Model implements ContentTypeInterface
 
     public function saveContent(ContentObject $contentObject
     ): ContentTypeInterface {
-        if ($this->isUploadFile($contentObject)) {
+        if($this->isUploadFile($contentObject)) {
             $this->MoveFile($contentObject);
         } else {
             $this->link = "";
@@ -37,7 +37,7 @@ class FileContent extends Model implements ContentTypeInterface
     }
 
     public function show(array $params = []) {
-        return $this->link ? url($this->link) : null;
+        return $this->link ? url($this->link): null;
     }
 
     public function showBackEnd() {
@@ -45,7 +45,8 @@ class FileContent extends Model implements ContentTypeInterface
     }
 
     public function deleteContent(array $query = null) {
-        $path = $this->link = public_path(substr($this->link, 1));
+        $path = $this->link = public_path(substr($this->link,
+                                                 1));
         File::delete($path);
         $this->link = "";
         $this->save();
@@ -57,19 +58,20 @@ class FileContent extends Model implements ContentTypeInterface
 
     /**
      * @param \Anacreation\CMS\Entities\ContentObject $contentObject
+     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
     private function MoveFile(ContentObject $contentObject): void {
 
         $directory = public_path("files");
 
 
-        if (!File::isDirectory($directory)) {
+        if( !File::isDirectory($directory)) {
             File::makeDirectory($directory);
         }
 
-        File::put($directory . "/" . $contentObject->file->getClientOriginalName(),
-            $contentObject->file);
+        File::put($directory."/".$contentObject->file->getClientOriginalName(),
+                  $contentObject->getFileContent());
 
-        $this->link = "files/" . $contentObject->file->getClientOriginalName();
+        $this->link = "files/".$contentObject->file->getClientOriginalName();
     }
 }
