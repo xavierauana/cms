@@ -43,40 +43,40 @@ class Cms
                         Route::group(['middleware' => 'auth:admin'],
                             function() {
                                 Route::get('profile',
-                                           "HomeController@getProfile")
+                                           'HomeController@getProfile')
                                      ->name('profile');
 
                                 Route::put('profile/{admin}',
-                                           "HomeController@putProfile")
+                                           'HomeController@putProfile')
                                      ->name('profile.update');
 
                                 Route::get('designs',
-                                           "DesignsController@index")
+                                           'DesignsController@index')
                                      ->name('designs.index');
 
                                 Route::get('designs/upload/layout',
-                                           "DesignsController@uploadLayout")
+                                           'DesignsController@uploadLayout')
                                      ->name('designs.upload.layout');
                                 Route::post('designs/upload/layout',
-                                            "DesignsController@postUploadLayout");
+                                            'DesignsController@postUploadLayout');
                                 Route::get('designs/upload/definition',
-                                           "DesignsController@uploadDefinition")
+                                           'DesignsController@uploadDefinition')
                                      ->name('designs.upload.definition');
                                 Route::post('designs/upload/definition',
-                                            "DesignsController@postUploadDefinition");
+                                            'DesignsController@postUploadDefinition');
 
                                 Route::get('designs/edit/{type}',
                                            "DesignsController@edit")
                                      ->name('designs.edit');
                                 Route::post('designs/edit/{type}',
-                                            "DesignsController@store")
+                                            'DesignsController@store')
                                      ->name('designs.store');
                                 Route::get('designs/edit/{type}/create',
-                                           "DesignsController@create")
+                                           'DesignsController@create')
                                      ->name('designs.create');
 
                                 Route::put('designs/edit/{type}',
-                                           "DesignsController@update")
+                                           'DesignsController@update')
                                      ->name('update.design');
 
                                 Route::put('menus/{menu}/order',
@@ -130,11 +130,15 @@ class Cms
                                                 'CmsSettingsController');
 
                                 Route::resource('administrators',
-                                                "AdministratorsController");
+                                                'AdministratorsController');
                                 Route::resource('admin_roles',
-                                                "AdministratorRolesController");
+                                                'AdministratorRolesController');
                                 Route::resource('admin_permissions',
-                                                "AdministratorRolesController");
+                                                'AdministratorRolesController');
+
+                                Route::resource('common_contents',
+                                                'CommonContentsController')
+                                     ->names('cms::common_contents');
 
                                 Route::post('logout',
                                     function() {

@@ -2,11 +2,12 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="49c0659f-8551-4476-ba1f-1e75e8595f61" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/cms.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/cms.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/markdown-navigator/profiles_settings.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/php.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/php.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Models/CommonContent.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Policies/CommonContentPolicy.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/migrations/2019_12_20_105101_create_common_contents_table.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/CmsAuthServiceProvider.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/CmsAuthServiceProvider.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Services/RequestParser.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Services/RequestParser.php" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -96,12 +97,22 @@
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="true" />
     <property name="javascript.nodejs.core.library.configured.version" value="13.2.0" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/src/Models" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="/usr/local/bin/node" />
     <property name="nodejs_package_manager_path" value="yarn" />
     <property name="options.lastSelected" value="reference.webide.settings.project.settings.php" />
     <property name="options.splitter.details.proportions" value="0.2" />
     <property name="options.splitter.main.proportions" value="0.3" />
     <property name="settings.editor.selected.configurable" value="editor.preferences.fonts.default" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src" />
+      <recent name="$PROJECT_DIR$/src/Policies" />
+      <recent name="$PROJECT_DIR$/src/migrations" />
+      <recent name="$PROJECT_DIR$/src/Services" />
+      <recent name="$PROJECT_DIR$/src/Models" />
+    </key>
   </component>
   <component name="RunDashboard">
     <option name="ruleStates">
@@ -141,7 +152,7 @@
       <workItem from="1548908311746" duration="21000" />
       <workItem from="1549903119257" duration="461000" />
       <workItem from="1559458428262" duration="2000" />
-      <workItem from="1578107112560" duration="185000" />
+      <workItem from="1578107112560" duration="484000" />
     </task>
     <servers />
   </component>
