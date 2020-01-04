@@ -6,10 +6,19 @@ use Anacreation\Cms\Enums\DesignType;
 use Anacreation\Cms\Exceptions\UnAuthorizedException;
 use Anacreation\Cms\Models\Design;
 use Anacreation\Cms\Models\Page;
+use Anacreation\Cms\Models\Permissions\CmsAction;
+use Anacreation\Cms\Models\Permissions\Design\DefinitionPermission;
+use Anacreation\Cms\Models\Permissions\Design\LayoutPermission;
 use Anacreation\Cms\Services\Design\CreateTemplateFile;
 use Anacreation\Cms\Services\Design\GetTemplateContent;
+use Anacreation\Cms\Services\Design\UpdateTemplateContent;
+use Anacreation\Cms\Services\ReloadPhpFpm;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\Request;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
 
 class DesignsController extends CmsAdminBaseController
 {
@@ -33,7 +42,7 @@ class DesignsController extends CmsAdminBaseController
      */
 
 
-    public function index(Design $design, Page $page) {
+    public function index(Design $designObject, Page $page) {
 
         $design = getDesignFiles();
 
@@ -329,9 +338,7 @@ class DesignsController extends CmsAdminBaseController
 
         $type = ($type === 'definition' ? 'definition': 'layout');
 
-        $permission = "{
-            $action}_{
-            $type}";
+        $permission = "{$action}_{$type}";
 
         if( !request()->user()->hasPermission($permission)) {
             throw new UnAuthorizedException();
@@ -340,6 +347,7 @@ class DesignsController extends CmsAdminBaseController
 
     /**
      * @param \Anacreation\Cms\Enums\DesignType $type
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     private
     function checkUploadPermission(
