@@ -33,7 +33,7 @@ class CmsServiceProvider extends ServiceProvider
             $this->registerFrontendViewComposers();
         }
 
-        $this->loadMigrationsFrom(__DIR__.'/migrations');
+        $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
 
         $this->views();
 

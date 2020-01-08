@@ -1,10 +1,10 @@
 <?php
 
-namespace Anacreation\Cms\Tests;
+namespace Anacreation\Cms\Tests\Feature\Design;
 
+use Anacreation\Cms\Tests\TestCase;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
-use Tests\TestCase;
 
 class DesignControllerTest extends TestCase
 {

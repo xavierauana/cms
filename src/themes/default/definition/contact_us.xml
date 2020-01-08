@@ -1,0 +1,22 @@
+<?xml version='1.0' encoding='UTF-8'?>
+
+<!DOCTYPE layout SYSTEM
+    "https://s3-ap-southeast-1.amazonaws.com/layout-demo-1/layout.dtd">
+<layout editable="false">
+    <content type="string">
+        <identifier>meta_title</identifier>
+    </content>
+    <content type="string">
+        <identifier>meta_keywords</identifier>
+    </content>
+    <content type="string">
+        <identifier>meta_description</identifier>
+    </content>
+    <content type="string">
+        <identifier>title</identifier>
+    </content>
+    <model>
+        <class>Anacreation\Cms\Controllers\ContactUsController</class>
+        <name>contact_us</name>
+    </model>
+</layout>
