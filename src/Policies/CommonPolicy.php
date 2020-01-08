@@ -54,6 +54,7 @@ abstract class CommonPolicy
      * @return bool
      */
     public function create(Admin $admin): bool {
+
         $permissionCode = $this->constructPermissionCode(CmsAction::Create());
 
         return $admin->hasPermission($permissionCode);

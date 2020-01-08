@@ -18,13 +18,16 @@ return [
     'single_login_session'      => false,
     'content_type'              => [],
     'view_composer'             => [
-        'view' => "Class"
+        'view' => "Class",
     ],
     'translation_table'         => 'translations',
     'custom_redirect'           => [
         //from_uri => to_uri
     ],
     "sitemap_exlcuded_template" => [],
-    "sitemap_file_name"         => env("SITEMAP_FILENAME", 'sitemap.xml'),
-    'reload_php_fpm'            => env("RELOAD_PHP_FPM_VERSION", null)
+    "sitemap_file_name"         => env("SITEMAP_FILENAME",
+                                       'sitemap.xml'),
+    'reload_php_fpm'            => env("RELOAD_PHP_FPM_VERSION",
+                                       null),
+
 ];

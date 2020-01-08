@@ -16,6 +16,7 @@ use Anacreation\Cms\Exceptions\UnAuthorizedException;
 use Anacreation\Cms\Models\Page;
 use Anacreation\Cms\Services\RequestParser;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use Illuminate\View\View;
 
 class RoutesController extends CmsBaseController
@@ -45,15 +46,15 @@ class RoutesController extends CmsBaseController
     protected function toResponse(
         Request $request, RequestParserInterface $parser
     ) {
+        if($redirectUri = $this->getCustomRedirect($request->path())) {
+            return redirect($redirectUri);
+        }
         $vars = $parser->parse($request);
+
         /** @var \Anacreation\Cms\Contracts\CmsPageInterface $page */
         $page = $vars['page'] ?? null;
-        if(is_null($page)) {
 
-            if($redirectUri = $this->getCustomRedirect($request->path())) {
-                return redirect($redirectUri);
-            }
-
+        if($page === null) {
             throw new PageNotFoundHttpException();
         }
 
@@ -112,9 +113,11 @@ class RoutesController extends CmsBaseController
     private function getCustomRedirect(string $path): ?string {
         $customRedirectPaths = config('cms.custom_redirect',
                                       []);
+        $path = Str::start($path,
+                           '/');
 
-        if(in_array($path,
-                    array_keys($customRedirectPaths))) {
+        if(array_key_exists($path,
+                            $customRedirectPaths)) {
             return $customRedirectPaths[$path];
         }
 
