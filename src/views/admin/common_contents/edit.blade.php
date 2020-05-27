@@ -1,12 +1,12 @@
 @extends("cms::layouts.default")
 
 @section("content")
-    
+
     @component('cms::components.container')
-        @slot('title')Create New Common Content @endslot
-        
+        @slot('title')Edit Common Content @endslot
+
         {{Form::model($commonContent,['url'=>route('cms::common_contents.update', $commonContent), 'method'=>'PUT'])}}
-        
+
         <div class="form-group">
 			{{Form::label('label', 'Label')}}
             {{Form::text('label', null, ['class'=>'form-control', 'placeholder'=>'Label', 'required'])}}
@@ -16,7 +16,7 @@
                 </span>
             @endif
 		</div>
-        
+
         <div class="form-group">
 			{{Form::label('key', 'Identifier')}}
             {{Form::text('key', null, ['class'=>'form-control', 'placeholder'=>'Identifier','required'])}}
@@ -26,8 +26,8 @@
                 </span>
             @endif
 		</div>
-        
-        
+
+
         <div class="form-group">
 			{{Form::label('type', 'Content Type')}}
             {{Form::select('type', ['0'=>'Text', '1'=>'HTML'],null, ['class'=>'form-control', 'required', 'onchange'=>'updateTextarea(event)'])}}
@@ -37,8 +37,8 @@
                 </span>
             @endif
 		</div>
-        
-        
+
+
         <div class="card">
 			<div class="card-body">
 			<div class="form-group">
@@ -75,15 +75,15 @@
 			  </div>
 				</div>
 			</div>
-			
+
 		</div>
-        
+
         <div class="form-group mt-3">
 			{{Form::submit('Update', ['class'=>'btn btn-success'])}}
             <a href='{{route('cms::common_contents.index')}}' class="btn btn-info">Back</a>
 		</div>
-        
-        
+
+
         {{Form::close()}}
     @endcomponent
 
@@ -91,7 +91,7 @@
 
 @section('scripts')
     <script>
-		
+
 		let textareas = document.querySelectorAll('textarea')
         let typeInput = document.getElementById('type').value
 
