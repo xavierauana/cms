@@ -21,5 +21,5 @@ import ContentBlocks from "./main"
 Vue.use(ContentBlocks)
 
 const app = new Vue({
-                      el: '#app',
+                        el: '#app',
                     });

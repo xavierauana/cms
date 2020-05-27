@@ -44,17 +44,18 @@
 		        <li><a class="nav-link" href="{{route('settings.index')}}">Systems Settings</a></li>@endif
 	        @if(Auth::guard('admin')->user()->hasPermission('index_common_content'))
 		        <li><a class="nav-link" href="{{route('cms::common_contents.index')}}">Common Content</a></li>@endif
+		        <li><a class="nav-link" href="{{route('cms::admin.index.translations')}}">Translations</a></li>
 	        @if(Auth::guard('admin')->user()->hasPermission('index_admin'))
 		        <li><a class="nav-link"
 		               href="{{route('administrators.index')}}">Administrators</a></li>@endif
 	        @if(Auth::guard('admin')->user()->hasPermission('index_admin_role'))
 		        <li><a class="nav-link" href="{{route('admin_roles.index')}}">Administrator Roles</a></li>@endif
-				
+
         </ul>
     </li>
 
-	
-	
+
+
 	<li class="dropdown">
         <a href="#" class="nav-link dropdown-toggle"
            data-toggle="dropdown" role="button"

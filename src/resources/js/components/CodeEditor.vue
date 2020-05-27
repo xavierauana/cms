@@ -12,75 +12,76 @@
 
 <script>
     export default {
-      name : "code-editor",
-      props: {
-        type       : {
-          type    : String,
-          required: true,
+        name : "code-editor",
+        props: {
+            type       : {
+                type    : String,
+                required: true,
+            },
+            id         : {
+                type: String
+            },
+            csrfToken  : {
+                type   : String,
+                default: null
+            },
+            content_uri: {
+                type   : String,
+                default: null
+            },
         },
-        id         : {
-          type: String
+        data() {
+            return {
+                editor : null,
+                _id    : null,
+                content: null
+            }
         },
-        csrfToken  : {
-          type   : String,
-          default: null
+        created() {
+            this._id = this.id ? this.id : 'code_editor_' + this._uid
+
         },
-        content_uri: {
-          type   : String,
-          default: null
+        mounted() {
+            Vue.nextTick(() => {
+                //this.editor = ace.edit(this._id)
+                this.editor = CodeMirror(this.$refs.editor, {
+                    lineNumbers: true,
+                    mode       : this.type === 'definition' ? 'text/html' : 'application/x-httpd-php',
+                    theme      : 'dracula',
+                    foldGutter : true,
+                    gutters    : ["CodeMirror-linenumbers", "CodeMirror-foldgutter"]
+                })
+                this.getContent();
+            })
         },
-      },
-      data() {
-        return {
-          editor : null,
-          _id    : null,
-          content: null
+
+
+        methods: {
+            getContent() {
+                if (this.content_uri) {
+                    axios.get(this.content_uri)
+                         .then(({data}) => {
+                             Vue.nextTick(() => {
+                                 this.editor.setValue(data)
+                             })
+                         })
+                }
+            },
+            showContent() {
+                if (this.editor) {
+                    let el   = document.getElementById("code"),
+                        form = document.getElementById("edit-form")
+
+                    el.value = this.editor.getValue()
+
+                    form.submit();
+
+
+                    //axios.put(this.content_uri, data)
+                    //     .then(res => window.location.href = "/admin/designs")
+                }
+            }
         }
-      },
-      created() {
-        this._id = this.id ? this.id : 'code_editor_' + this._uid
-        this.getContent();
-      },
-      mounted() {
-        Vue.nextTick(() => {
-          //this.editor = ace.edit(this._id)
-          this.editor = CodeMirror(this.$refs.editor, {
-            lineNumbers: true,
-            mode       : this.type === 'definition' ? 'text/html' : 'application/x-httpd-php',
-            theme      : 'dracula',
-            foldGutter : true,
-            gutters    : ["CodeMirror-linenumbers", "CodeMirror-foldgutter"]
-          })
-        })
-      },
-
-
-      methods: {
-        getContent() {
-          if (this.content_uri) {
-            axios.get(this.content_uri)
-                 .then(({data}) => {
-                   Vue.nextTick(() => {
-                     this.editor.setValue(data)
-                   })
-                 })
-          }
-        },
-        showContent() {
-          if (this.editor) {
-            let el   = document.getElementById("code"),
-                form = document.getElementById("edit-form")
-
-            el.value = this.editor.getValue()
-
-            form.submit();
-
-
-            //axios.put(this.content_uri, data)
-            //     .then(res => window.location.href = "/admin/designs")
-          }
-        }
-      }
     }
 </script>
 
