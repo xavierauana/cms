@@ -8,7 +8,6 @@
 namespace Anacreation\Cms\Requests\Links;
 
 
-use Anacreation\Cms\Models\Language;
 use Anacreation\Cms\Models\Page;
 use Illuminate\Foundation\Http\FormRequest;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -27,9 +26,10 @@ class UpdateRequest extends FormRequest
      */
     public function authorize() {
 
-        list($menu, $link) = $this->getMenuAndLink();
+        [$menu, $link] = $this->getMenuAndLink();
 
-        return $this->user()->can('update', $link);
+        return $this->user()->can('update',
+                                  $link);
     }
 
     /**
@@ -39,19 +39,22 @@ class UpdateRequest extends FormRequest
      */
     public function rules() {
 
-        list($menu, $link) = $this->getMenuAndLink();
+        [$menu, $link] = $this->getMenuAndLink();
 
         $this->sanitizeInputs();
-        $parentIds = implode(",", $menu->links()->pluck('id')->toArray());
-        $pageIds = implode(',', Page::pluck('id')->toArray()).",0";
+        $parentIds = implode(",",
+                             $menu->links()->pluck('id')->toArray());
+        $pageIds = implode(',',
+                           Page::pluck('id')->toArray()).",0";
 
         return [
             'name.*.lang_id'  => 'required|exists:languages,id',
             'name.*.content'  => 'required',
             'is_active'       => 'required|boolean',
-            'parent_id'       => 'required|in:0,' . $parentIds,
-            'page_id'         => 'required_without:external_uri|in:' . $pageIds,
+            'parent_id'       => 'required|in:0,'.$parentIds,
+            'page_id'         => 'required_without:external_uri|in:'.$pageIds,
             'external_uri'    => 'required_without:page_id',
+            'class'           => 'nullable',
             'files'           => "nullable",
             'files.*.lang_id' => 'sometimes|exists:languages,id',
             'files.*.file'    => 'sometimes',
@@ -62,11 +65,11 @@ class UpdateRequest extends FormRequest
 
         $inputs = $this->all();
 
-        if (isset($inputs['external_uri']) and !$inputs['external_uri']) {
+        if(isset($inputs['external_uri']) and !$inputs['external_uri']) {
             unset($inputs['external_uri']);
         }
 
-        if (isset($inputs['page_id']) and (!$inputs['page_id'] or $inputs['page_id'] === '0')) {
+        if(isset($inputs['page_id']) and ( !$inputs['page_id'] or $inputs['page_id'] === '0')) {
             unset($inputs['page_id']);
         }
 
@@ -82,7 +85,7 @@ class UpdateRequest extends FormRequest
         $link = $this->route('link');
 
 
-        if ($link === null or $menu === null) {
+        if($link === null or $menu === null) {
             throw new NotFoundHttpException();
         }
 

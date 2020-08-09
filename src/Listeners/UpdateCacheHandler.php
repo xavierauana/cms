@@ -25,13 +25,15 @@ class UpdateCacheHandler
     /**
      * Handle the event.
      *
-     * @param  Event $event
+     * @param Event $event
      * @return void
      */
     public function handle(CacheManageableEvent $event) {
-        if ($this->isPageEvent($event)) {
+        if($this->isPageEvent($event)) {
             $this->invalidatePageCache($event->manageableObject);
-        } elseif ($this->isLanguageEvent($event)) {
+        } elseif($this->isLinkEvent($event)) {
+            $this->invalidateLinkAndMenuCache($event->manageableObject);
+        } elseif($this->isLanguageEvent($event)) {
             $this->invalidateLanguageCache();
         } else {
             $this->invalidateCache($event->manageableObject);
@@ -42,21 +44,27 @@ class UpdateCacheHandler
      * @param string|CacheManageableInterface $param
      */
     private function invalidateCache($param): void {
-        if (is_string($param)) {
+        if(is_string($param)) {
             $key = $param;
-        } elseif ($param instanceof CacheManageableInterface) {
+        } elseif($param instanceof CacheManageableInterface) {
             $key = $param->getCacheKey();
         } else {
             throw new InvalidArgumentException("Invalided cache model!");
         }
 
-        if (Cache::has($key)) {
+        if(Cache::has($key)) {
             Cache::forget($key);
         }
     }
 
     private function isPageEvent($event) {
-        return strpos(get_class($event), "Page") > -1;
+        return strpos(get_class($event),
+                      "Page") > -1;
+    }
+
+    private function isLinkEvent($event) {
+        return strpos(get_class($event),
+                      "Link") > -1;
     }
 
     private function invalidatePageCache(
@@ -68,16 +76,24 @@ class UpdateCacheHandler
         $keys = [
             $manageableObject->getCacheKey(),
             CacheKey::TOP_LEVEL_ACTIVE_PAGES,
-            CacheKey::ACTIVE_PAGES
+            CacheKey::ACTIVE_PAGES,
         ];
 
-        if ($parent = $page->parent) {
+        if($parent = $page->parent) {
             $keys[] = $parent->getCacheKey();
         }
 
-        foreach ($keys as $key) {
+        foreach($keys as $key) {
             $this->invalidateCache($key);
         }
+    }
+
+    private function invalidateLinkAndMenuCache(
+        CacheManageableInterface $manageableObject
+    ) {
+        /** @var \Anacreation\Cms\Models\Link $manageableObject */
+        $this->invalidateCache($manageableObject);
+        $this->invalidateCache($manageableObject->menu);
     }
 
     private function isLanguageEvent($event) {
@@ -89,9 +105,9 @@ class UpdateCacheHandler
         $keys = [
             CacheKey::ACTIVE_LANGUAGES,
             CacheKey::DEFAULT_LANGUAGE,
-            CacheKey::ALL_LANGUAGES
+            CacheKey::ALL_LANGUAGES,
         ];
-        foreach ($keys as $key) {
+        foreach($keys as $key) {
             $this->invalidateCache($key);
         }
     }

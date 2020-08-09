@@ -1,11 +1,10 @@
-@component('cms::elements.accordion_item',['active'=>$index===0])
+@component('cms::elements.accordion_item',['active'=>$index===0,'id'=>$menu->id])
 	@slot('parentId')menus_accrodion @endslot
 	@slot('panelActions')
 		<a href="{{route('menus.links.create', $menu->id)}}"
 		   class="btn btn-sm btn-success float-right mt-1"
 		   style="color:white">Create Link in {{$menu->name}}</a>
 	@endslot
-	@slot('id'){{$menu->id}} @endslot
 	@slot('title'){{$menu->name}}
 	<small> (Code: {{$menu->code}})</small> @endslot
 	<div class="sortable-list-container" id="menu_{{$menu->id}}_container">
