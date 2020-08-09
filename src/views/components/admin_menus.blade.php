@@ -39,25 +39,36 @@
         </a>
 
         <ul class="dropdown-menu">
-            @if(Auth::guard('admin')->user()->hasPermission('index_language'))
-                <li><a class="nav-link" href="{{route('languages.index')}}">Languages</a></li>@endif
-            @if(Auth::guard('admin')->user()->hasPermission('index_common_content'))
-                <li><a class="nav-link" href="{{route('cms::common_contents.index')}}">Common Contents</a></li>@endif
             @if(Auth::guard('admin')->user()->hasPermission('index_setting'))
                 <li><a class="nav-link"
-                       href="{{route('settings.index')}}">Systems Settings</a></li>@endif
+                       href="{{route('settings.index')}}">Systems Settings</a></li>
+            @endif
+            <div class="dropdown-divider"></div>
+            @if(Auth::guard('admin')->user()->hasPermission('index_common_content'))
+                <li><a class="nav-link" href="{{route('cms::common_contents.index')}}">Common Contents</a></li>
+            @endif
+            <div class="dropdown-divider"></div>
+            @if(Auth::guard('admin')->user()->hasPermission('index_language'))
+                <li><a class="nav-link" href="{{route('languages.index')}}">Languages</a></li>
+            @endif
+            @if(Auth::guard('admin')->user()->hasPermission('index_translation'))
+                <li><a class="nav-link" href="{{route('cms::admin.index.translations')}}">Translations</a></li>
+            @endif
+            <div class="dropdown-divider"></div>
             @if(Auth::guard('admin')->user()->hasPermission('index_admin'))
-                <li><a class="nav-link"
-                       href="{{route('administrators.index')}}">Administrators</a></li>@endif
+                <li><a class="nav-link" href="{{route('administrators.index')}}">Administrators</a></li>
+            @endif
+
             @if(Auth::guard('admin')->user()->hasPermission('index_admin_role'))
                 <li><a class="nav-link"
-                       href="{{route('admin_roles.index')}}">Administrator Roles</a></li>@endif
-				
+                       href="{{route('admin_roles.index')}}">Administrator Roles</a></li>
+            @endif
+
         </ul>
     </li>
 
-	
-	
+
+
 	<li class="dropdown">
         <a href="#" class="nav-link dropdown-toggle"
            data-toggle="dropdown" role="button"

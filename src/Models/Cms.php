@@ -140,9 +140,33 @@ class Cms
                         Route::resource('admin_permissions',
                                         "AdministratorRolesController");
 
+
                         Route::resource('common_contents',
                                         'CommonContentsController')
                              ->names('cms::common_contents');
+
+
+                        Route::get('translations',
+                                   'TranslationsController@index')
+                             ->name('cms::admin.index.translations');
+                        Route::post('translations',
+                                    'TranslationsController@store')
+                             ->name('cms::admin.store.translations');
+                        Route::get('translations/create',
+                                   'TranslationsController@create')
+                             ->name('cms::admin.create.translations');
+                        Route::get('translations/edit',
+                                   'TranslationsController@edit')
+                             ->name('cms::admin.edit.translations');
+                        Route::get('translations/content',
+                                   'TranslationsController@content')
+                             ->name('cms::admin.get.translations.content');
+                        Route::put('translations',
+                                   'TranslationsController@update')
+                             ->name('cms::admin.update.translations');
+                        Route::delete('translations',
+                                      'TranslationsController@delete')
+                             ->name('cms::admin.delete.translations');
 
                         Route::post('logout',
                             function() {
