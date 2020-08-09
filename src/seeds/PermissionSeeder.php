@@ -21,6 +21,4 @@ class PermissionSeeder extends Seeder
             \Anacreation\Cms\Models\Permission::create($permission);
         }
     }
-
-
 }

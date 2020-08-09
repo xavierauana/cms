@@ -18,6 +18,8 @@ class AdminPermissionSeeder extends Seeder
      */
     public function run() {
         $objects = [
+            'common_content',
+            'translation',
             'admin_role',
             'definition',
             'permission',
