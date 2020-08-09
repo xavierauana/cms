@@ -76,13 +76,26 @@ class Menu extends Model implements CacheManageableInterface
         return "menu_{$this->code}";
     }
 
+
     // Helpers
 
     public static function getLinksInMenu(string $menuCode): Collection {
         if($menu = static::whereCode($menuCode)->first()) {
-            return $menu->links()->whereIsActive(true)->orderBy('order')->get();
+
+            return cache()->rememberForever($menu->getCacheKey(),
+                function() use ($menu) {
+                    return $menu->links()
+                                ->whereIsActive(true)
+                                ->where('parent_id',
+                                        0)
+                                ->orderBy('order')
+                                ->get()
+                        ->each->getActiveChildren();
+                });
+
         }
 
         return new Collection();
     }
+
 }

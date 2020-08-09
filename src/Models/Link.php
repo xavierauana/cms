@@ -29,10 +29,11 @@ class Link extends Model
     ];
 
     protected $fillable = [
+        'external_uri',
         'is_active',
         'parent_id',
         'page_id',
-        'external_uri',
+        'class',
     ];
 
     protected $appends = [
@@ -172,5 +173,19 @@ class Link extends Model
             $p->uri;
 
         return $uri;
+    }
+
+    public function getActiveChildren(): void {
+        $this->load([
+                        'children' => function($query) {
+                            $query->where('is_active',
+                                          true)
+                                  ->orderBy('order');
+                        },
+                    ]);
+
+        $this->children->each(function($child) {
+            $child->getActiveChildren();
+        });
     }
 }

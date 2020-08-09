@@ -2,7 +2,7 @@
 
 namespace Anacreation\Cms\Controllers;
 
-use Anacreation\Cms\Models\Link;
+use Anacreation\Cms\Events\LinkSaved;
 use Anacreation\Cms\Models\Menu;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -17,15 +17,17 @@ class MenusController extends Controller
      * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function index(Menu $menu) {
-        $this->authorize('index', $menu);
+        $this->authorize('index',
+                         $menu);
 
         $menus = Menu::with([
-            'links' => function ($query) {
-                $query->whereParentId(0)->order();
-            }
-        ])->get();
+                                'links' => function($query) {
+                                    $query->whereParentId(0)->order();
+                                },
+                            ])->get();
 
-        return view('cms::admin.menus.index', compact('menus'));
+        return view('cms::admin.menus.index',
+                    compact('menus'));
 
     }
 
@@ -37,7 +39,8 @@ class MenusController extends Controller
      * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function create(Menu $menu) {
-        $this->authorize('create', $menu);
+        $this->authorize('create',
+                         $menu);
 
         return view('cms::admin.menus.create');
     }
@@ -51,11 +54,13 @@ class MenusController extends Controller
      * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function store(Request $request, Menu $menuRepo) {
-        $this->authorize('create', $menuRepo);
-        $validatedData = $this->validate($request, [
-            'name' => 'required',
-            'code' => 'required|unique:menus',
-        ]);
+        $this->authorize('create',
+                         $menuRepo);
+        $validatedData = $this->validate($request,
+                                         [
+                                             'name' => 'required',
+                                             'code' => 'required|unique:menus',
+                                         ]);
 
         $menuRepo->create($validatedData);
 
@@ -69,7 +74,8 @@ class MenusController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function show(Menu $menu) {
-        $this->authorize('show', $menu);
+        $this->authorize('show',
+                         $menu);
     }
 
     /**
@@ -79,7 +85,8 @@ class MenusController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function edit(Menu $menu) {
-        $this->authorize('edit', $menu);
+        $this->authorize('edit',
+                         $menu);
     }
 
     /**
@@ -91,11 +98,13 @@ class MenusController extends Controller
      */
     public function update(Request $request, Menu $menu) {
 
-        $this->authorize('edit', $menu);
-        $validatedData = $this->validate($request, [
-            'name' => 'required',
-            'code' => 'required|unique:menus,code,' . $menu->id,
-        ]);
+        $this->authorize('edit',
+                         $menu);
+        $validatedData = $this->validate($request,
+                                         [
+                                             'name' => 'required',
+                                             'code' => 'required|unique:menus,code,'.$menu->id,
+                                         ]);
 
         $menu->update($validatedData);
 
@@ -111,7 +120,8 @@ class MenusController extends Controller
      */
     public function destroy(Menu $menu) {
 
-        $this->authorize('delete', $menu);
+        $this->authorize('delete',
+                         $menu);
 
         $menu->delete();
 
@@ -121,18 +131,23 @@ class MenusController extends Controller
     }
 
     public function updateOrder(Request $request, Menu $menu) {
-        $this->authorize('edit', $menu);
+        $this->authorize('edit',
+                         $menu);
         $inputs = $request->all();
-        foreach ($inputs as $data) {
+        foreach($inputs as $data) {
+            /** @var \Anacreation\Cms\Models\Link $link */
             $link = $menu->links()->find($data['id']);
-            if ($link) {
-                $link->parent_id = $data['parentId'];
-                $link->order = $data['order'];
-                $link->save();
+            if($link) {
+                $link->update([
+                                  'parent_id' => $data['parentId'],
+                                  'order'     => $data['order'],
+                              ]);
+
+                event(new LinkSaved($link));
             }
+
         }
 
         return response()->json('completed');
-
     }
 }

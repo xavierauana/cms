@@ -1,13 +1,13 @@
 @extends("cms::layouts.default")
 
 @section("content")
-	
+
 	@component('cms::components.container')
 		@slot('title')
 			All Pages
 			@if(Auth::guard('admin')->user()->can('create',\Anacreation\Cms\Models\CommonContent::class))
 				<a href="{{route('cms::common_contents.create')}}"
-				   class="btn btn-sm btn-success pull-right">Create Page</a>
+				   class="btn btn-sm btn-success pull-right">Create Common Content</a>
 			@endif
 		@endslot
 		<form class="form" method="GET" action="{{route('cms::common_contents.index')}}">
@@ -28,7 +28,7 @@
 				</div>
 			</div>
 		</form>
-		
+
 		<div class="table-responsive">
 			<table class="table table-hover">
 				<thead>
@@ -44,8 +44,8 @@
 			</table>
 			{{$commonContents->appends(request()->query())->links("pagination::bootstrap-4")}}
 		</div>
-		
-		
-		
+
+
+
 	@endcomponent
 @endsection

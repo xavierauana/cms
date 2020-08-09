@@ -29,11 +29,13 @@ class LinksController extends Controller
      * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function index(Link $model) {
-        $this->authorize('index', $model);
+        $this->authorize('index',
+                         $model);
 
         $links = Link::all();
 
-        return view('cms::admin.links.index', compact('links'));
+        return view('cms::admin.links.index',
+                    compact('links'));
     }
 
     /**
@@ -46,13 +48,18 @@ class LinksController extends Controller
      * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function create(Menu $menu, Page $page, Link $model) {
-        $this->authorize('create', $model);
+        $this->authorize('create',
+                         $model);
 
-        list($pages, $links) = $this->loadResources($menu, $page);
+        [$pages, $links] = $this->loadResources($menu,
+                                                $page);
         $languages = Language::all();
 
         return view('cms::admin.links.create',
-            compact('menu', 'pages', 'links', 'languages'));
+                    compact('menu',
+                            'pages',
+                            'links',
+                            'languages'));
     }
 
     /**
@@ -70,35 +77,42 @@ class LinksController extends Controller
     public function store(
         Menu $menu, Request $request, Page $page, Link $model
     ) {
-        $allData = $request->all();
-        $this->authorize('create', $model);
+        $this->authorize('create',
+                         $model);
 
         $this->sanitizeInputs($request);
 
         $standard = $page->pluck('id')->toArray();
 
-        $ids = implode(",", $standard);
+        $ids = implode(",",
+                       $standard);
 
-        $validatedData = $this->validate($request, [
-            'name.*.lang_id'  => 'required:in:' . implode(",",
-                    Language::pluck('id')->toArray()),
-            'name.*.content'  => 'required',
-            'is_active'       => 'required|boolean',
-            'parent_id'       => 'required|in:0,' . implode(",",
-                    $menu->links()->pluck('id')->toArray()),
-            'page_id'         => 'required_without:external_uri|in:' . $ids,
-            'external_uri'    => 'required_without:page_id',
-            'files'           => 'nullable',
-            'files.*.lang_id' => 'sometimes:exists:languages.id',
-            'files.*.file'    => 'sometimes'
-        ]);
+        $validatedData = $this->validate($request,
+                                         [
+                                             'name.*.lang_id'  => 'required:in:'.implode(",",
+                                                                                         Language::pluck('id')
+                                                                                                 ->toArray()),
+                                             'name.*.content'  => 'required',
+                                             'is_active'       => 'required|boolean',
+                                             'parent_id'       => 'required|in:0,'.implode(",",
+                                                                                           $menu->links()
+                                                                                                ->pluck('id')
+                                                                                                ->toArray()),
+                                             'page_id'         => 'required_without:external_uri|in:'.$ids,
+                                             'external_uri'    => 'required_without:page_id',
+                                             'class'           => 'nullable',
+                                             'files'           => 'nullable',
+                                             'files.*.lang_id' => 'sometimes:exists:languages.id',
+                                             'files.*.file'    => 'sometimes',
+                                         ]);
 
-        $newLink = $this->createLink($menu, $validatedData);
-        if (isset($validatedData['files']) and $validatedData['files']) {
-            foreach ($validatedData['files'] as $data) {
-                if (isset($data['file'])) {
+        $newLink = $this->createLink($menu,
+                                     $validatedData);
+        if(isset($validatedData['files']) and $validatedData['files']) {
+            foreach($validatedData['files'] as $data) {
+                if(isset($data['file'])) {
                     $newLink->addImage($data['file'],
-                        Language::find($data['lang_id'])->code);
+                                       Language::find($data['lang_id'])->code);
                 }
             }
         }
@@ -109,14 +123,14 @@ class LinksController extends Controller
         return redirect("/admin/menus");
     }
 
+
     /**
-     * Display the specified resource.
-     *
-     * @param  \App\Link $link
-     * @return \Illuminate\Http\Response
+     * @param \Anacreation\Cms\Models\Link $link
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function show(Link $link) {
-        $this->authorize('show', $link);
+        $this->authorize('show',
+                         $link);
     }
 
     /**
@@ -128,14 +142,21 @@ class LinksController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function edit(Menu $menu, Link $link, Page $page) {
-        $this->authorize('edit', $link);
-        $this->matchMenuLinkRelation($menu, $link);
+        $this->authorize('edit',
+                         $link);
+        $this->matchMenuLinkRelation($menu,
+                                     $link);
 
-        list($pages, $links) = $this->loadResources($menu, $page);
+        [$pages, $links] = $this->loadResources($menu,
+                                                $page);
         $languages = Language::all();
 
         return view('cms::admin.links.edit',
-            compact("menu", "links", "link", "pages", "languages"));
+                    compact("menu",
+                            "links",
+                            "link",
+                            "pages",
+                            "languages"));
     }
 
     /**
@@ -148,17 +169,20 @@ class LinksController extends Controller
      * @throws \Anacreation\Cms\Exceptions\IncorrectContentTypeException
      */
     public function update(UpdateRequest $request, Menu $menu, Link $link) {
-        $this->authorize('edit', $link);
-        $this->matchMenuLinkRelation($menu, $link);
+        $this->authorize('edit',
+                         $link);
+        $this->matchMenuLinkRelation($menu,
+                                     $link);
 
         $validatedData = $request->validated();
-        $this->updateLink($link, $validatedData);
+        $this->updateLink($link,
+                          $validatedData);
 
-        if (isset($validatedData['files']) and $validatedData['files']) {
-            foreach ($validatedData['files'] as $data) {
-                if (isset($data['file'])) {
+        if(isset($validatedData['files']) and $validatedData['files']) {
+            foreach($validatedData['files'] as $data) {
+                if(isset($data['file'])) {
                     $link->addImage($data['file'],
-                        Language::find($data['lang_id'])->code);
+                                    Language::find($data['lang_id'])->code);
                 }
             }
         }
@@ -177,8 +201,10 @@ class LinksController extends Controller
      * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function destroy(Menu $menu, Link $link) {
-        $this->authorize('delete', $link);
-        $this->matchMenuLinkRelation($menu, $link);
+        $this->authorize('delete',
+                         $link);
+        $this->matchMenuLinkRelation($menu,
+                                     $link);
 
         $menu->links()->find($link->id)->delete();
 
@@ -189,8 +215,10 @@ class LinksController extends Controller
     }
 
     public function deleteImage(Menu $menu, Link $link, string $langCode) {
-        $this->authorize('edit', $link);
-        $this->matchMenuLinkRelation($menu, $link);
+        $this->authorize('edit',
+                         $link);
+        $this->matchMenuLinkRelation($menu,
+                                     $link);
 
         $link->deleteImage($langCode);
 
@@ -207,16 +235,18 @@ class LinksController extends Controller
      */
     private function loadResources(Menu $menu, Page $page): array {
         $pages[] = "Not Link to page";
-        $pages = $pages + $page->pluck('uri', 'id')->toArray();
+        $pages = $pages + $page->pluck('uri',
+                                       'id')->toArray();
         $links['0'] = "Top Level";
-        $nameAndId = $menu->links->reduce(function ($previous, Link $link) {
+        $nameAndId = $menu->links->reduce(function($previous, Link $link) {
             $previous[$link->id] = $link->name;
 
             return $previous;
-        }, []);
+        },
+            []);
         $links = $links + $nameAndId;
 
-        return array($pages, $links);
+        return [$pages, $links];
     }
 
     /**
@@ -233,12 +263,13 @@ class LinksController extends Controller
         /** @var Link $newLink */
         $newLink = $menu->links()->create($validatedData);
 
-        foreach ($validatedData['name'] as $data) {
+        foreach($validatedData['name'] as $data) {
             $contentObject = new ContentObject(Link::Identifier,
-                $data['lang_id'],
-                $data['content'], 'string');
+                                               $data['lang_id'],
+                                               $data['content'],
+                                               'string');
             $service->updateOrCreateContentIndexWithContentObject($newLink,
-                $contentObject);
+                                                                  $contentObject);
         }
 
         return $newLink;
@@ -252,18 +283,19 @@ class LinksController extends Controller
     private function updateLink($link, $validatedData) {
         $service = new ContentService();
 
-        if (!isset($validatedData['page_id'])) {
+        if( !isset($validatedData['page_id'])) {
             $validatedData['page_id'] = 0;
         }
 
         $link->update($validatedData);
 
-        foreach ($validatedData['name'] as $data) {
+        foreach($validatedData['name'] as $data) {
             $contentObject = new ContentObject(Link::Identifier,
-                $data['lang_id'],
-                $data['content'], 'string');
+                                               $data['lang_id'],
+                                               $data['content'],
+                                               'string');
             $service->updateOrCreateContentIndexWithContentObject($link,
-                $contentObject);
+                                                                  $contentObject);
         }
     }
 
@@ -273,10 +305,10 @@ class LinksController extends Controller
      */
     private function sanitizeInputs(Request $request): Request {
         $inputs = $request->all();
-        if (isset($inputs['external_uri']) and !$inputs['external_uri']) {
+        if(isset($inputs['external_uri']) and !$inputs['external_uri']) {
             unset($inputs['external_uri']);
         }
-        if (isset($inputs['page_id']) and !$inputs['page_id']) {
+        if(isset($inputs['page_id']) and !$inputs['page_id']) {
             unset($inputs['page_id']);
         }
 
@@ -298,7 +330,7 @@ class LinksController extends Controller
      * @param \Anacreation\Cms\Models\Link $link
      */
     private function matchMenuLinkRelation(Menu $menu, Link $link): void {
-        if ($menu->isNot($link->menu)) {
+        if($menu->isNot($link->menu)) {
             abort(403);
         }
     }
