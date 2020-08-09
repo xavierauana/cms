@@ -33,6 +33,7 @@ class Link extends Model
         'is_active',
         'parent_id',
         'page_id',
+        'order',
         'class',
     ];
 
