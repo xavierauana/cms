@@ -11,7 +11,6 @@ namespace Anacreation\Cms\Services;
 use Anacreation\Cms\Contracts\CmsPageInterface;
 use Anacreation\Cms\Contracts\RequestParserInterface;
 use Anacreation\Cms\Models\Language;
-use Anacreation\Cms\Models\Page;
 use Illuminate\Http\Request;
 
 class RequestParser implements RequestParserInterface
@@ -30,7 +29,7 @@ class RequestParser implements RequestParserInterface
 
         $decodePath = urldecode($request->path());
 
-        if($page = ((Page::ActivePages())[$decodePath] ?? null)) {
+        if($page = ((app(CmsPageInterface::class)->getActivePages())[$decodePath] ?? null)) {
             return $this->createData($page);
         }
 
