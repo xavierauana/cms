@@ -19,7 +19,7 @@
   "license": "MIT",
   "dependencies": {
     "jquery": "^2.1.4",
-    "jquery-ui": "1.12.x"
+    "jquery-ui": "1.13.x"
   },
   "devDependencies": {
     "clean-webpack-plugin": "^0.1.3",
