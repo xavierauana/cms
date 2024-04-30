@@ -8,11 +8,17 @@
             "email": "xavier.au@anacreation.com"
         }
     ],
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "/Users/xavierau/Code/php/laravel58/packages/multiauth"
+        }
+    ],
     "require": {
         "laravel/framework": "6.*|7.*",
         "spatie/laravel-medialibrary": "^7.0",
         "spatie/laravel-sitemap": "^5.5",
-        "xavierau/multi-auth": "~6.0",
+        "xavierau/multi-auth": "dev-master",
         "laravelcollective/html": "^6.0|^7.0",
         "maatwebsite/excel": "^3.0",
         "myclabs/php-enum": "^1.7",
