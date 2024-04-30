@@ -135,9 +135,17 @@ abstract class CmsBaseController extends Controller
      */
     private function getRequestLanguageCode(Request $request)
     {
-        return in_array($request->segments()[0], $this->activeLanguageCodes) ?
-            $request->segments()[0] :
-            ($request->get('locale') ?? session()->get('locale'));
+        if (in_array($request->segments()[0], $this->activeLanguageCodes)) {
+            return $request->segments()[0];
+        }
+
+        $userLocale = $request->get('locale') ?? session()->get('locale');
+
+        if (in_array($request->segments()[0], $this->activeLanguageCodes)) {
+            return $userLocale;
+        }
+
+        return $this->defaultLanguageCode;
     }
 
 }
