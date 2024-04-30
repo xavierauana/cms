@@ -21,12 +21,23 @@ use Illuminate\Support\Str;
 
 abstract class CmsBaseController extends Controller
 {
-    public function __construct(Request $request) {
+    private $activeLanguageCodes;
+    private $defaultLanguageCode;
+
+    public function __construct(Request $request)
+    {
+        $languageService = new LanguageService;
+
+        $this->activeLanguageCodes = $languageService->activeLanguages->pluck('code')
+            ->toArray() ?? [];
+
+        $this->defaultLanguageCode = $languageService->defaultLanguage->code;
+
         $this->setLocale($request);
     }
 
     /**
-     * @param \Illuminate\Http\Request                $request
+     * @param \Illuminate\Http\Request $request
      * @param \Anacreation\Cms\Services\RequestParser $parser
      * @return \Illuminate\Http\JsonResponse
      */
@@ -36,14 +47,14 @@ abstract class CmsBaseController extends Controller
         Request $request, RequestParserInterface $parser
     );
 
-    protected function setLocale(Request $request): void {
+    protected function setLocale(Request $request): void
+    {
 
-        if( !session()->has("id")) {
-            session()->put("id",
-                           Str::random(64));
+        if (!session()->has("id")) {
+            session()->put("id", Str::random(64));
         }
 
-        $checkLocale = $request->get('locale') ?? session()->get('locale');
+        $checkLocale = $this->getRequestLanguageCode($request);
 
         $locale = $this->getLocale($checkLocale);
 
@@ -54,25 +65,26 @@ abstract class CmsBaseController extends Controller
      * @param \Illuminate\Http\Request $request
      * @throws \Anacreation\Cms\Exceptions\AuthenticationException
      */
-    protected function checkUserSessions(Request $request): void {
+    protected function checkUserSessions(Request $request): void
+    {
         $table = "user_sessions";
 
-        if( !Schema::hasTable($table)) {
+        if (!Schema::hasTable($table)) {
             throw new InvalidArgumentException("No user_sessions table");
         }
 
         $sessionId = $request->session()
-                             ->getId();
+            ->getId();
         $userId = Auth::user()->count();
-        if(DB::table($table)
-             ->latest()
-             ->whereUserId($userId)
-             ->take(1)
-             ->get()
-             ->filter(function($obj) use ($sessionId) {
-                 return $obj->session == $sessionId;
-             })
-             ->count() === 0
+        if (DB::table($table)
+                ->latest()
+                ->whereUserId($userId)
+                ->take(1)
+                ->get()
+                ->filter(function ($obj) use ($sessionId) {
+                    return $obj->session == $sessionId;
+                })
+                ->count() === 0
         ) {
             Auth::logout();
 
@@ -82,15 +94,16 @@ abstract class CmsBaseController extends Controller
 
     /**
      * @param \Anacreation\Cms\Models\Page $page
-     * @param string                       $guard
+     * @param string $guard
      * @return mixed
      * @throws \Anacreation\Cms\Exceptions\AuthenticationException
      */
     protected function userHasPagePermission(
         CmsPageInterface $page, string $guard = 'web'
-    ): bool {
+    ): bool
+    {
 
-        if($user = Auth::guard($guard)->user()) {
+        if ($user = Auth::guard($guard)->user()) {
             $permission = $page->getPermission();
 
             return is_null($permission) or $user->hasPermission($page->permission->code);
@@ -103,22 +116,28 @@ abstract class CmsBaseController extends Controller
      * @param $checkLocale
      * @return mixed
      */
-    protected function getLocale(string $checkLocale = null): string {
+    protected function getLocale(string $checkLocale = null): string
+    {
 
-        $service = (new LanguageService);
-        $defaultLanguage = $service->defaultLanguage;
-
-        if($checkLocale === null) {
-            return $defaultLanguage->code;
+        if ($checkLocale === null) {
+            return $this->defaultLanguageCode;
         }
 
-        $activeLanguages = $service->activeLanguages;
+        return in_array($checkLocale,
+            $this->activeLanguageCodes) ?
+            $checkLocale :
+            $this->defaultLanguageCode;
+    }
 
-        $locale = in_array($checkLocale,
-                           $activeLanguages->pluck('code')
-                                           ->toArray()) ? $checkLocale: $defaultLanguage->code;
-
-        return $locale;
+    /**
+     * @param \Illuminate\Http\Request $request
+     * @return mixed
+     */
+    private function getRequestLanguageCode(Request $request)
+    {
+        return in_array($request->segments()[0], $this->activeLanguageCodes) ?
+            $request->segments()[0] :
+            ($request->get('locale') ?? session()->get('locale'));
     }
 
 }

@@ -28,7 +28,7 @@ class RequestParser implements RequestParserInterface
 
     public function parse(Request $request, array $vars = null): ?array {
 
-        $decodePath = urldecode($request->path());
+        $decodePath = $this->getSanitizedPath($request);
 
         if($page = ((Page::ActivePages())[$decodePath] ?? null)) {
             return $this->createData($page);
@@ -46,5 +46,21 @@ class RequestParser implements RequestParserInterface
         $data['common'] = new CommonContentService;
 
         return $data;
+    }
+
+    /**
+     * @param \Illuminate\Http\Request $request
+     * @return array|string|string[]
+     */
+    private function getSanitizedPath(Request $request)
+    {
+        $decodePath = urldecode($request->path());
+
+        $activeLangugeCodes = app(Language::class)->activeLanguages()->pluck('code')->toArray();
+
+        if (in_array($request->segments()[0], $activeLangugeCodes)) {
+            $decodePath = str_replace($request->segments()[0] . '/', '', $decodePath);
+        }
+        return $decodePath;
     }
 }
