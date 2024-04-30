@@ -21,9 +21,10 @@ use Illuminate\View\View;
 
 class RoutesController extends CmsBaseController
 {
-    public function resolve(Request $request) {
-        if(config("cms.single_login_session",
-                  false) == true) {
+    public function resolve(Request $request)
+    {
+        if (config("cms.single_login_session",
+                false) == true) {
             $this->checkUserSessions($request);
         }
 
@@ -31,12 +32,12 @@ class RoutesController extends CmsBaseController
 
 
         return $this->toResponse($request,
-                                 new RequestParser);
+            new RequestParser);
 
     }
 
     /**
-     * @param \Illuminate\Http\Request                          $request
+     * @param \Illuminate\Http\Request $request
      * @param \Anacreation\Cms\Contracts\RequestParserInterface $parser
      * @return \Illuminate\View\View
      * @throws \Anacreation\Cms\Exceptions\AuthenticationException
@@ -45,8 +46,9 @@ class RoutesController extends CmsBaseController
      */
     protected function toResponse(
         Request $request, RequestParserInterface $parser
-    ) {
-        if($redirectUri = $this->getCustomRedirect($request->path())) {
+    )
+    {
+        if ($redirectUri = $this->getCustomRedirect($request->path())) {
             return redirect($redirectUri);
         }
         $vars = $parser->parse($request);
@@ -54,32 +56,32 @@ class RoutesController extends CmsBaseController
         /** @var \Anacreation\Cms\Contracts\CmsPageInterface $page */
         $page = $vars['page'] ?? null;
 
-        if($page === null) {
+        if ($page === null) {
             throw new PageNotFoundHttpException();
         }
 
-        if( !$page->isRestricted()) {
+        if (!$page->isRestricted()) {
             return $this->constructView($page,
-                                        $vars);
+                $vars);
         }
 
         /** @var \App\User $user */
         $user = auth()->user();
 
-        if(is_null($user)) {
+        if (is_null($user)) {
             throw new AuthenticationException('The page is restricted');
         }
 
         $permission = $page->getPermission();
 
-        if(is_null($permission)) {
+        if (is_null($permission)) {
             return $this->constructView($page,
-                                        $vars);
+                $vars);
         }
 
-        if($user->hasPermission($permission->code)) {
+        if ($user->hasPermission($permission->code)) {
             return $this->constructView($page,
-                                        $vars);
+                $vars);
         }
 
         throw new UnAuthorizedException('You are not allow to visit the page!');
@@ -87,37 +89,40 @@ class RoutesController extends CmsBaseController
     }
 
 
-    private function constructView(CmsPageInterface $page, $vars): View {
+    private function constructView(CmsPageInterface $page, $vars): View
+    {
 
         $viewPath = sprintf("themes.%s.layouts.%s",
-                            config('cms.active_theme'),
-                            $page->getTemplate());
+            config('cms.active_theme'),
+            $page->getTemplate());
 
         return view($viewPath,
-                    $vars);
+            $vars);
     }
 
     /**
      * @param array|null $vars
      * @return \Anacreation\Cms\Models\Page|null
      */
-    protected function getPage(?array $vars): ?Page {
+    protected function getPage(?array $vars): ?Page
+    {
 
-        if(is_null($vars)) {
+        if (is_null($vars)) {
             return null;
         }
 
         return $page = $vars['page'] ?? null;
     }
 
-    private function getCustomRedirect(string $path): ?string {
+    private function getCustomRedirect(string $path): ?string
+    {
         $customRedirectPaths = config('cms.custom_redirect',
-                                      []);
+            []);
         $path = Str::start($path,
-                           '/');
+            '/');
 
-        if(array_key_exists($path,
-                            $customRedirectPaths)) {
+        if (array_key_exists($path,
+            $customRedirectPaths)) {
             return $customRedirectPaths[$path];
         }
 

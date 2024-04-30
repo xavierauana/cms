@@ -20,12 +20,13 @@ use Illuminate\Support\Facades\Schema;
 
 abstract class CmsBaseController extends Controller
 {
-    public function __construct(Request $request) {
+    public function __construct(Request $request)
+    {
         $this->setLocale($request);
     }
 
     /**
-     * @param \Illuminate\Http\Request                $request
+     * @param \Illuminate\Http\Request $request
      * @param \Anacreation\Cms\Services\RequestParser $parser
      * @return \Illuminate\Http\JsonResponse
      */
@@ -35,15 +36,14 @@ abstract class CmsBaseController extends Controller
         Request $request, RequestParserInterface $parser
     );
 
-    protected function setLocale(Request $request): void {
+    protected function setLocale(Request $request): void
+    {
 
         if (!session()->has("id")) {
             session()->put("id", str_random(64));
         }
 
-        $checkLocale = $request->get('locale') ?? session()->get('locale');
-
-        $locale = $this->getLocale($checkLocale);
+        $locale = $this->getVerifiedLocale($request);
 
         app()->setLocale($locale);
     }
@@ -52,7 +52,8 @@ abstract class CmsBaseController extends Controller
      * @param \Illuminate\Http\Request $request
      * @throws \Anacreation\Cms\Exceptions\AuthenticationException
      */
-    protected function checkUserSessions(Request $request): void {
+    protected function checkUserSessions(Request $request): void
+    {
         $table = "user_sessions";
 
         if (!Schema::hasTable($table)) {
@@ -60,17 +61,17 @@ abstract class CmsBaseController extends Controller
         }
 
         $sessionId = $request->session()
-                             ->getId();
+            ->getId();
         $userId = Auth::user()->count();
         if (DB::table($table)
-              ->latest()
-              ->whereUserId($userId)
-              ->take(1)
-              ->get()
-              ->filter(function ($obj) use ($sessionId) {
-                  return $obj->session == $sessionId;
-              })
-              ->count() === 0
+                ->latest()
+                ->whereUserId($userId)
+                ->take(1)
+                ->get()
+                ->filter(function ($obj) use ($sessionId) {
+                    return $obj->session == $sessionId;
+                })
+                ->count() === 0
         ) {
             Auth::logout();
 
@@ -80,13 +81,14 @@ abstract class CmsBaseController extends Controller
 
     /**
      * @param \Anacreation\Cms\Models\Page $page
-     * @param string                       $guard
+     * @param string $guard
      * @return mixed
      * @throws \Anacreation\Cms\Exceptions\AuthenticationException
      */
     protected function userHasPagePermission(
         CmsPageInterface $page, string $guard = 'web'
-    ): bool {
+    ): bool
+    {
 
         if ($user = Auth::guard($guard)->user()) {
             $permission = $page->getPermission();
@@ -101,7 +103,8 @@ abstract class CmsBaseController extends Controller
      * @param $checkLocale
      * @return mixed
      */
-    protected function getLocale(string $checkLocale = null): string {
+    protected function getLocale(string $checkLocale = null): string
+    {
 
         $service = (new LanguageService);
         $defaultLanguage = $service->defaultLanguage;
@@ -114,9 +117,32 @@ abstract class CmsBaseController extends Controller
 
         $locale = in_array($checkLocale,
             $activeLanguages->pluck('code')
-                            ->toArray()) ? $checkLocale : $defaultLanguage->code;
+                ->toArray()) ? $checkLocale : $defaultLanguage->code;
 
         return $locale;
+    }
+
+    /**
+     * @param \Illuminate\Http\Request $request
+     * @return mixed|string
+     */
+    private function getVerifiedLocale(Request $request)
+    {
+        $languageService = new LanguageService();
+        $activeLocaleCode = $languageService->activeLanguages->pluck('code')
+            ->toArray();
+
+        if (in_array($request->segments()[0], $activeLocaleCode)) {
+            return $request->segments()[0];
+        }
+
+        $checkLocale = $request->get('locale') ?? session()->get('locale');
+
+        if (in_array($checkLocale, $activeLocaleCode)) {
+            return $checkLocale;
+        }
+
+        return $languageService->defaultLanguage->code;
     }
 
 }
